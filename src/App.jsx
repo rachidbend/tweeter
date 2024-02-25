@@ -1,38 +1,63 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import Nav from './ui/Nav';
+
+import AppLayout from './ui/AppLayout';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GlobalStyles } from './styles/globalStyles';
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div>app layout</div>,
+    element: (
+      <>
+        <AppLayout />
+      </>
+    ),
     children: [
       // main pages
       {
         path: 'home',
-        element: <p>home page</p>,
+        element: <div>home page</div>,
       },
       {
         path: 'explore',
-        element: <p>explore page</p>,
+        element: <div>explore page</div>,
       },
       {
         path: 'bookmarks',
-        element: <p>bookmarks page</p>,
+        element: <div>bookmarks page</div>,
       },
       // user pages
       {
         path: 'settings',
-        element: <p>settings page</p>,
+        element: <div>settings page</div>,
       },
       {
         path: 'profile',
-        element: <p>profile page</p>,
+        element: (
+          <div>
+            profile page
+            <Nav />
+          </div>
+        ),
       },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools position="bottom" />
+        <RouterProvider router={router} />;
+        <GlobalStyles />
+      </QueryClientProvider>
+    </>
+  );
 }
 
 export default App;
