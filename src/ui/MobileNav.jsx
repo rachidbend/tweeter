@@ -3,19 +3,25 @@ import { useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-const StyledNav = styled.ul`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 7.2rem;
-  position: relative;
-  height: 100%;
+import { IoMdHome } from 'react-icons/io';
+import { MdExplore } from 'react-icons/md';
+import { FaBookmark } from 'react-icons/fa';
 
+const StyledMobileNav = styled.ul`
+  display: none;
   @media screen and (max-width: 450px) {
-    display: none;
+    display: block;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 6.831rem;
+    background-color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5.122rem 0 4.778rem;
   }
 `;
-
 const Item = styled.li`
   list-style: none;
 `;
@@ -26,7 +32,7 @@ const ItemLink = styled(NavLink)`
   font-size: 1.4rem;
   text-transform: uppercase;
   color: var(--color-grey-300);
-  padding: 0.4rem;
+
   transition: color 0.3s ease;
 
   &:hover {
@@ -50,6 +56,19 @@ const StyledSpan = styled(motion.span)`
   background-color: var(--color-blue-100);
 `;
 
+const HomeIcon = styled(IoMdHome)`
+  width: 2.4rem;
+  height: auto;
+`;
+const ExploreIcon = styled(MdExplore)`
+  width: 2.4rem;
+  height: auto;
+`;
+const BookmarkIcon = styled(FaBookmark)`
+  width: 2.4rem;
+  height: auto;
+`;
+
 function setPositionSpan(spanRef, toRef) {
   // // 1. get the position of the element we want to go to
   const toRefPosition = toRef.current.offsetLeft;
@@ -67,7 +86,7 @@ function setPositionSpan(spanRef, toRef) {
   }px`;
 }
 
-function Nav() {
+function MobileNav() {
   const spanRef = useRef(null);
   const homeRef = useRef(null);
   const exploreRef = useRef(null);
@@ -101,25 +120,25 @@ function Nav() {
   );
 
   return (
-    <StyledNav>
+    <StyledMobileNav>
       <StyledSpan layout ref={spanRef}></StyledSpan>
       <Item>
         <ItemLink ref={homeRef} to={'/home'}>
-          home
+          <HomeIcon />
         </ItemLink>
       </Item>
       <Item>
         <ItemLink ref={exploreRef} to={'/explore'}>
-          explore
+          <ExploreIcon />
         </ItemLink>
       </Item>
       <Item>
         <ItemLink ref={bookmarksRef} to={'/bookmarks'}>
-          bookmark
+          <BookmarkIcon />
         </ItemLink>
       </Item>
-    </StyledNav>
+    </StyledMobileNav>
   );
 }
 
-export default Nav;
+export default MobileNav;
