@@ -26,6 +26,9 @@ export const GlobalStyles = styled.createGlobalStyle`
 
     --font-poppings: 'Poppins', sans-serif; /*  600, 500 */
     --font-noto: 'Noto Sans', sans-serif; /*  700, 600, 500, 400 */
+
+    --shadow-100: 0px 2px 4px 0px hsla(0, 0%, 0%, 0.05);
+    --shadow-200: 0px 2px 2px 0px hsla(0, 0%, 0%, 0.05);
   }
 
   html {

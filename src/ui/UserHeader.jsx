@@ -27,6 +27,10 @@ const Avatar = styled.img`
   border-radius: 0.8rem;
   overflow: hidden;
   margin-right: 1.1rem;
+
+  @media screen and (max-width: 450px) {
+    margin: 0;
+  }
 `;
 const Username = styled.p`
   margin-right: 1.94rem;
@@ -37,8 +41,16 @@ const Username = styled.p`
   font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: -0.035em;
+
+  @media screen and (max-width: 450px) {
+    display: none;
+  }
 `;
-const ArrowDown = styled(TiArrowSortedDown)``;
+const ArrowDown = styled(TiArrowSortedDown)`
+  @media screen and (max-width: 450px) {
+    display: none;
+  }
+`;
 
 function UserHeader() {
   const [isOpen, setIsOpen] = useState(false);
