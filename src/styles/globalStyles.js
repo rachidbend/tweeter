@@ -29,6 +29,8 @@ export const GlobalStyles = styled.createGlobalStyle`
 
     --shadow-100: 0px 2px 4px 0px hsla(0, 0%, 0%, 0.05);
     --shadow-200: 0px 2px 2px 0px hsla(0, 0%, 0%, 0.05);
+
+    --transition-100: 0.3s ease;
   }
 
   html {

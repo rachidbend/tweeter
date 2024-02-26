@@ -6,33 +6,30 @@ import styled from 'styled-components';
 import { IoMdHome } from 'react-icons/io';
 import { MdExplore } from 'react-icons/md';
 import { FaBookmark } from 'react-icons/fa';
+import { setPositionSpan } from '../helpers/functions';
 
 const StyledMobileNav = styled.ul`
   display: none;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 6.831rem;
+  padding: 0 5.122rem 0 4.778rem;
+  background-color: var(--color-white);
+
   @media screen and (max-width: 450px) {
-    display: block;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 6.831rem;
-    background-color: var(--color-white);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 5.122rem 0 4.778rem;
   }
 `;
+
 const Item = styled.li`
   list-style: none;
 `;
-const ItemLink = styled(NavLink)`
-  text-decoration: none;
-  font-family: var(--font-poppings);
-  font-weight: 500;
-  font-size: 1.4rem;
-  text-transform: uppercase;
-  color: var(--color-grey-300);
 
+const ItemLink = styled(NavLink)`
+  color: var(--color-grey-300);
   transition: color 0.3s ease;
 
   &:hover {
@@ -48,11 +45,9 @@ const StyledSpan = styled(motion.span)`
   position: absolute;
   width: 8rem;
   height: 0.3rem;
-
   bottom: 0;
   left: 0;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  border-radius: 0.8rem 0.8rem 0 0;
   background-color: var(--color-blue-100);
 `;
 
@@ -68,23 +63,6 @@ const BookmarkIcon = styled(FaBookmark)`
   width: 2.4rem;
   height: auto;
 `;
-
-function setPositionSpan(spanRef, toRef) {
-  // // 1. get the position of the element we want to go to
-  const toRefPosition = toRef.current.offsetLeft;
-  // 2. get the width of the elemnt we want to go to (to figure out where the middle of the element is)
-  const toRefWidth = toRef.current.offsetWidth;
-
-  // 3. get the width of the span itself to figure out whre it's middle is
-  const spanWidth = spanRef.current.offsetWidth;
-
-  // 4. figure out where to go, this is done in the useEffect
-
-  // 5. change the position of the middle of the span to lighn up with the middle of the element we want to go to
-  spanRef.current.style.left = `${
-    toRefPosition + toRefWidth / 2 - spanWidth / 2
-  }px`;
-}
 
 function MobileNav() {
   const spanRef = useRef(null);
@@ -102,18 +80,20 @@ function MobileNav() {
         !exploreRef?.current ||
         !bookmarksRef?.current ||
         !spanRef?.current
-      ) {
+      )
         return;
-      }
 
-      if (homeRef.current.classList.contains('active')) {
-        setPositionSpan(spanRef, homeRef);
-      }
-      if (exploreRef.current.classList.contains('active')) {
-        setPositionSpan(spanRef, exploreRef);
-      }
-      if (bookmarksRef.current.classList.contains('active')) {
-        setPositionSpan(spanRef, bookmarksRef);
+      // Create an array of all the refs
+      const refs = [homeRef, exploreRef, bookmarksRef];
+
+      // Find the ref corresponding to the active link (if any)
+      const activeRef = refs.find(ref =>
+        ref.current?.classList.contains('active')
+      );
+
+      // If an active link is found, update the span position
+      if (activeRef) {
+        setPositionSpan(spanRef, activeRef);
       }
     },
     [location]
