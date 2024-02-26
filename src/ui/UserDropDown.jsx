@@ -4,6 +4,7 @@ import { IoMdSettings } from 'react-icons/io';
 import { FaUserGroup } from 'react-icons/fa6';
 import { MdExitToApp } from 'react-icons/md';
 import { motion } from 'framer-motion';
+import { useLogout } from '../hooks/authHooks/useLogout';
 
 const StyledUserDropDown = styled(motion.div)`
   position: absolute;
@@ -91,6 +92,10 @@ const LogoutIcon = styled(MdExitToApp)`
 `;
 
 function UserDropDown() {
+  const { logout, logoutError } = useLogout();
+
+  if (logoutError) return <p>{logoutError.message} </p>;
+
   return (
     <StyledUserDropDown
       initial={{
@@ -121,7 +126,7 @@ function UserDropDown() {
           <SettingsIcon /> settings
         </Item>
       </List>
-      <Logout>
+      <Logout onClick={logout}>
         <LogoutIcon /> logout
       </Logout>
     </StyledUserDropDown>

@@ -7,13 +7,19 @@ import AppLayout from './ui/AppLayout';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GlobalStyles } from './styles/globalStyles';
+import ProtectedRoutes from './ui/ProtectedRoutes';
+import Login from './features/auth/Login';
 
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoutes>
+        <AppLayout />
+      </ProtectedRoutes>
+    ),
     children: [
       // main pages
       {
@@ -43,6 +49,11 @@ const router = createBrowserRouter([
         ),
       },
     ],
+  },
+
+  {
+    path: '/login',
+    element: <Login />,
   },
 ]);
 
