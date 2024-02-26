@@ -8,7 +8,6 @@ function AppLayout() {
   return (
     <StyledAppLayout>
       <Header />
-      AppLayout
       <Outlet />
     </StyledAppLayout>
   );
