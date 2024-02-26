@@ -9,11 +9,10 @@ const StyledUserDropDown = styled(motion.div)`
   position: absolute;
   right: 0;
   top: 6.27rem;
-
-  background-color: var(--color-white);
+  padding: 1.527rem 1.392rem;
   border: 0.1rem solid var(--color-grey-500);
   border-radius: 1.2rem;
-  padding: 1.527rem 1.392rem;
+  background-color: var(--color-white);
 `;
 
 const List = styled.ul`
@@ -25,20 +24,22 @@ const List = styled.ul`
 `;
 
 const Item = styled.li`
-  list-style: none;
-  font-size: 1.2rem;
-  font-weight: 500;
-  font-family: var(--font-noto);
-  width: 16.412rem;
-  color: var(--color-grey-200);
-  padding: 1.067rem 0 1.248rem 1.168rem;
-  text-transform: capitalize;
-  border-radius: 0.8rem;
-  transition: background 0.3s ease, color 0.3s ease;
   display: flex;
   justify-content: start;
   align-items: center;
   gap: 1rem;
+  width: 16.412rem;
+
+  font-family: var(--font-noto);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--color-grey-200);
+  padding: 1.067rem 0 1.248rem 1.168rem;
+  border-radius: 0.8rem;
+  text-transform: capitalize;
+  list-style: none;
+  transition: background var(--transition-100), color var(--transition-100);
+
   &:hover {
     background-color: var(--color-grey-600);
     color: var(--color-grey-100);
@@ -46,25 +47,27 @@ const Item = styled.li`
 `;
 
 const Logout = styled.button`
-  background-color: transparent;
-  padding: 1.067rem 0 1.248rem 1.168rem;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 1rem;
   width: 16.412rem;
+
   font-family: var(--font-noto);
   font-size: 1.2rem;
+  padding: 1.067rem 0 1.248rem 1.168rem;
   font-weight: 500;
+  color: var(--color-red-100);
   text-align: left;
   border: none;
   text-transform: capitalize;
   border-radius: 0.8rem;
   letter-spacing: -0.035em;
-  transition: background 0.3s ease;
   margin-top: 1.311rem;
-  color: var(--color-red-100);
+  background-color: transparent;
   cursor: pointer;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  gap: 1rem;
+  transition: background var(--transition-100);
+
   &:hover {
     background-color: var(--color-grey-600);
   }
@@ -100,7 +103,11 @@ function UserDropDown() {
       }}
       exit={{
         opacity: 0,
-        y: -30,
+        y: -20,
+        transition: {
+          type: 'tween',
+          duration: 0.2,
+        },
       }}
     >
       <List>

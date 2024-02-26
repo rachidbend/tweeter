@@ -7,18 +7,16 @@ import { AnimatePresence } from 'framer-motion';
 const StyledUserHeader = styled.div`
   display: flex;
   align-items: center;
-
-  background-color: transparent;
+  position: relative;
   padding: 0.4rem;
+  background-color: transparent;
   border-radius: 0.8rem;
   cursor: pointer;
+  transition: background var(--transition-100);
 
-  transition: background 0.3s ease;
   &:hover {
     background-color: var(--color-grey-600);
   }
-
-  position: relative;
 `;
 
 const Avatar = styled.img`
@@ -29,17 +27,17 @@ const Avatar = styled.img`
   margin-right: 1.1rem;
 
   @media screen and (max-width: 450px) {
-    margin: 0;
+    margin-right: 0;
   }
 `;
-const Username = styled.p`
-  margin-right: 1.94rem;
-  color: var(--color-grey-100);
-  text-transform: capitalize;
 
+const Username = styled.p`
   font-family: var(--font-noto);
   font-size: 1.2rem;
+  margin-right: 1.94rem;
   font-weight: 700;
+  color: var(--color-grey-100);
+  text-transform: capitalize;
   letter-spacing: -0.035em;
 
   @media screen and (max-width: 450px) {
@@ -57,10 +55,10 @@ function UserHeader() {
 
   return (
     <StyledUserHeader onClick={() => setIsOpen(isOpen => !isOpen)}>
-      <Avatar src="/images/avatar.jpg" alt="user image" />
-
+      <Avatar src="/images/avatar.jpg" alt="user avatar" />
       <Username>Xanthe neal</Username>
       <ArrowDown />
+
       <AnimatePresence>{isOpen && <UserDropDown />}</AnimatePresence>
     </StyledUserHeader>
   );
