@@ -11,8 +11,8 @@ import ProtectedRoutes from './ui/ProtectedRoutes';
 
 import { Toaster } from 'react-hot-toast';
 
-import Login from './features/auth/Login';
-import Signup from './features/auth/Signup';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 const queryClient = new QueryClient();
 

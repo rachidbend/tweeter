@@ -16,10 +16,10 @@ import {
   CtaText,
   CtaButton,
   StyledLogin,
-} from './AuthStyles';
+} from '../features/auth/AuthStyles';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { useSignup } from '../../hooks/authHooks/useSignup';
+import { useSignup } from '../hooks/authHooks/useSignup';
 
 function Signup() {
   // State to manage password visibility
