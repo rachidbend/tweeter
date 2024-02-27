@@ -10,7 +10,9 @@ import { GlobalStyles } from './styles/globalStyles';
 import ProtectedRoutes from './ui/ProtectedRoutes';
 
 import { Toaster } from 'react-hot-toast';
-import Login from './features/auth/Login';
+
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 const queryClient = new QueryClient();
 
@@ -59,7 +61,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/signup',
-    element: <p>signup page</p>,
+    element: <Signup />,
   },
 ]);
 

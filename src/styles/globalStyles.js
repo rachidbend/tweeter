@@ -50,4 +50,8 @@ all media queries
   @media screen and (max-width: 450px) {
 
   }
+
+    @media screen and (min-width: 1600px) {
+
+  }
 */
