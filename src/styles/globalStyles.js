@@ -31,6 +31,7 @@ export const GlobalStyles = styled.createGlobalStyle`
     --shadow-200: 0px 2px 2px 0px hsla(0, 0%, 0%, 0.05);
 
     --transition-100: 0.3s ease;
+    --transition-200: 0.2s ease;
   }
 
   html {
@@ -42,3 +43,11 @@ export const GlobalStyles = styled.createGlobalStyle`
     min-height: 100svh;
   }
 `;
+
+/*
+all media queries
+- mobile
+  @media screen and (max-width: 450px) {
+
+  }
+*/

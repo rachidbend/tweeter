@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useUser } from '../hooks/authHooks/useUser';
+import toast from 'react-hot-toast';
 
 export default function ProtectedRoutes({ children }) {
   const navigate = useNavigate();
@@ -17,9 +18,9 @@ export default function ProtectedRoutes({ children }) {
     [isLoadingUser, fetchStatus, isAuthenticated, navigate, user]
   );
 
-  if (isLoadingUser) return <p>loaind user</p>;
-  // if (userError) throw new Error(userError.message);
-  // if (!isAuthenticated) throw new Error('You must be authenticated first!');
+  if (isLoadingUser) return <p>loading user</p>;
+  if (userError) throw new Error(userError.message);
+  if (!isAuthenticated) toast.error('You must be authenticated first!');
 
   if (isAuthenticated) return children;
 }
