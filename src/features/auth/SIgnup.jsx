@@ -1,56 +1,110 @@
-import styled from 'styled-components';
-
-const StyledSignup = styled.div`
-  min-height: 100vh;
-  min-height: 100svh;
-  background-color: var(--color-grey-600);
-
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  justify-content: center;
-`;
-const Logo = styled.img``;
-const Heading = styled.h2`
-  font-family: var(--font-poppings);
-  font-size: 3.4rem;
-  font-weight: 700;
-  text-transform: capitalize;
-  color: var(--color-blue-100);
-`;
-
-const Input = styled.input`
-  width: auto;
-
-  border: 1px solid red;
-  border-radius: 8px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
+import {
+  Container,
+  EyeOffIcon,
+  EyeOnIcon,
+  Google,
+  GoogleIcon,
+  Heading,
+  Illustration,
+  IllustrationContainer,
+  Input,
+  InputContainer,
+  LoginButton,
+  Logo,
+  OrContainer,
+  OrText,
+  SignupText,
+  SignupButton,
+  StyledLogin,
+} from './AuthStyles';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useSignup } from '../../hooks/authHooks/useSignup';
 
 function Signup() {
+  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
+  const [isVisibleConfirmPassword, setIsVisibleConfirmPassword] =
+    useState(false);
+  const { register, handleSubmit, reset } = useForm();
+
+  const { signup, isSigningUp, signupError } = useSignup();
+
+  function onSubmit(data) {
+    const { email, password, confirmPassword } = data;
+    if (confirmPassword === password)
+      signup({ email: email, password: password });
+  }
+
+  function handlePasswordVisibility() {
+    setIsVisiblePassword(isVisiblePassword => !isVisiblePassword);
+  }
+
+  function handleConfirmPasswordVisibility() {
+    setIsVisibleConfirmPassword(
+      isVisibleConfirmPassword => !isVisibleConfirmPassword
+    );
+  }
+
   return (
-    <StyledSignup>
-      <div>
-        <Logo src="/images/tweeter.svg" />
-      </div>
-      <div>
-        <Heading>Create an account!</Heading>
-        <Form>
-          <label htmlFor="email-input">email</label>
-          <Input type="email" id="email-input" />
+    <StyledLogin>
+      <IllustrationContainer>
+        <Illustration
+          src="/images/drawkit-grape-pack-illustration-3.svg"
+          alt="illustration"
+        />
+      </IllustrationContainer>
+      <Container>
+        <Logo src="/images/tweeter-small.svg" />
+        <Heading>Create account</Heading>
 
-          <label htmlFor="password-input">password</label>
-          <Input type="password" id="password-input" />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Input type="email" placeholder="Email" {...register('email')} />
 
-          <label htmlFor="password-confirm-input">confirm password</label>
-          <Input type="password" id="password-confirm-input" />
-        </Form>
-      </div>
-    </StyledSignup>
+          <InputContainer>
+            <Input
+              type={`${isVisiblePassword ? 'text' : 'password'}`}
+              placeholder="Password"
+              {...register('password')}
+            />
+            {isVisiblePassword ? (
+              <EyeOffIcon onClick={handlePasswordVisibility} />
+            ) : (
+              <EyeOnIcon onClick={handlePasswordVisibility} />
+            )}
+          </InputContainer>
+          {/* confirm password input */}
+          <InputContainer>
+            <Input
+              type={`${isVisibleConfirmPassword ? 'text' : 'password'}`}
+              placeholder="Confirm Password"
+              {...register('confirmPassword')}
+            />
+            {isVisibleConfirmPassword ? (
+              <EyeOffIcon onClick={handleConfirmPasswordVisibility} />
+            ) : (
+              <EyeOnIcon onClick={handleConfirmPasswordVisibility} />
+            )}
+          </InputContainer>
+
+          {/* {loginError && <p>{loginError.message}</p>} */}
+
+          <LoginButton type="submit" value="Create" />
+        </form>
+
+        <OrContainer>
+          <OrText>or</OrText>
+        </OrContainer>
+
+        <Google>
+          <GoogleIcon /> Signup with Google
+        </Google>
+
+        <SignupText>
+          Already have an account?
+          <SignupButton to="/login"> Log in</SignupButton>
+        </SignupText>
+      </Container>
+    </StyledLogin>
   );
 }
 
