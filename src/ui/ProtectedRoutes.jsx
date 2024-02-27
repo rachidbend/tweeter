@@ -3,15 +3,20 @@ import { useNavigate } from 'react-router';
 import { useUser } from '../hooks/authHooks/useUser';
 import toast from 'react-hot-toast';
 
+// ProtectedRoute component ensures that only authenticated users can access certain routes.
 export default function ProtectedRoutes({ children }) {
+  // Initialize useNavigate hook
   const navigate = useNavigate();
 
+  // 1. Load the authenticated user
   const { user, isLoadingUser, userError, fetchStatus, isAuthenticated } =
     useUser();
 
+  // 2. if there is NO authenticated user, redirect to '/login'
+  // Redirect to '/login' if there is NO authenticated user and loading has finished
   useEffect(
     function () {
-      if (isLoadingUser || fetchStatus == 'isFetching' || !isAuthenticated) {
+      if (!isAuthenticated && !isLoadingUser && fetchStatus !== 'fetching') {
         navigate('/login');
       }
     },
