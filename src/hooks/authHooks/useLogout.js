@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { logout as logoutApi } from '../../services/apiAuth';
+import toast from 'react-hot-toast';
 
 export function useLogout() {
   const queryClient = useQueryClient();
@@ -12,6 +13,9 @@ export function useLogout() {
     mutationFn: logoutApi,
     onSettled: () => {
       queryClient.invalidateQueries(['user']);
+    },
+    onError: error => {
+      toast.error(error.message);
     },
   });
 
