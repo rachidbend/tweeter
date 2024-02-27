@@ -8,6 +8,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GlobalStyles } from './styles/globalStyles';
 import ProtectedRoutes from './ui/ProtectedRoutes';
+
+import { Toaster } from 'react-hot-toast';
+import Signup from './features/auth/Signup';
 import Login from './features/auth/Login';
 
 const queryClient = new QueryClient();
@@ -55,11 +58,22 @@ const router = createBrowserRouter([
     path: '/login',
     element: <Login />,
   },
+  {
+    path: '/signup',
+    element: <Signup />,
+  },
 ]);
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <Toaster
+        toastOptions={{
+          style: {
+            fontFamily: 'var(--font-noto)',
+          },
+        }}
+      />
       <ReactQueryDevtools position="bottom" />
       <RouterProvider router={router} />
       <GlobalStyles />
