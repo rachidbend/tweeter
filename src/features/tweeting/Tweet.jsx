@@ -2,6 +2,11 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { MdOutlineImage } from 'react-icons/md';
 import { PiGlobeHemisphereWestFill } from 'react-icons/pi';
+import { useAddTweet } from '../../hooks/tweet/useAddTweet';
+import { FaUserGroup } from 'react-icons/fa6';
+import { AnimatePresence, motion } from 'framer-motion';
+import ReplyDropDown from './ReplyDropDown';
+import { useForm } from 'react-hook-form';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -11,6 +16,10 @@ const StyledTweet = styled.div`
   padding: 1.1rem 2rem;
 
   font-family: var(--font-noto);
+
+  @media screen and (max-width: 450px) {
+    width: 100%;
+  }
 `;
 
 const Heading = styled.h3`
@@ -46,12 +55,17 @@ const Input = styled.textarea`
     color: var(--color-grey-400);
   }
 `;
-const Submit = styled.input``;
 
-const Container = styled.div`
-  display: flex;
-  gap: 1.2rem;
+const ContainerForm = styled.form`
+  /* display: flex;
+  gap: 1.2rem; */
+
+  display: grid;
+  column-gap: 1.2rem;
+  grid-template-columns: 4rem 1fr;
+  grid-template-rows: auto auto;
 `;
+
 const InputContainer = styled.div`
   width: 100%;
 `;
@@ -59,6 +73,12 @@ const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  grid-column: 2 / 3;
+
+  @media screen and (max-width: 450px) {
+    grid-column: 1 / 3;
+  }
 `;
 
 const ImageAndVisibilityContainer = styled.div`
@@ -89,25 +109,26 @@ const UploadImage = styled.input`
   visibility: hidden;
 `;
 
-const VisibilityContainer = styled.div`
+const VisibilityButtonContainer = styled.div`
   display: flex;
   align-items: center;
   color: var(--color-grey-400);
   font-size: 1.2rem;
   font-weight: 500;
   letter-spacing: -0.035em;
+  position: relative;
+  transition: color var(--transition-200);
+  &:hover {
+    color: var(--color-blue-100);
+  }
 `;
 
 const GlobeIcon = styled(PiGlobeHemisphereWestFill)`
   height: 2rem;
   width: 2rem;
-  color: var(--color-grey-400);
+  color: inherit;
   cursor: pointer;
   margin-right: 0.55rem;
-  transition: color var(--transition-200);
-  &:hover {
-    color: var(--color-blue-100);
-  }
 `;
 
 const TweetButton = styled.button`
@@ -123,36 +144,92 @@ const TweetButton = styled.button`
   padding: 0.6rem 2.2rem;
   border-radius: 0.4rem;
 
+  transition: background var(--transition-100), color var(--transition-100);
+
   &:hover {
     color: var(--color-blue-100);
     background-color: var(--color-white);
   }
 `;
 
+// const VisibilityText = styled.``
+
 function Tweet() {
   const [isOpen, setIsOpen] = useState(false);
+  // const [content, setContent] = useState('');
+  const [replyChoice, setReplyChoice] = useState('everyone');
+  const { addTweet, isPending, error } = useAddTweet();
+
+  const { register, handleSubmit, reset } = useForm();
+
+  function handleContentChange(e) {
+    setContent(e.target.value);
+  }
+  function handleAddTweet(data) {
+    // const newTweet = {
+    //   reply: 'all',
+    //   content: content,
+    //   image: '',
+    //   hashtags: '',
+    // };
+    // addTweet(newTweet, { onSuccess: () => setContent('') });
+    console.log(data);
+  }
+
+  function onSubmit(data) {
+    const newTweet = {
+      reply: replyChoice,
+      content: data.content,
+      image: data.image,
+      hashtags: [],
+    };
+    // addTweet(newTweet, { onSuccess: () => setContent('') });
+    console.log(newTweet);
+    reset();
+  }
+
+  function handleReplyClick() {
+    setIsOpen(isOpen => !isOpen);
+  }
+
+  function handleChooseReply(choice) {
+    setReplyChoice(choice);
+  }
+
   return (
     <StyledTweet>
       <Heading>Tweet something</Heading>
-      <Container>
+      <ContainerForm onSubmit={handleSubmit(onSubmit)}>
         <Avatar src="/images/avatar.jpg" />
 
-        <InputContainer>
-          <Input type="text" placeholder={`What’s happening?`} />
-          <ButtonsContainer>
-            <ImageAndVisibilityContainer>
-              <Image htmlFor="tweet-image-upload">
-                <ImageIcon />
-              </Image>
-              <UploadImage id="tweet-image-upload" type="file" />
-              <VisibilityContainer>
-                <GlobeIcon /> Everyone can reply
-              </VisibilityContainer>
-            </ImageAndVisibilityContainer>
-            <TweetButton>tweet</TweetButton>
-          </ButtonsContainer>
-        </InputContainer>
-      </Container>
+        <Input
+          // value={content}
+          // onChange={handleContentChange}
+          type="text"
+          placeholder={`What’s happening?`}
+          {...register('content', { required: true })}
+        />
+        <ButtonsContainer>
+          <ImageAndVisibilityContainer>
+            <Image htmlFor="tweet-image-upload">
+              <ImageIcon />
+            </Image>
+            <UploadImage
+              id="tweet-image-upload"
+              type="file"
+              {...register('image')}
+            />
+            <VisibilityButtonContainer onClick={handleReplyClick}>
+              <GlobeIcon /> {replyChoice === 'everyone' && 'Everyone can reply'}
+              {replyChoice === 'following' && 'People you follow can reply'}
+              <AnimatePresence>
+                {isOpen && <ReplyDropDown onChooseReply={handleChooseReply} />}
+              </AnimatePresence>
+            </VisibilityButtonContainer>
+          </ImageAndVisibilityContainer>
+          <TweetButton>tweet</TweetButton>
+        </ButtonsContainer>
+      </ContainerForm>
     </StyledTweet>
   );
 }
