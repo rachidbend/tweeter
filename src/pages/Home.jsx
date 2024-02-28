@@ -11,10 +11,21 @@ const StyledHome = styled.div`
 
   justify-content: center;
   margin-top: 2.5rem;
+
+  @media screen and (max-width: 450px) {
+    gap: 0;
+    padding: 0 1.6rem;
+    grid-template-columns: 1fr;
+    margin-top: 1.469rem;
+  }
 `;
 
 const MainContent = styled.div``;
-const SideContent = styled.div``;
+const SideContent = styled.div`
+  @media screen and (max-width: 450px) {
+    display: none;
+  }
+`;
 
 function Home() {
   return (
