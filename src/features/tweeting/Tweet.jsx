@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { MdOutlineImage } from 'react-icons/md';
 import { PiGlobeHemisphereWestFill } from 'react-icons/pi';
 import { useAddTweet } from '../../hooks/tweet/useAddTweet';
-import { FaUserGroup } from 'react-icons/fa6';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import ReplyDropDown from './ReplyDropDown';
 import { useForm } from 'react-hook-form';
 
@@ -57,18 +56,12 @@ const Input = styled.textarea`
 `;
 
 const ContainerForm = styled.form`
-  /* display: flex;
-  gap: 1.2rem; */
-
   display: grid;
   column-gap: 1.2rem;
   grid-template-columns: 4rem 1fr;
   grid-template-rows: auto auto;
 `;
 
-const InputContainer = styled.div`
-  width: 100%;
-`;
 const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -140,41 +133,31 @@ const TweetButton = styled.button`
   color: var(--color-white);
   background-color: var(--color-blue-100);
   border: 0.2rem solid var(--color-blue-100);
-  cursor: pointer;
   padding: 0.6rem 2.2rem;
   border-radius: 0.4rem;
-
+  cursor: pointer;
   transition: background var(--transition-100), color var(--transition-100);
 
   &:hover {
     color: var(--color-blue-100);
     background-color: var(--color-white);
   }
+
+  &:disabled {
+    cursor: no-drop;
+  }
 `;
 
-// const VisibilityText = styled.``
+/********************
+Add hashtag features
+********************/
 
 function Tweet() {
   const [isOpen, setIsOpen] = useState(false);
-  // const [content, setContent] = useState('');
   const [replyChoice, setReplyChoice] = useState('everyone');
-  const { addTweet, isPending, error } = useAddTweet();
+  const { addTweet, isPending } = useAddTweet();
 
   const { register, handleSubmit, reset } = useForm();
-
-  function handleContentChange(e) {
-    setContent(e.target.value);
-  }
-  function handleAddTweet(data) {
-    // const newTweet = {
-    //   reply: 'all',
-    //   content: content,
-    //   image: '',
-    //   hashtags: '',
-    // };
-    // addTweet(newTweet, { onSuccess: () => setContent('') });
-    console.log(data);
-  }
 
   function onSubmit(data) {
     const newTweet = {
@@ -183,9 +166,7 @@ function Tweet() {
       image: data.image,
       hashtags: [],
     };
-    // addTweet(newTweet, { onSuccess: () => setContent('') });
-    console.log(newTweet);
-    reset();
+    addTweet(newTweet, { onSuccess: () => reset() });
   }
 
   function handleReplyClick() {
@@ -203,8 +184,6 @@ function Tweet() {
         <Avatar src="/images/avatar.jpg" />
 
         <Input
-          // value={content}
-          // onChange={handleContentChange}
           type="text"
           placeholder={`What’s happening?`}
           {...register('content', { required: true })}
@@ -227,7 +206,7 @@ function Tweet() {
               </AnimatePresence>
             </VisibilityButtonContainer>
           </ImageAndVisibilityContainer>
-          <TweetButton>tweet</TweetButton>
+          <TweetButton disabled={isPending}>tweet</TweetButton>
         </ButtonsContainer>
       </ContainerForm>
     </StyledTweet>
