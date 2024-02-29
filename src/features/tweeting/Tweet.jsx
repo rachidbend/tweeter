@@ -148,6 +148,10 @@ const TweetButton = styled.button`
   }
 `;
 
+/********************
+Add hashtag features
+********************/
+
 function Tweet() {
   const [isOpen, setIsOpen] = useState(false);
   const [replyChoice, setReplyChoice] = useState('everyone');
