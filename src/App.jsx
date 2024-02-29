@@ -13,6 +13,7 @@ import { Toaster } from 'react-hot-toast';
 
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import UserProfile from './features/user/UserProfile';
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,11 @@ const router = createBrowserRouter([
       {
         path: 'bookmarks',
         element: <Bookmarks key={'bookmarks-page'} />,
+      },
+      // view other accounts
+      {
+        path: 'user/:id',
+        element: <UserProfile key={'user-profile-page'} />,
       },
       // user pages
       {
