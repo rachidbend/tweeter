@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Tweet from '../features/tweeting/Tweet';
+import { Link } from 'react-router-dom';
 
 const StyledHome = styled.div`
   min-height: 100vh;
@@ -32,6 +33,7 @@ function Home() {
     <StyledHome>
       <MainContent>
         <Tweet />
+        <Link to={'/user/b9628375-9682-4879-a408-45e7e2b8b9db'}>go</Link>
       </MainContent>
       <SideContent></SideContent>
     </StyledHome>
