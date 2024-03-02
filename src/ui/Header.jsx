@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import Nav from './Nav';
 import UserHeader from './UserHeader';
 import { Link } from 'react-router-dom';
+import Spinner from './Spinner';
+import { useGetUserData } from '../hooks/user/useGetUserData';
+import { useUser } from '../hooks/authHooks/useUser';
 
 const StyledHeader = styled.div`
   display: flex;
@@ -13,7 +16,8 @@ const StyledHeader = styled.div`
   width: 100%;
   padding: 0rem 8rem 0rem 7.2rem;
   background-color: var(--color-white);
-
+  z-index: 9999;
+  box-shadow: var(--shadow-200);
   @media screen and (max-width: 450px) {
     padding: 0rem 1.664rem 0rem 1.606rem;
     box-shadow: var(--shadow-200);

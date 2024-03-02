@@ -5,6 +5,9 @@ import Spinner from '../../ui/Spinner';
 import toast from 'react-hot-toast';
 import { getUserData } from '../../services/apiUser';
 import { IoMdPersonAdd } from 'react-icons/io';
+import Tweet from './../../ui/Tweet';
+import { useUser } from '../../hooks/authHooks/useUser';
+import { IconUserOutline } from '../../styles/Icons';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -17,6 +20,11 @@ const BackgroundImage = styled.img`
   height: 29.751rem;
   object-fit: cover;
   object-position: center;
+`;
+const BackgroundImagePlaceHolder = styled.div`
+  width: 100%;
+  height: 29.751rem;
+  background-color: var(--color-grey-400);
 `;
 
 const PageContainer = styled.div`
@@ -61,7 +69,7 @@ const UserAvatar = styled.img`
   margin-bottom: -8.161rem;
   object-fit: cover;
   object-position: center;
-
+  background-color: var(--color-grey-500);
   @media screen and (max-width: 450px) {
     flex-direction: column;
     width: 12.243rem;
@@ -72,6 +80,31 @@ const UserAvatar = styled.img`
     border: 0.3rem solid var(--color-white);
   }
 `;
+
+const UserAvatarPlaceHolder = styled(IconUserOutline)`
+  display: block;
+  width: 16rem;
+  height: 16rem;
+  color: var(--color-white);
+  border-radius: 0.8rem;
+  border: 0.4rem solid var(--color-white);
+  box-shadow: var(--shadow-100);
+  position: relative;
+  top: -8.161rem;
+  margin-bottom: -8.161rem;
+
+  background-color: var(--color-grey-500);
+  @media screen and (max-width: 450px) {
+    flex-direction: column;
+    width: 12.243rem;
+    height: 12.243rem;
+    margin: 0 auto;
+    top: -9.6rem;
+    margin-bottom: -8.161rem;
+    border: 0.3rem solid var(--color-white);
+  }
+`;
+
 const UserName = styled.p`
   font-family: var(--font-poppings);
   font-size: 2.4rem;
@@ -113,7 +146,7 @@ const FollowButton = styled.button`
   justify-content: center;
   align-items: center;
   gap: 0.4rem;
-
+  margin-left: auto;
   transition: background var(--transition-200), color var(--transition-200);
 
   &:hover {
@@ -132,14 +165,8 @@ const FollowIcon = styled(IoMdPersonAdd)`
   color: inherit;
 `;
 
-const PlaceHolder = styled.div`
-  width: 100%;
-  height: 10rem;
-  background-color: red;
-`;
-
 const InfoContainer = styled.div`
-  width: 100%;
+  /* width: 100%; */
 `;
 
 const UserAndStatContainer = styled.div`
@@ -171,18 +198,71 @@ const StatSpan = styled.span`
   color: var(--color-grey-300);
 `;
 
+// MainContianer
+
+const ContentContainer = styled.div`
+  display: grid;
+  grid-template-columns: 30.4rem 1fr;
+  gap: 2.4rem;
+  align-items: start;
+
+  @media screen and (max-width: 450px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Filters = styled.ul`
+  background-color: var(--color-white);
+  border-radius: 0.8rem;
+  box-shadow: var(--shadow-100);
+
+  padding: 2.6rem 2rem 3.1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.9rem;
+`;
+
+const Filter = styled.li`
+  font-family: var(--font-poppings);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  list-style: none;
+
+  color: var(--color-grey-300);
+`;
+
+const TweetsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3.524rem;
+`;
+
 function UserProfile() {
   const { id } = useParams();
+  const { user, isLoadingUser } = useUser();
+  const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
+    useGetUserData(user.id);
   const { userProfile, isLoading, error } = useGetUserData(id);
-  if (isLoading) return <Spinner />;
+  if (isLoading || isLoadingUser || isLoadingCurrentUser) return <Spinner />;
   if (error) toast.error(error.message);
-
+  console.log(currentUser);
   return (
     <StyledUserProfile>
-      <BackgroundImage src={userProfile.background_image} />
+      {userProfile.background_image ? (
+        <BackgroundImage src={userProfile.background_image} />
+      ) : (
+        <BackgroundImagePlaceHolder></BackgroundImagePlaceHolder>
+      )}
+
       <PageContainer>
         <UserInfoContainer>
-          <UserAvatar src={userProfile.avatar_image} />
+          {userProfile.avatar_image ? (
+            <UserAvatar src={userProfile.avatar_image} />
+          ) : (
+            <UserAvatarPlaceHolder />
+          )}
+
           <InfoContainer>
             <UserAndStatContainer>
               <UserName>{userProfile.user_name}</UserName>
@@ -208,7 +288,27 @@ function UserProfile() {
             <FollowIcon /> Follow
           </FollowButton>
         </UserInfoContainer>
-        <PlaceHolder></PlaceHolder>
+        <ContentContainer>
+          <Filters>
+            <Filter>Tweets</Filter>
+            <Filter>Tweets & replies</Filter>
+            <Filter>Media</Filter>
+            <Filter>Likes</Filter>
+          </Filters>
+          <TweetsContainer>
+            {userProfile.tweets.map(tweet => (
+              <Tweet
+                key={tweet.id}
+                user={{
+                  userAvatar: userProfile.avatar_image,
+                  userName: userProfile.user_name,
+                }}
+                currentUserAvatar={currentUser.avatar_image}
+                tweet={tweet}
+              />
+            ))}
+          </TweetsContainer>
+        </ContentContainer>
       </PageContainer>
     </StyledUserProfile>
   );

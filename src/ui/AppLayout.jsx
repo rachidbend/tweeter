@@ -12,6 +12,7 @@ const StyledAppLayout = styled.div`
   padding-top: 6.831rem;
   padding-bottom: 6.831rem;
   @media screen and (max-width: 450px) {
+    padding-bottom: 8.6rem;
   }
 `;
 

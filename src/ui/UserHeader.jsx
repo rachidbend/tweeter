@@ -3,6 +3,9 @@ import { TiArrowSortedDown } from 'react-icons/ti';
 import { useState } from 'react';
 import UserDropDown from './UserDropDown';
 import { AnimatePresence } from 'framer-motion';
+import { useUser } from '../hooks/authHooks/useUser';
+import { useGetUserData } from '../hooks/user/useGetUserData';
+import Spinner from './Spinner';
 
 const StyledUserHeader = styled.div`
   display: flex;
@@ -25,6 +28,8 @@ const Avatar = styled.img`
   border-radius: 0.8rem;
   overflow: hidden;
   margin-right: 1.1rem;
+  object-fit: cover;
+  object-position: center;
 
   @media screen and (max-width: 450px) {
     margin-right: 0;
@@ -52,11 +57,15 @@ const ArrowDown = styled(TiArrowSortedDown)`
 
 function UserHeader() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, isLoadingUser } = useUser();
+  const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
+    useGetUserData(user.id);
 
+  if (isLoadingCurrentUser || isLoadingUser) return <Spinner />;
   return (
     <StyledUserHeader onClick={() => setIsOpen(isOpen => !isOpen)}>
-      <Avatar src="/images/avatar.jpg" alt="user avatar" />
-      <Username>Xanthe neal</Username>
+      <Avatar src={currentUser.avatar_image} alt="user avatar" />
+      <Username>{currentUser.user_name}</Username>
       <ArrowDown />
 
       <AnimatePresence>{isOpen && <UserDropDown />}</AnimatePresence>

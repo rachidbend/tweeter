@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { MdOutlineImage } from 'react-icons/md';
+
 import { PiGlobeHemisphereWestFill } from 'react-icons/pi';
 import { useAddTweet } from '../../hooks/tweet/useAddTweet';
 import { AnimatePresence } from 'framer-motion';
 import ReplyDropDown from './ReplyDropDown';
 import { useForm } from 'react-hook-form';
+import { IconImageOutline } from '../../styles/Icons';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -85,7 +86,7 @@ const Image = styled.label`
 
   margin-right: 0.967rem;
 `;
-const ImageIcon = styled(MdOutlineImage)`
+const ImageIcon = styled(IconImageOutline)`
   height: 2rem;
   width: 2rem;
   color: var(--color-grey-400);

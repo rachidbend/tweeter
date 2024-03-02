@@ -23,6 +23,7 @@ export const GlobalStyles = styled.createGlobalStyle`
     --color-grey-400: hsla(0, 0%, 74%, 1);
     --color-grey-500: hsla(0, 0%, 88%, 1); /* borders */
     --color-grey-600: hsla(0, 0%, 95%, 1); /* page background */
+    --color-grey-700: hsla(0, 0%, 98%, 1); /* comment input background */
 
     --font-poppings: 'Poppins', sans-serif; /*  600, 500 */
     --font-noto: 'Noto Sans', sans-serif; /*  700, 600, 500, 400 */
@@ -32,6 +33,7 @@ export const GlobalStyles = styled.createGlobalStyle`
 
     --transition-100: 0.3s ease;
     --transition-200: 0.2s ease;
+    --transition-300: 0.26s ease;
   }
 
   html {
