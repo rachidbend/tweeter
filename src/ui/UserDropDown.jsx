@@ -14,6 +14,7 @@ const StyledUserDropDown = styled(motion.div)`
   border: 0.1rem solid var(--color-grey-500);
   border-radius: 1.2rem;
   background-color: var(--color-white);
+  display: block;
 `;
 
 const List = styled.ul`
@@ -101,14 +102,17 @@ function UserDropDown() {
       initial={{
         opacity: 0,
         y: -20,
+        zIndex: 9999,
       }}
       animate={{
         opacity: 1,
         y: 1,
+        zIndex: 9999,
       }}
       exit={{
         opacity: 0,
         y: -20,
+        zIndex: 9999,
         transition: {
           type: 'tween',
           duration: 0.2,

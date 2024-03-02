@@ -43,6 +43,7 @@ const router = createBrowserRouter([
       {
         path: 'user/:id',
         element: <UserProfile key={'user-profile-page'} />,
+        // loader: userProfileLoader(queryClient),
       },
       // user pages
       {
