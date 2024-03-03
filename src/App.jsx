@@ -1,4 +1,8 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from 'react-router-dom';
 import Nav from './ui/Nav';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -19,13 +23,16 @@ const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
-    path: '/',
     element: (
       <ProtectedRoutes>
         <AppLayout />
       </ProtectedRoutes>
     ),
     children: [
+      {
+        path: '/',
+        element: <Navigate to={'/home'} />,
+      },
       // main pages
       {
         path: 'home',
