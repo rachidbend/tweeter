@@ -25,6 +25,23 @@ export const GlobalStyles = styled.createGlobalStyle`
     --color-grey-600: hsla(0, 0%, 95%, 1); /* page background */
     --color-grey-700: hsla(0, 0%, 98%, 1); /* comment input background */
 
+    /* ************************************************* */
+    /* --color-blue-100: hsla(214, 84%, 56%, 1);
+    --color-blue-200: hsla(202, 71%, 52%, 1);
+    --color-green-100: hsla(145, 63%, 42%, 1);
+    --color-red-100: hsla(0, 79%, 63%, 1);
+
+    --color-white: hsla(0, 0%, 10%, 1);
+    --color-black: hsla(0, 0%, 90%, 1);
+
+    --color-grey-100: hsla(0, 0%, 80%, 1);
+    --color-grey-200: hsla(0, 0%, 61%, 1);
+    --color-grey-300: hsla(0, 0%, 51%, 1);
+    --color-grey-400: hsla(0, 0%, 44%, 1);
+    --color-grey-500: hsla(0, 0%, 28%, 1);
+    --color-grey-600: hsla(0, 0%, 20%, 1);
+    --color-grey-700: hsla(0, 0%, 15%, 1); */
+
     --font-poppings: 'Poppins', sans-serif; /*  600, 500 */
     --font-noto: 'Noto Sans', sans-serif; /*  700, 600, 500, 400 */
 
@@ -56,4 +73,35 @@ all media queries
     @media screen and (min-width: 1600px) {
 
   }
+
+
+  CREATE OR REPLACE FUNCTION add_follower(target_id INT, new_follower JSON)
+RETURNS VOID AS $$
+DECLARE
+    json_column_name TEXT;
+    new_array JSON
+BEGIN
+    -- Assuming the table name is "your_table_name" and the JSON column name is "json_column"
+    json_column_name := 'followers';
+new_array := jsonb_build_array(new_follower) || json_column_name 
+    -- Update the JSON column by appending the new item to the existing JSON array
+    UPDATE profiles
+    SET json_column_name = new_array
+    WHERE id = target_id;
+END;
+$$ LANGUAGE plpgsql;
+*/
+
+/*
+  CREATE OR REPLACE FUNCTION add_follower(target_id uuid, new_follower JSON)
+RETURNS VOID AS $$
+
+BEGIN
+ 
+    -- Update the JSON column by appending the new item to the existing JSON array
+    UPDATE profiles
+    SET followers = json_build_array(new_follower) || followers
+    WHERE id = target_id;
+END;
+$$ LANGUAGE plpgsql;
 */

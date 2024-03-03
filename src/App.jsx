@@ -79,6 +79,8 @@ function App() {
         toastOptions={{
           style: {
             fontFamily: 'var(--font-noto)',
+            fontSize: '1.4rem',
+            zIndex: '999999',
           },
         }}
       />

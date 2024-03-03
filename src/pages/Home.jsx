@@ -33,7 +33,13 @@ function Home() {
     <StyledHome>
       <MainContent>
         <Tweet />
-        <Link to={'/user/b9628375-9682-4879-a408-45e7e2b8b9db'}>go</Link>
+        <Link to={'/user/b9628375-9682-4879-a408-45e7e2b8b9db'}>
+          Daniel Jensen
+        </Link>
+        <br />
+        <Link to={'/user/132c3b53-0015-4992-8dea-990990d6a93b'}>
+          Xanthe Neal
+        </Link>
       </MainContent>
       <SideContent></SideContent>
     </StyledHome>
