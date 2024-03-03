@@ -6,6 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useUser } from '../hooks/authHooks/useUser';
 import { useGetUserData } from '../hooks/user/useGetUserData';
 import Spinner from './Spinner';
+import AvatarPlaceHolder from './AvatarPlaceHolder';
 
 const StyledUserHeader = styled.div`
   display: flex;
@@ -27,7 +28,7 @@ const Avatar = styled.img`
   width: 3.2rem;
   border-radius: 0.8rem;
   overflow: hidden;
-  margin-right: 1.1rem;
+
   object-fit: cover;
   object-position: center;
 
@@ -40,6 +41,7 @@ const Username = styled.p`
   font-family: var(--font-noto);
   font-size: 1.2rem;
   margin-right: 1.94rem;
+  margin-left: 1.1rem;
   font-weight: 700;
   color: var(--color-grey-100);
   text-transform: capitalize;
@@ -64,7 +66,12 @@ function UserHeader() {
   if (isLoadingCurrentUser || isLoadingUser) return <Spinner />;
   return (
     <StyledUserHeader onClick={() => setIsOpen(isOpen => !isOpen)}>
-      <Avatar src={currentUser.avatar_image} alt="user avatar" />
+      {currentUser.avatar_image ? (
+        <Avatar src={currentUser.avatar_image} alt="user avatar" />
+      ) : (
+        <AvatarPlaceHolder width={'3.2rem'} />
+      )}
+
       <Username>{currentUser.user_name}</Username>
       <ArrowDown />
 

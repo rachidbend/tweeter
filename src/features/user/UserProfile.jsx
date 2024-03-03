@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import toast from 'react-hot-toast';
-import Tweet from './../../ui/Tweet';
 import { useUser } from '../../hooks/authHooks/useUser';
 import UserHeader from '../user/UserHeader';
 import UserProfileFilter from './UserProfileFilter';
+import TweetView from '../../ui/TweetView';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -93,7 +93,7 @@ function UserProfile() {
           <UserProfileFilter />
           <TweetsContainer>
             {tweets.map(tweet => (
-              <Tweet
+              <TweetView
                 key={tweet.id}
                 user={{
                   userAvatar: avatar_image,
