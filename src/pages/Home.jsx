@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import Tweet from '../features/tweeting/Tweet';
 import { Link } from 'react-router-dom';
+import PublishTweet from '../features/tweeting/PublishTweet';
 
 const StyledHome = styled.div`
   min-height: 100vh;
@@ -32,7 +32,7 @@ function Home() {
   return (
     <StyledHome>
       <MainContent>
-        <Tweet />
+        <PublishTweet />
         <Link to={'/user/b9628375-9682-4879-a408-45e7e2b8b9db'}>
           Daniel Jensen
         </Link>

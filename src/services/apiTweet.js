@@ -65,6 +65,17 @@ export async function getTweets(userId) {
   return tweets;
 }
 
+export async function saveTweet({ oldBookmarks, newBookmark, userId }) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ bookmarks: [newBookmark, ...oldBookmarks] })
+    .eq('id', userId)
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 const tweet = {
   id: 'random id',
   created_at: 'current time',

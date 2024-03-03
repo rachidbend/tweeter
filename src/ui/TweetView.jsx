@@ -8,6 +8,8 @@ import {
   IconSync,
 } from '../styles/Icons';
 import { useForm } from 'react-hook-form';
+import { Months } from '../helpers/variables';
+import AvatarPlaceHolder from './AvatarPlaceHolder';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -30,7 +32,8 @@ const Avatar = styled.img`
   object-fit: cover;
   object-position: center;
   border-radius: 0.8rem;
-
+`;
+const AvatarContainer = styled.div`
   grid-row: 1/3;
 `;
 const UserName = styled.p`
@@ -154,6 +157,7 @@ const UserAvatar = styled.img`
   object-fit: cover;
   object-position: center;
 `;
+
 const CommentInput = styled.input`
   height: 100%;
   width: 100%;
@@ -215,21 +219,9 @@ const CommentContainer = styled.form`
 // section that includes some of the most liked comments
 const Comments = styled.div``;
 
-const Months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-function Tweet({ currentUserAvatar, user, tweet }) {
+// start with the save functionality
+
+function TweetView({ currentUserAvatar, user, tweet }) {
   // userAvatar: userProfile.avatar_image,
   // userName: userProfile.user_name,
   const publishingData = new Date(tweet.created_at);
@@ -263,10 +255,17 @@ function Tweet({ currentUserAvatar, user, tweet }) {
         some of the commnets on the tweet
         */}
       <Header>
-        <Avatar
-          src={user.userAvatar}
-          alt={`avatar image of ${user.userName}`}
-        />
+        <AvatarContainer>
+          {user.userAvatar ? (
+            <Avatar
+              src={user.userAvatar}
+              alt={`avatar image of ${user.userName}`}
+            />
+          ) : (
+            <AvatarPlaceHolder />
+          )}
+        </AvatarContainer>
+
         <UserName>{user.userName}</UserName>
         <PublishTime>{publishingText}</PublishTime>
       </Header>
@@ -298,7 +297,12 @@ function Tweet({ currentUserAvatar, user, tweet }) {
         </Button>
       </ButtonsContainer>
       <InputContainer>
-        <UserAvatar src={currentUserAvatar} />
+        {currentUserAvatar ? (
+          <UserAvatar src={currentUserAvatar} />
+        ) : (
+          <AvatarPlaceHolder />
+        )}
+
         <CommentContainer onSubmit={handleSubmit(onSubmit)}>
           <CommentInput
             placeholder="Tweet your reply"
@@ -321,4 +325,4 @@ function Tweet({ currentUserAvatar, user, tweet }) {
   );
 }
 
-export default Tweet;
+export default TweetView;

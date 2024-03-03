@@ -153,7 +153,7 @@ const TweetButton = styled.button`
 Add hashtag features
 ********************/
 
-function Tweet() {
+function PublishTweet() {
   const [isOpen, setIsOpen] = useState(false);
   const [replyChoice, setReplyChoice] = useState('everyone');
   const { addTweet, isPending } = useAddTweet();
@@ -214,4 +214,4 @@ function Tweet() {
   );
 }
 
-export default Tweet;
+export default PublishTweet;
