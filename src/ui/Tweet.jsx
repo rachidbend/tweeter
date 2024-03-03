@@ -56,6 +56,7 @@ const TextContent = styled.p`
   line-height: 2.2rem;
   letter-spacing: -0.035em;
   margin-bottom: 2rem;
+  color: var(--color-grey-200);
 `;
 const ImageContent = styled.img`
   width: 100%;
@@ -167,9 +168,15 @@ const CommentInput = styled.input`
   line-height: 19px;
   letter-spacing: -0.035em;
   color: var(--color-grey-200);
-
+  outline: none;
+  transition: border var(--transition-2 00);
   &::placeholder {
     color: var(--color-grey-400);
+  }
+
+  &:hover,
+  &:focus {
+    border: 0.1rem solid var(--color-blue-100);
   }
 `;
 const ImageInputContainer = styled.div``;
