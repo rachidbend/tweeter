@@ -7,6 +7,10 @@ import { AnimatePresence } from 'framer-motion';
 import ReplyDropDown from './ReplyDropDown';
 import { useForm } from 'react-hook-form';
 import { IconImageOutline } from '../../styles/Icons';
+import { useUser } from '../../hooks/authHooks/useUser';
+import { useGetUserData } from '../../hooks/user/useGetUserData';
+import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
+import Spinner from '../../ui/Spinner';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -35,6 +39,8 @@ const Heading = styled.h3`
 const Avatar = styled.img`
   height: 4rem;
   width: 4rem;
+  object-fit: cover;
+  object-position: center;
   border-radius: 0.8rem;
 `;
 const Input = styled.textarea`
@@ -160,6 +166,9 @@ function PublishTweet() {
 
   const { register, handleSubmit, reset } = useForm();
 
+  const { user } = useUser();
+  const { userProfile, isLoading } = useGetUserData(user.id);
+
   function onSubmit(data) {
     const newTweet = {
       reply: replyChoice,
@@ -178,11 +187,17 @@ function PublishTweet() {
     setReplyChoice(choice);
   }
 
+  if (isLoading) return <Spinner />;
+
   return (
     <StyledTweet>
       <Heading>Tweet something</Heading>
       <ContainerForm onSubmit={handleSubmit(onSubmit)}>
-        <Avatar src="/images/avatar.jpg" />
+        {userProfile?.avatar_image ? (
+          <Avatar src={userProfile?.avatar_image} />
+        ) : (
+          <AvatarPlaceHolder />
+        )}
 
         <Input
           type="text"

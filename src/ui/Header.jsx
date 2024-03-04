@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import Nav from './Nav';
 import UserHeader from './UserHeader';
 import { Link } from 'react-router-dom';
-import Spinner from './Spinner';
-import { useGetUserData } from '../hooks/user/useGetUserData';
-import { useUser } from '../hooks/authHooks/useUser';
 
 const StyledHeader = styled.div`
   display: flex;
@@ -30,6 +27,7 @@ const HomeLink = styled(Link)`
   align-items: center;
   height: 100%;
 `;
+
 const Logo = styled.img`
   @media screen and (max-width: 450px) {
     display: none;

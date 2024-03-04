@@ -10,6 +10,12 @@ import {
 import { useForm } from 'react-hook-form';
 import { Months } from '../helpers/variables';
 import AvatarPlaceHolder from './AvatarPlaceHolder';
+import { useSaveTweet } from '../hooks/tweet/useSaveTweet';
+import { useGetUserData } from '../hooks/user/useGetUserData';
+import { useUser } from '../hooks/authHooks/useUser';
+import { useRemoveTweetFromBookmarks } from '../hooks/tweet/useRemoveTweetFromBookmarks';
+import { useNotifyUserOfSave } from '../hooks/tweet/useNotifyUserOfSave';
+import { useNotifyUserOfUnsave } from '../hooks/tweet/useNotifyUserOfUnsave';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -93,6 +99,7 @@ const ButtonsContainer = styled.div`
   border-bottom: 0.1rem solid var(--color-grey-600);
   margin-bottom: 0.9rem;
 `;
+
 const Button = styled.button`
   font-family: var(--font-noto);
   width: 100%;
@@ -100,7 +107,11 @@ const Button = styled.button`
   font-weight: 500;
   letter-spacing: -0.035em;
   padding: 1.1rem 0;
-  color: var(--color-grey-200);
+  color: ${props =>
+    props.$isSaved === 'true'
+      ? 'var(--color-blue-100)'
+      : 'var(--color-grey-200)'};
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -173,7 +184,7 @@ const CommentInput = styled.input`
   letter-spacing: -0.035em;
   color: var(--color-grey-200);
   outline: none;
-  transition: border var(--transition-2 00);
+  transition: border var(--transition-200);
   &::placeholder {
     color: var(--color-grey-400);
   }
@@ -216,6 +227,7 @@ const UploadImage = styled.input`
 const CommentContainer = styled.form`
   position: relative;
 `;
+
 // section that includes some of the most liked comments
 const Comments = styled.div``;
 
@@ -229,6 +241,8 @@ function TweetView({ currentUserAvatar, user, tweet }) {
     Months[publishingData.getMonth()]
   } at ${publishingData.getHours()}:${publishingData.getMinutes()}`;
 
+  const { user: currentUser } = useUser();
+  const { userProfile } = useGetUserData(currentUser.id);
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = data => {
@@ -236,6 +250,27 @@ function TweetView({ currentUserAvatar, user, tweet }) {
     reset();
   };
 
+  const { saveTweet } = useSaveTweet();
+  const { notifyUserOfSave } = useNotifyUserOfSave();
+  const { removeFromSaves } = useRemoveTweetFromBookmarks();
+  const { notifyUserOfUnsave } = useNotifyUserOfUnsave();
+  function handleSave() {
+    saveTweet({ newBookmark: tweet });
+
+    notifyUserOfSave({ targetId: tweet.publisher_id, tweetId: tweet.id });
+  }
+  function handleRemoveSave() {
+    removeFromSaves({ tweet: tweet });
+    notifyUserOfUnsave({ targetId: tweet.publisher_id, tweetId: tweet.id });
+  }
+
+  // states
+  // if the current tweet is saved by the user
+  const isSaved = userProfile.bookmarks.filter(
+    bookmark => bookmark.id === tweet.id
+  );
+
+  // console.log(isSaved.length > 0 ? true : false);
   return (
     <StyledTweet>
       {/*
@@ -291,9 +326,12 @@ function TweetView({ currentUserAvatar, user, tweet }) {
           <LikeIcon />
           <ButtonText>Like</ButtonText>
         </Button>
-        <Button>
+        <Button
+          onClick={isSaved.length > 0 ? handleRemoveSave : handleSave}
+          $isSaved={isSaved.length > 0 ? 'true' : 'false'}
+        >
           <SaveIcon />
-          <ButtonText>Save</ButtonText>
+          <ButtonText>{isSaved.length > 0 ? 'Saved' : 'Save'}</ButtonText>
         </Button>
       </ButtonsContainer>
       <InputContainer>

@@ -1,35 +1,34 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { bookmarkTweet } from '../../services/apiTweet';
+import { removeTweetFromBookmarks } from '../../services/apiTweet';
 import { useUser } from '../authHooks/useUser';
 import { useGetUserData } from '../user/useGetUserData';
 import toast from 'react-hot-toast';
 
-export function useSaveTweet() {
+export function useRemoveTweetFromBookmarks() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const { userProfile } = useGetUserData(user.id);
-
   const {
-    mutate: saveTweet,
+    mutate: removeFromSaves,
     isPending,
     error,
   } = useMutation({
-    mutationFn: ({ newBookmark }) =>
-      bookmarkTweet({
+    mutationFn: ({ tweet }) =>
+      removeTweetFromBookmarks({
         oldBookmarks: userProfile.bookmarks,
-        newBookmark,
+        tweet,
         userId: user.id,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profile', user.id]);
+      queryClient.invalidateQueries(['profiles']);
     },
     onSuccess: () => {
-      toast.success('saved the tweet!');
+      toast.success('removed from bookmarks!');
     },
     onError: error => {
       toast.error(error.message);
     },
   });
 
-  return { saveTweet, isPending, error };
+  return { removeFromSaves, isPending, error };
 }
