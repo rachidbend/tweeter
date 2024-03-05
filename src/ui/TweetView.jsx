@@ -16,6 +16,10 @@ import { useUser } from '../hooks/authHooks/useUser';
 import { useRemoveTweetFromBookmarks } from '../hooks/tweet/useRemoveTweetFromBookmarks';
 import { useNotifyUserOfSave } from '../hooks/tweet/useNotifyUserOfSave';
 import { useNotifyUserOfUnsave } from '../hooks/tweet/useNotifyUserOfUnsave';
+import { useLikeTweet } from '../hooks/tweet/useLikeTweet';
+import { useRemoveTweetFromLikes } from '../hooks/tweet/useRemoveTweetFromLikes';
+import { useNotifyUserOfLike } from '../hooks/tweet/useNotifyUserOfLike';
+import { useNotifyUserOfUnlike } from '../hooks/tweet/useNotifyUserOfUnlike';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -108,8 +112,12 @@ const Button = styled.button`
   letter-spacing: -0.035em;
   padding: 1.1rem 0;
   color: ${props =>
-    props.$isSaved === 'true'
+    props.$isSaved === true
       ? 'var(--color-blue-100)'
+      : props.$isLiked === true
+      ? 'var(--color-red-100)'
+      : props.$isRetweeted === true
+      ? 'var(--color-green-100)'
       : 'var(--color-grey-200)'};
 
   display: flex;
@@ -250,6 +258,7 @@ function TweetView({ currentUserAvatar, user, tweet }) {
     reset();
   };
 
+  // Bookmark handlers
   const { saveTweet } = useSaveTweet();
   const { notifyUserOfSave } = useNotifyUserOfSave();
   const { removeFromSaves } = useRemoveTweetFromBookmarks();
@@ -264,12 +273,30 @@ function TweetView({ currentUserAvatar, user, tweet }) {
     notifyUserOfUnsave({ targetId: tweet.publisher_id, tweetId: tweet.id });
   }
 
+  // Like handlers
+  const { likeTweet } = useLikeTweet();
+  const { notifyUserOfLike } = useNotifyUserOfLike();
+  const { removeTweetFromLikes } = useRemoveTweetFromLikes();
+  const { notifyUserOfUnlike } = useNotifyUserOfUnlike();
+
+  function handleLike() {
+    likeTweet({ newLike: tweet });
+    notifyUserOfLike({ targetId: tweet.publisher_id, tweetId: tweet.id });
+  }
+
+  function handleUnlike() {
+    removeTweetFromLikes({ tweet: tweet });
+    notifyUserOfUnlike({ targetId: tweet.publisher_id, tweetId: tweet.id });
+  }
+
   // states
   // if the current tweet is saved by the user
-  const isSaved = userProfile.bookmarks.filter(
+  const isSaved = userProfile?.bookmarks?.filter(
     bookmark => bookmark.id === tweet.id
   );
+  const isLiked = userProfile?.likes?.filter(like => like.id === tweet.id);
 
+  // console.log(isLiked);
   // console.log(isSaved.length > 0 ? true : false);
   return (
     <StyledTweet>
@@ -309,6 +336,7 @@ function TweetView({ currentUserAvatar, user, tweet }) {
         {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
       </Content>
       <StatContainer>
+        <Stat>{tweet.likes.length} Likes</Stat>
         <Stat>{tweet.comments.length} Comment</Stat>
         <Stat>{tweet.retweets.length} Retweets</Stat>
         <Stat>{tweet.saves.length} Saved</Stat>
@@ -322,13 +350,16 @@ function TweetView({ currentUserAvatar, user, tweet }) {
           <RetweetIcon />
           <ButtonText>Retweet</ButtonText>
         </Button>
-        <Button>
+        <Button
+          onClick={isLiked.length > 0 ? handleUnlike : handleLike}
+          $isLiked={isLiked.length > 0 ? true : false}
+        >
           <LikeIcon />
-          <ButtonText>Like</ButtonText>
+          <ButtonText>{isLiked.length > 0 ? 'Liked' : 'Like'}</ButtonText>
         </Button>
         <Button
           onClick={isSaved.length > 0 ? handleRemoveSave : handleSave}
-          $isSaved={isSaved.length > 0 ? 'true' : 'false'}
+          $isSaved={isSaved.length > 0 ? true : false}
         >
           <SaveIcon />
           <ButtonText>{isSaved.length > 0 ? 'Saved' : 'Save'}</ButtonText>
