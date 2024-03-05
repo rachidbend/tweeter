@@ -207,7 +207,7 @@ export async function retweet({ oldTweets, newTweet, userId, tweet }) {
   const date = new Date();
   // the retweet is simply a repost of the original retweet, and not a quote for now (5/3/2024)
   const retweet = {
-    id: `${userId}-${Date.now()}-retweet`,
+    id: newTweet.id,
     publisher_id: userId,
     created_at: date,
     visibility: 'all',
@@ -228,6 +228,83 @@ export async function retweet({ oldTweets, newTweet, userId, tweet }) {
     .update({ tweets: [retweet, ...oldTweets] })
     .eq('id', userId)
     .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function getRetweetsIds(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('retweets')
+    .eq('id', userId);
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function addRetweetId({ tweetId, oldRetweets, userId }) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ retweets: [tweetId, ...oldRetweets] })
+    .eq('id', userId);
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function removeRetweetId({ retweetId, oldRetweets, userId }) {
+  const filteredRetweets = oldRetweets?.filter(id => id !== retweetId);
+  console.log(oldRetweets);
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ retweets: filteredRetweets[0].retweets })
+    .eq('id', userId);
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function notifyUserOfRetweet({
+  targetId,
+  tweetId,
+  userId,
+  retweetId,
+}) {
+  const { data, error } = await supabase.rpc('retweet_and_add_retweeter', {
+    profile_id: targetId,
+    tweet_id: tweetId,
+    retweeter_id: userId,
+    retweet_id: retweetId,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function removeTweet({ oldTweets, tweetId, userId }) {
+  const filteredTweets = oldTweets.filter(tweet => tweet.id !== tweetId);
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ tweets: filteredTweets })
+    .eq('id', userId)
+    .select();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
+  const { data, error } = await supabase.rpc('remove_retweeter_from_tweet', {
+    profile_id: targetId,
+    tweet_id: tweetId,
+    retweeter_id: userId,
+  });
 
   if (error) throw new Error(error.message);
 
