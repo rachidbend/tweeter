@@ -20,6 +20,8 @@ import { useLikeTweet } from '../hooks/tweet/useLikeTweet';
 import { useRemoveTweetFromLikes } from '../hooks/tweet/useRemoveTweetFromLikes';
 import { useNotifyUserOfLike } from '../hooks/tweet/useNotifyUserOfLike';
 import { useNotifyUserOfUnlike } from '../hooks/tweet/useNotifyUserOfUnlike';
+import { useRetweet } from '../hooks/tweet/useRetweet';
+import RetweetView from './RetweetView';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -239,6 +241,11 @@ const CommentContainer = styled.form`
 // section that includes some of the most liked comments
 const Comments = styled.div``;
 
+const RetweetContainer = styled.div`
+  margin-left: 4rem;
+  border-left: 2px solid var(--color-grey-300);
+  padding-left: 2rem;
+`;
 // start with the save functionality
 
 function TweetView({ currentUserAvatar, user, tweet }) {
@@ -263,6 +270,7 @@ function TweetView({ currentUserAvatar, user, tweet }) {
   const { notifyUserOfSave } = useNotifyUserOfSave();
   const { removeFromSaves } = useRemoveTweetFromBookmarks();
   const { notifyUserOfUnsave } = useNotifyUserOfUnsave();
+
   function handleSave() {
     saveTweet({ newBookmark: tweet });
 
@@ -287,6 +295,18 @@ function TweetView({ currentUserAvatar, user, tweet }) {
   function handleUnlike() {
     removeTweetFromLikes({ tweet: tweet });
     notifyUserOfUnlike({ targetId: tweet.publisher_id, tweetId: tweet.id });
+  }
+
+  // Retweet handlers
+  const { retweet } = useRetweet();
+
+  function handleRetweet() {
+    retweet({
+      newTweet: {
+        hastag: '',
+      },
+      tweet: tweet,
+    });
   }
 
   // states
@@ -335,6 +355,14 @@ function TweetView({ currentUserAvatar, user, tweet }) {
         <TextContent>{tweet.content}</TextContent>
         {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
       </Content>
+      {tweet.isRetweet && (
+        <RetweetContainer>
+          <RetweetView
+            tweetId={tweet?.originalTweetId}
+            publisherId={tweet?.originalTweetPublishdeId}
+          />
+        </RetweetContainer>
+      )}
       <StatContainer>
         <Stat>{tweet.likes.length} Likes</Stat>
         <Stat>{tweet.comments.length} Comment</Stat>
@@ -346,7 +374,7 @@ function TweetView({ currentUserAvatar, user, tweet }) {
           <CommentIcon />
           <ButtonText>Comment</ButtonText>
         </Button>
-        <Button>
+        <Button onClick={handleRetweet}>
           <RetweetIcon />
           <ButtonText>Retweet</ButtonText>
         </Button>

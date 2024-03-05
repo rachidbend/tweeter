@@ -7,12 +7,15 @@ const StyledHome = styled.div`
   min-height: 100svh;
 
   display: grid;
-  grid-template-columns: 74.5rem 30.6rem;
+  grid-template-columns: 1fr 30.6rem;
   gap: 2.5rem;
 
   justify-content: center;
+  margin: 0 auto;
   margin-top: 2.5rem;
+  padding: 0 5.4rem;
 
+  max-width: calc(107.3rem + (5.4rem * 2));
   @media screen and (max-width: 450px) {
     gap: 0;
     padding: 0 1.6rem;
