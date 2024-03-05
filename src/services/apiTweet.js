@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-// add a tweet
+// add a tweet ///////////////////////////////////////////////
 export async function addTweet({ oldTweets, newTweet, userId }) {
   let imageUrl = '';
   if (newTweet.image.length > 0) {
@@ -31,6 +31,7 @@ export async function addTweet({ oldTweets, newTweet, userId }) {
     retweets: [],
     likes: [],
     saves: [],
+    isRetweet: false,
   };
 
   const { data, error } = await supabase
@@ -68,7 +69,7 @@ export async function getTweets(userId) {
   return tweets;
 }
 
-// BOOKMARK
+// BOOKMARK ///////////////////////////////////////////////
 export async function bookmarkTweet({ oldBookmarks, newBookmark, userId }) {
   // add a check to make sure
   const bookmark = {
@@ -130,7 +131,7 @@ export async function notifyUserOfUnsave({ targetId, tweetId, userId }) {
   return data;
 }
 
-// LIKE
+// LIKE ///////////////////////////////////////////////
 
 export async function likeTweet({ oldLikes, newLike, userId }) {
   // add a check to make sure
@@ -179,6 +180,66 @@ export async function notifyUserOfUnlike({ targetId, tweetId, userId }) {
     profile_id: targetId,
     tweet_id: tweetId,
     liker_id: userId,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+// RETWEET ///////////////////////////////////////////////
+export async function retweet({ oldTweets, newTweet, userId, tweet }) {
+  // let imageUrl = '';
+  // if (newTweet.image.length > 0) {
+  //   const fileType = newTweet.image[0].type.split('/').at(1);
+
+  //   let imageName = `tweet_${Date.now()}_${newTweet.image[0].name}.${fileType}`;
+
+  //   imageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/tweet_images/${imageName}`;
+
+  //   const image = await uploadImage({
+  //     image: newTweet.image[0],
+  //     bucketName: 'tweet_images',
+  //     imageName: imageName,
+  //   });
+  // }
+
+  const date = new Date();
+  // the retweet is simply a repost of the original retweet, and not a quote for now (5/3/2024)
+  const retweet = {
+    id: `${userId}-${Date.now()}-retweet`,
+    publisher_id: userId,
+    created_at: date,
+    visibility: 'all',
+    content: '',
+    image: '',
+    hashtags: newTweet.hashtags,
+    comments: [],
+    retweets: [],
+    likes: [],
+    saves: [],
+    isRetweet: true,
+    originalTweetId: tweet.id,
+    originalTweetPublishdeId: tweet.publisher_id,
+  };
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ tweets: [retweet, ...oldTweets] })
+    .eq('id', userId)
+    .select();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+// ///////////////////////////////////////////////
+
+export async function getTweetById({ tweetId, publisherId }) {
+  const { data, error } = await supabase.rpc('get_tweet', {
+    publisher_id: publisherId,
+    tweet_id: tweetId,
   });
 
   if (error) throw new Error(error.message);
