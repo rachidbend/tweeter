@@ -1,6 +1,6 @@
-import toast from 'react-hot-toast';
 import { supabase } from './supabase';
 
+// add a tweet
 export async function addTweet({ oldTweets, newTweet, userId }) {
   let imageUrl = '';
   if (newTweet.image.length > 0) {
@@ -44,6 +44,7 @@ export async function addTweet({ oldTweets, newTweet, userId }) {
   return data;
 }
 
+// upload an image
 async function uploadImage({ image, imageName, bucketName }) {
   const { data, error } = await supabase.storage
     .from(bucketName)
@@ -56,6 +57,7 @@ async function uploadImage({ image, imageName, bucketName }) {
   return data;
 }
 
+// get the tweets of a user the tweets
 export async function getTweets(userId) {
   let { data: tweets, error } = await supabase
     .from('profiles')
@@ -66,6 +68,7 @@ export async function getTweets(userId) {
   return tweets;
 }
 
+// BOOKMARK
 export async function bookmarkTweet({ oldBookmarks, newBookmark, userId }) {
   // add a check to make sure
   const { data, error } = await supabase
@@ -120,6 +123,57 @@ export async function notifyUserOfUnsave({ targetId, tweetId, userId }) {
 
   if (error) throw new Error(error.message);
   console.log(data);
+  return data;
+}
+
+// LIKE
+
+export async function likeTweet({ oldLikes, newLike, userId }) {
+  // add a check to make sure
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ likes: [newLike, ...oldLikes] })
+    .eq('id', userId)
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function removeTweetFromLikes({ oldlikes, tweet, userId }) {
+  const filteredlikes = oldlikes.filter(like => like.id !== tweet.id);
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ likes: filteredlikes })
+    .eq('id', userId)
+    .select();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function notifyUserOfLike({ targetId, tweetId, userId }) {
+  const { data, error } = await supabase.rpc('like_tweet_and_add_liker', {
+    profile_id: targetId,
+    tweet_id: tweetId,
+    liker_id: userId,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function notifyUserOfUnlike({ targetId, tweetId, userId }) {
+  const { data, error } = await supabase.rpc('remove_liker_from_tweet', {
+    profile_id: targetId,
+    tweet_id: tweetId,
+    liker_id: userId,
+  });
+
+  if (error) throw new Error(error.message);
+
   return data;
 }
 
