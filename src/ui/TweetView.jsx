@@ -263,6 +263,7 @@ function TweetView({ currentUserAvatar, user, tweet }) {
   const { notifyUserOfSave } = useNotifyUserOfSave();
   const { removeFromSaves } = useRemoveTweetFromBookmarks();
   const { notifyUserOfUnsave } = useNotifyUserOfUnsave();
+
   function handleSave() {
     saveTweet({ newBookmark: tweet });
 

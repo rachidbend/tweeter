@@ -71,9 +71,13 @@ export async function getTweets(userId) {
 // BOOKMARK
 export async function bookmarkTweet({ oldBookmarks, newBookmark, userId }) {
   // add a check to make sure
+  const bookmark = {
+    id: newBookmark.id,
+    publisher_id: newBookmark.publisher_id,
+  };
   const { data, error } = await supabase
     .from('profiles')
-    .update({ bookmarks: [newBookmark, ...oldBookmarks] })
+    .update({ bookmarks: [bookmark, ...oldBookmarks] })
     .eq('id', userId)
     .select();
 
@@ -130,9 +134,14 @@ export async function notifyUserOfUnsave({ targetId, tweetId, userId }) {
 
 export async function likeTweet({ oldLikes, newLike, userId }) {
   // add a check to make sure
+  const like = {
+    id: newLike.id,
+    publisher_id: newLike.publisher_id,
+  };
+
   const { data, error } = await supabase
     .from('profiles')
-    .update({ likes: [newLike, ...oldLikes] })
+    .update({ likes: [like, ...oldLikes] })
     .eq('id', userId)
     .select();
 
