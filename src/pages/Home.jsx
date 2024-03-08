@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import PublishTweet from '../features/tweeting/PublishTweet';
+import HashtagTrends from '../ui/HashtagTrends';
 
 const StyledHome = styled.div`
   min-height: 100vh;
@@ -44,7 +45,9 @@ function Home() {
           Xanthe Neal
         </Link>
       </MainContent>
-      <SideContent></SideContent>
+      <SideContent>
+        <HashtagTrends />
+      </SideContent>
     </StyledHome>
   );
 }

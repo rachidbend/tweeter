@@ -27,7 +27,7 @@ const Header = styled.div`
   align-items: center;
   gap: 1.2rem;
 
-  margin-bottom: 2.4rem;
+  margin-bottom: 1.4rem;
 `;
 const Content = styled.div`
   margin-bottom: 1.3rem;
@@ -56,7 +56,6 @@ function RetweetView({ tweetId, publisherId }) {
   const { userProfile, isLoading: isLoadingUser } = useGetUserData(publisherId);
   if (isLoading || isLoadingUser) return <Spinner />;
   if (error) return <p>{error.message}</p>;
-  console.log(tweet);
 
   const publishingData = new Date(tweet.created_at);
   const publishingText = `${publishingData.getDate()} ${

@@ -22,6 +22,11 @@ import { useNotifyUserOfLike } from '../hooks/tweet/useNotifyUserOfLike';
 import { useNotifyUserOfUnlike } from '../hooks/tweet/useNotifyUserOfUnlike';
 import { useRetweet } from '../hooks/tweet/useRetweet';
 import RetweetView from './RetweetView';
+import { useAddRetweetId } from '../hooks/tweet/useAddRetweetId';
+import useNotifyUserOfRetweet from '../hooks/tweet/useNotifyUserOfRetweet';
+import { useRemoveTweet } from '../hooks/tweet/useRemovetweet';
+import useRemoveTweetId from '../hooks/tweet/useRemoveTweetId';
+import { useNotifyUserOfRetweetRemove } from '../hooks/tweet/useNotifyUserOfRetweetRemove';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -244,7 +249,7 @@ const Comments = styled.div``;
 const RetweetContainer = styled.div`
   margin-left: 4rem;
   border-left: 2px solid var(--color-grey-300);
-  padding-left: 2rem;
+  padding-left: 2.4rem;
 `;
 // start with the save functionality
 
@@ -261,7 +266,6 @@ function TweetView({ currentUserAvatar, user, tweet }) {
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = data => {
-    console.log(data);
     reset();
   };
 
@@ -299,25 +303,75 @@ function TweetView({ currentUserAvatar, user, tweet }) {
 
   // Retweet handlers
   const { retweet } = useRetweet();
-
+  const { addRetweetId } = useAddRetweetId();
+  const { notifyUserOfRetweet } = useNotifyUserOfRetweet();
   function handleRetweet() {
-    retweet({
-      newTweet: {
+    // add the retweet as a tweet
+    const newRetweet =
+      // the id is created here to enable the rest of the code
+      {
+        id: `${currentUser.id}-${Date.now()}-retweet`,
         hastag: '',
-      },
-      tweet: tweet,
-    });
+      };
+
+    retweet(
+      { newTweet: newRetweet, tweet: tweet },
+      {
+        onSuccess: () => {
+          // these two have to be done after the retweet is successful to insure proper order, bacause if the retweet operation can interfeer with the notifying operation, thanks to using the index as a guide for the notifying SQL function
+
+          // add the tweet id to the retweet ids
+          addRetweetId({ tweetId: tweet.id });
+          // notify the user that their tweet has been retweeted
+          notifyUserOfRetweet({
+            targetId: tweet.publisher_id,
+            tweetId: tweet.id,
+            retweetId: newRetweet.id,
+          });
+        },
+      }
+    );
   }
 
+  const { removeTweet } = useRemoveTweet();
+  const { removeRetweetId } = useRemoveTweetId();
+  const { notifyUserOfUnretweet } = useNotifyUserOfRetweetRemove();
+
+  function handleRemoveRetweet() {
+    // remove the retweet
+    const retweetObj = tweet.retweets.filter(retweet => {
+      return retweet.retweeter_id === currentUser.id;
+    });
+    // console.log(tweet?.retweets);
+    if (retweetObj.length === 0) return;
+    removeTweet(
+      { tweetId: retweetObj[0]?.retweet_id },
+      {
+        onSuccess: () => {
+          // these two have to be done after the retweet is successful to insure proper order, bacause if the retweet operation can interfeer with the notifying operation, thanks to using the index as a guide for the notifying SQL function
+
+          // remove the retweet id from the retweets array
+          removeRetweetId({ retweetId: tweet.id });
+          // Notify the original tweet of the retweet removal
+          notifyUserOfUnretweet({
+            targetId: tweet.publisher_id,
+            tweetId: tweet.id,
+          });
+        },
+      }
+    );
+  }
   // states
   // if the current tweet is saved by the user
-  const isSaved = userProfile?.bookmarks?.filter(
-    bookmark => bookmark.id === tweet.id
-  );
-  const isLiked = userProfile?.likes?.filter(like => like.id === tweet.id);
+  const isSaved =
+    userProfile?.bookmarks?.filter(bookmark => bookmark.id === tweet.id)
+      .length > 0;
+  const isLiked =
+    userProfile?.likes?.filter(like => like.id === tweet.id).length > 0;
 
-  // console.log(isLiked);
-  // console.log(isSaved.length > 0 ? true : false);
+  const isRetweeted =
+    userProfile?.retweets?.filter(id => id === tweet.id).length > 0;
+
   return (
     <StyledTweet>
       {/*
@@ -374,23 +428,26 @@ function TweetView({ currentUserAvatar, user, tweet }) {
           <CommentIcon />
           <ButtonText>Comment</ButtonText>
         </Button>
-        <Button onClick={handleRetweet}>
+        <Button
+          onClick={isRetweeted ? handleRemoveRetweet : handleRetweet}
+          $isRetweeted={isRetweeted}
+        >
           <RetweetIcon />
-          <ButtonText>Retweet</ButtonText>
+          <ButtonText>{isRetweeted ? 'Retweeted' : 'Retweet'}</ButtonText>
         </Button>
         <Button
-          onClick={isLiked.length > 0 ? handleUnlike : handleLike}
-          $isLiked={isLiked.length > 0 ? true : false}
+          onClick={isLiked ? handleUnlike : handleLike}
+          $isLiked={isLiked}
         >
           <LikeIcon />
-          <ButtonText>{isLiked.length > 0 ? 'Liked' : 'Like'}</ButtonText>
+          <ButtonText>{isLiked ? 'Liked' : 'Like'}</ButtonText>
         </Button>
         <Button
-          onClick={isSaved.length > 0 ? handleRemoveSave : handleSave}
-          $isSaved={isSaved.length > 0 ? true : false}
+          onClick={isSaved ? handleRemoveSave : handleSave}
+          $isSaved={isSaved}
         >
           <SaveIcon />
-          <ButtonText>{isSaved.length > 0 ? 'Saved' : 'Save'}</ButtonText>
+          <ButtonText>{isSaved ? 'Saved' : 'Save'}</ButtonText>
         </Button>
       </ButtonsContainer>
       <InputContainer>
