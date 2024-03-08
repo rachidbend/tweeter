@@ -35,7 +35,6 @@ export async function followUser({ following, newFollowing, userId }) {
 }
 
 export async function unfollowUser({ following, unfollowId, userId }) {
-  console.log(following);
   const filteredFollowing = following.filter(id => {
     console.log(id);
     console.log(unfollowId);

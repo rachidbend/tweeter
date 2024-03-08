@@ -16,7 +16,7 @@ export default function useRemoveTweetId() {
     mutationFn: ({ retweetId }) =>
       removeRetweetIdApi({
         retweetId,
-        oldRetweets: retweetIds,
+        oldRetweets: retweetIds[0].retweets,
         userId: user.id,
       }),
     onSettled: () => {

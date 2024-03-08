@@ -315,9 +315,9 @@ function TweetView({ currentUserAvatar, user, tweet }) {
         hastag: '',
       };
 
-    retweet({ newTweet: newRetweet, tweet: tweet });
-    // add the tweet id to the retweet ids
-    addRetweetId({ tweetId: tweet.id });
+    // retweet({ newTweet: newRetweet, tweet: tweet });
+    // // add the tweet id to the retweet ids
+    // addRetweetId({ tweetId: tweet.id });
     // notify the user that their tweet has been retweeted
     notifyUserOfRetweet({
       targetId: currentUser.id,
@@ -332,22 +332,21 @@ function TweetView({ currentUserAvatar, user, tweet }) {
 
   function handleRemoveRetweet() {
     // remove the retweet
-    const retweetObj = tweet.retweets.filter(
-      retweet => retweet.retweeter_id === currentUser.id
-    );
-    console.log(tweet?.retweets);
-    if (retweetObj.length === 0) return;
-    removeTweet({ tweetId: retweetObj[0]?.retweet_id });
-
-    // remove the retweet id from the retweets array
-    removeRetweetId({ retweetId: tweet.id });
-
-    // notify the user that their the retweet of thier tweet has been removed
-    notifyUserOfRetweetRemove({
-      targetId: tweet.publisher_id,
-      tweetId: tweet.id,
-    });
-    console.log('remove retweet');
+    // const retweetObj = tweet.retweets.filter(retweet => {
+    //   return retweet.retweeter_id === currentUser.id;
+    // });
+    // // console.log(tweet?.retweets);
+    // if (retweetObj.length === 0) return;
+    // removeTweet({ tweetId: retweetObj[0]?.retweet_id });
+    // console.log(tweet.id);
+    // // remove the retweet id from the retweets array
+    // removeRetweetId({ retweetId: tweet.id });
+    // // notify the user that their the retweet of thier tweet has been removed
+    // notifyUserOfRetweetRemove({
+    //   targetId: tweet.publisher_id,
+    //   tweetId: tweet.id,
+    // });
+    // console.log('remove retweet');
   }
   // states
   // if the current tweet is saved by the user
@@ -468,3 +467,30 @@ function TweetView({ currentUserAvatar, user, tweet }) {
 }
 
 export default TweetView;
+
+// ////////////////////////////////////////////////////
+/*
+jsonb_insert(tweets, '{tweet_index,retweets,-1}', new_retweet::jsonb)
+jsonb_insert(tweets, ARRAY[tweet_index::text, 'retweets', '-1'], new_retweet)
+*/
+
+/*
+  -- Update the JSON column by appending the new item to the existing JSON array
+        UPDATE profiles
+        SET tweets = jsonb_set(tweets_array, ARRAY[tweet_index::text, 'retweets'], new_array)
+        WHERE id = profile_id;
+
+/////////////////////////////////////////////////
+
+    UPDATE profiles
+    SET tweets = jsonb_set(tweets, ARRAY[tweet_id, 'retweets'], new_array)
+    WHERE id = profile_id;
+
+*/
+
+/*
+
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+*/

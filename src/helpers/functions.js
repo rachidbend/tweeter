@@ -14,3 +14,13 @@ export function setPositionSpan(spanRef, toRef) {
     toRefPosition + toRefWidth / 2 - spanWidth / 2
   }px`;
 }
+
+export function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(0) + 'm';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(0) + 'k';
+  } else {
+    return num.toString();
+  }
+}

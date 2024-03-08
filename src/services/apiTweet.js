@@ -257,10 +257,10 @@ export async function addRetweetId({ tweetId, oldRetweets, userId }) {
 
 export async function removeRetweetId({ retweetId, oldRetweets, userId }) {
   const filteredRetweets = oldRetweets?.filter(id => id !== retweetId);
-  console.log(oldRetweets);
+  console.log(filteredRetweets);
   const { data, error } = await supabase
     .from('profiles')
-    .update({ retweets: filteredRetweets[0].retweets })
+    .update({ retweets: filteredRetweets })
     .eq('id', userId);
 
   if (error) throw new Error(error.message);
@@ -274,15 +274,15 @@ export async function notifyUserOfRetweet({
   userId,
   retweetId,
 }) {
-  const { data, error } = await supabase.rpc('retweet_and_add_retweeter', {
-    profile_id: targetId,
+  const { data, error } = await supabase.rpc('notify_tweet_of_retweet', {
     tweet_id: tweetId,
+    tweeter_id: targetId,
     retweeter_id: userId,
     retweet_id: retweetId,
   });
 
   if (error) throw new Error(error.message);
-
+  console.log(data);
   return data;
 }
 
@@ -307,7 +307,7 @@ export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
   });
 
   if (error) throw new Error(error.message);
-
+  console.log(data);
   return data;
 }
 
