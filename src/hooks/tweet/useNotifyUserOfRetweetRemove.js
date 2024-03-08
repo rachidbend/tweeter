@@ -7,12 +7,16 @@ export function useNotifyUserOfRetweetRemove() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const {
-    mutate: notifyUserOfRetweetRemove,
+    mutate: notifyUserOfUnretweet,
     isPending,
     error,
   } = useMutation({
     mutationFn: ({ targetId, tweetId }) =>
-      notifyUserOfRetweetRemoveApi({ targetId, tweetId, userId: user.id }),
+      notifyUserOfRetweetRemoveApi({
+        targetId: targetId,
+        tweetId: tweetId,
+        userId: user.id,
+      }),
     onSettled: () => {
       queryClient.invalidateQueries(['profiles']);
     },
@@ -24,5 +28,5 @@ export function useNotifyUserOfRetweetRemove() {
     },
   });
 
-  return { notifyUserOfRetweetRemove, isPending, error };
+  return { notifyUserOfUnretweet, isPending, error };
 }

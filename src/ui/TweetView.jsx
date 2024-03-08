@@ -266,7 +266,6 @@ function TweetView({ currentUserAvatar, user, tweet }) {
   const { register, handleSubmit, reset } = useForm();
 
   const onSubmit = data => {
-    console.log(data);
     reset();
   };
 
@@ -315,38 +314,52 @@ function TweetView({ currentUserAvatar, user, tweet }) {
         hastag: '',
       };
 
-    // retweet({ newTweet: newRetweet, tweet: tweet });
-    // // add the tweet id to the retweet ids
-    // addRetweetId({ tweetId: tweet.id });
-    // notify the user that their tweet has been retweeted
-    notifyUserOfRetweet({
-      targetId: currentUser.id,
-      tweetId: tweet.id,
-      retweetId: newRetweet.id,
-    });
+    retweet(
+      { newTweet: newRetweet, tweet: tweet },
+      {
+        onSuccess: () => {
+          // these two have to be done after the retweet is successful to insure proper order, bacause if the retweet operation can interfeer with the notifying operation, thanks to using the index as a guide for the notifying SQL function
+
+          // add the tweet id to the retweet ids
+          addRetweetId({ tweetId: tweet.id });
+          // notify the user that their tweet has been retweeted
+          notifyUserOfRetweet({
+            targetId: tweet.publisher_id,
+            tweetId: tweet.id,
+            retweetId: newRetweet.id,
+          });
+        },
+      }
+    );
   }
 
   const { removeTweet } = useRemoveTweet();
   const { removeRetweetId } = useRemoveTweetId();
-  const { notifyUserOfRetweetRemove } = useNotifyUserOfRetweetRemove();
+  const { notifyUserOfUnretweet } = useNotifyUserOfRetweetRemove();
 
   function handleRemoveRetweet() {
     // remove the retweet
-    // const retweetObj = tweet.retweets.filter(retweet => {
-    //   return retweet.retweeter_id === currentUser.id;
-    // });
-    // // console.log(tweet?.retweets);
-    // if (retweetObj.length === 0) return;
-    // removeTweet({ tweetId: retweetObj[0]?.retweet_id });
-    // console.log(tweet.id);
-    // // remove the retweet id from the retweets array
-    // removeRetweetId({ retweetId: tweet.id });
-    // // notify the user that their the retweet of thier tweet has been removed
-    // notifyUserOfRetweetRemove({
-    //   targetId: tweet.publisher_id,
-    //   tweetId: tweet.id,
-    // });
-    // console.log('remove retweet');
+    const retweetObj = tweet.retweets.filter(retweet => {
+      return retweet.retweeter_id === currentUser.id;
+    });
+    // console.log(tweet?.retweets);
+    if (retweetObj.length === 0) return;
+    removeTweet(
+      { tweetId: retweetObj[0]?.retweet_id },
+      {
+        onSuccess: () => {
+          // these two have to be done after the retweet is successful to insure proper order, bacause if the retweet operation can interfeer with the notifying operation, thanks to using the index as a guide for the notifying SQL function
+
+          // remove the retweet id from the retweets array
+          removeRetweetId({ retweetId: tweet.id });
+          // Notify the original tweet of the retweet removal
+          notifyUserOfUnretweet({
+            targetId: tweet.publisher_id,
+            tweetId: tweet.id,
+          });
+        },
+      }
+    );
   }
   // states
   // if the current tweet is saved by the user
@@ -467,30 +480,3 @@ function TweetView({ currentUserAvatar, user, tweet }) {
 }
 
 export default TweetView;
-
-// ////////////////////////////////////////////////////
-/*
-jsonb_insert(tweets, '{tweet_index,retweets,-1}', new_retweet::jsonb)
-jsonb_insert(tweets, ARRAY[tweet_index::text, 'retweets', '-1'], new_retweet)
-*/
-
-/*
-  -- Update the JSON column by appending the new item to the existing JSON array
-        UPDATE profiles
-        SET tweets = jsonb_set(tweets_array, ARRAY[tweet_index::text, 'retweets'], new_array)
-        WHERE id = profile_id;
-
-/////////////////////////////////////////////////
-
-    UPDATE profiles
-    SET tweets = jsonb_set(tweets, ARRAY[tweet_id, 'retweets'], new_array)
-    WHERE id = profile_id;
-
-*/
-
-/*
-
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-*/
