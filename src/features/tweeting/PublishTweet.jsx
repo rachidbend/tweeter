@@ -155,6 +155,17 @@ const TweetButton = styled.button`
   }
 `;
 
+const PreviewImage = styled.img`
+  height: auto;
+  width: 50%;
+
+  border-radius: 0.8rem;
+
+  @media screen and (max-width: 450px) {
+    width: 100%;
+  }
+`;
+
 /********************
 Add hashtag features
 ********************/
@@ -162,8 +173,9 @@ Add hashtag features
 function PublishTweet() {
   const [isOpen, setIsOpen] = useState(false);
   const [replyChoice, setReplyChoice] = useState('everyone');
-  const { addTweet, isPending } = useAddTweet();
+  const [image, setImage] = useState(null);
 
+  const { addTweet, isPending } = useAddTweet();
   const { register, handleSubmit, reset } = useForm();
 
   const { user } = useUser();
@@ -187,6 +199,14 @@ function PublishTweet() {
     setReplyChoice(choice);
   }
 
+  function handleImageChange(e) {
+    console.log(e);
+    if (e.target.files && e.target.files[0]) {
+      let img = URL.createObjectURL(e.target.files[0]);
+      setImage(img);
+    }
+  }
+
   if (isLoading) return <Spinner />;
 
   return (
@@ -199,11 +219,15 @@ function PublishTweet() {
           <AvatarPlaceHolder />
         )}
 
-        <Input
-          type="text"
-          placeholder={`What’s happening?`}
-          {...register('content', { required: true })}
-        />
+        <div>
+          <Input
+            type="text"
+            placeholder={`What’s happening?`}
+            {...register('content', { required: true })}
+          />
+
+          {image && <PreviewImage src={image} />}
+        </div>
         <ButtonsContainer>
           <ImageAndVisibilityContainer>
             <Image htmlFor="tweet-image-upload">
@@ -212,7 +236,7 @@ function PublishTweet() {
             <UploadImage
               id="tweet-image-upload"
               type="file"
-              {...register('image')}
+              {...register('image', { onChange: handleImageChange })}
             />
             <VisibilityButtonContainer onClick={handleReplyClick}>
               <GlobeIcon /> {replyChoice === 'everyone' && 'Everyone can reply'}
