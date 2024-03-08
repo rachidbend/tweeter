@@ -189,6 +189,7 @@ function PublishTweet() {
       hashtags: [],
     };
     addTweet(newTweet, { onSuccess: () => reset() });
+    setImage(null);
   }
 
   function handleReplyClick() {
