@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { useUser } from '../../hooks/authHooks/useUser';
 import UserHeader from '../user/UserHeader';
 import UserProfileFilter from './UserProfileFilter';
-import TweetView from '../../ui/TweetView';
+import TweetView from '../tweetView/TweetView';
 
 const StyledUserProfile = styled.div`
   width: 100%;

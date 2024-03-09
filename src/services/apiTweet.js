@@ -27,7 +27,7 @@ export async function addTweet({ oldTweets, newTweet, userId }) {
     content: newTweet.content,
     image: imageUrl.length > 0 ? imageUrl : '',
     hashtags: newTweet.hashtags,
-    comments: [],
+    replies: [],
     retweets: [],
     likes: [],
     saves: [],
@@ -212,7 +212,7 @@ export async function retweet({ oldTweets, newTweet, userId, tweet }) {
     content: '',
     image: '',
     hashtags: newTweet.hashtags,
-    comments: [],
+    replies: [],
     retweets: [],
     likes: [],
     saves: [],
@@ -310,6 +310,71 @@ export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
 }
 
 // ///////////////////////////////////////////////
+// when adding a reply
+// 1) tweet the reply, and link it to the original tweet
+export async function addReply({ originalTweet, content, image, userID, id }) {
+  const date = new Date();
+  const replyTweet = {
+    id: id,
+    image: '',
+    likes: [],
+    saves: [],
+    content: content,
+    replies: [],
+    hashtags: [],
+    retweets: [],
+    isRetweet: false,
+    isReply: true,
+    created_at: date,
+    publisher_id: userID,
+    original_tweet_id: originalTweet.id,
+    original_tweeter_id: originalTweet.publisher_id,
+  };
+
+  const { data, error } = await supabase.rpc('add_reply', {
+    reply: replyTweet,
+    user_id: userID,
+  });
+
+  if (error) throw new Error(error.message);
+  console.log(data);
+  return data;
+}
+
+// 2) notify the original tweet
+export async function notifyOriginalTweetOfReply({
+  tweet_id,
+  tweeter_id,
+  reply_id,
+  replyer_id,
+}) {
+  const { data, error } = await supabase.rpc('notify_tweet_of_reply', {
+    tweet_id,
+    tweeter_id,
+    reply_id,
+    replyer_id,
+  });
+
+  if (error) throw new Error(error.message);
+  console.log(data);
+  return data;
+}
+
+// when removing a reply
+// 1) remove the reply, and link it to the original tweet
+export async function removeReply({ replyId, userID }) {
+  const { data, error } = await supabase.rpc('add_reply', {
+    reply_id: replyId,
+    user_id: userID,
+  });
+
+  if (error) throw new Error(error.message);
+  console.log(data);
+  return data;
+}
+// 2) notify the original tweet
+export async function notifyOriginalTweetOfRemovedReply() {}
+// ///////////////////////////////////////////////
 
 export async function getTweetById({ tweetId, publisherId }) {
   const { data, error } = await supabase.rpc('get_tweet', {
@@ -329,7 +394,7 @@ const tweet = {
   content: 'the tect content of the tweet',
   image: 'if it was uploaded',
   hashtags: 'all hashtags on the content, if there are any',
-  comments: [
+  replies: [
     {
       id: 'id of the comment',
       userId: 'the id of the user who commented',
@@ -346,4 +411,30 @@ const tweet = {
   retweets: [],
   likes: [],
   saves: [],
+};
+
+const replyTweet = {
+  id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
+  image: '',
+  likes: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+  saves: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+  content: 'heeeyooooo',
+  comments: [
+    {
+      comment_id: '',
+      commenter_id: '',
+    },
+  ],
+  hashtags: [],
+  retweets: [
+    {
+      retweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709978281556-retweet',
+      retweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+    },
+  ],
+  isRetweet: false,
+  isReply: true,
+  created_at: '2024-03-08T15:14:16.467Z',
+  publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+  original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
 };
