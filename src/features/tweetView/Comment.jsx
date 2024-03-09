@@ -4,7 +4,6 @@ import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import { useGetTweet } from '../../hooks/tweet/useGetTweet';
 import { Months } from '../../helpers/variables';
-import TweetLikeButton from './TweetLikeButton';
 import { IconHeartOutline } from '../../styles/Icons';
 import { formatNumber } from '../../helpers/functions';
 import { useUser } from '../../hooks/authHooks/useUser';
@@ -12,6 +11,7 @@ import { useLikeTweet } from '../../hooks/tweet/useLikeTweet';
 import { useNotifyUserOfLike } from '../../hooks/tweet/useNotifyUserOfLike';
 import { useRemoveTweetFromLikes } from '../../hooks/tweet/useRemoveTweetFromLikes';
 import { useNotifyUserOfUnlike } from '../../hooks/tweet/useNotifyUserOfUnlike';
+import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
 
 const StyledComment = styled.div`
   display: grid;
@@ -57,6 +57,8 @@ const CommentContainer = styled.div`
   border-radius: 0.8rem;
   padding: 0.9rem 1.5rem 2.2rem 1.5rem;
   margin-bottom: 0.4rem;
+
+  /* box-shadow: var(--shadow-100); */
 `;
 const Header = styled.div`
   display: flex;
@@ -104,6 +106,13 @@ const LikeStat = styled.p`
   align-items: center;
   gap: 0.4rem;
 `;
+const Image = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 0.8rem;
+`;
+
+const AvatarContainer = styled.div``;
 
 function Comment({ reply }) {
   const { userProfile: originalTweeter, isLoading } = useGetUserData(
@@ -143,7 +152,16 @@ function Comment({ reply }) {
 
   return (
     <StyledComment>
-      <Avatar src={originalTweeter.avatar_image} />
+      <AvatarContainer>
+        {originalTweeter?.avatar_image ? (
+          <Avatar
+            src={originalTweeter?.avatar_image}
+            alt={`avatar image of ${user.userName}`}
+          />
+        ) : (
+          <AvatarPlaceHolder />
+        )}
+      </AvatarContainer>
       <Container>
         <CommentContainer>
           <Header>
@@ -151,6 +169,7 @@ function Comment({ reply }) {
             <PostingDate>{publishingText}</PostingDate>
           </Header>
           <Content>{tweet.content}</Content>
+          {tweet.image !== '' && <Image src={tweet.image} />}
         </CommentContainer>
         <LikeContainer>
           <LikeButton

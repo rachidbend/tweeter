@@ -270,7 +270,6 @@ function TweetView({ currentUserAvatar, user, tweet }) {
   const onSubmit = data => {
     if (!data.commentText) return;
     console.log(data);
-
     const date = new Date();
     const id = `${tweet.id}-${currentUser.id}-${date}-reply`;
     addReply(

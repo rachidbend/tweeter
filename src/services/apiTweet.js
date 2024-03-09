@@ -313,10 +313,26 @@ export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
 // when adding a reply
 // 1) tweet the reply, and link it to the original tweet
 export async function addReply({ originalTweet, content, image, userID, id }) {
+  console.log(image);
+  let imageUrl = '';
+  if (image.length > 0) {
+    const fileType = image[0].type.split('/').at(1);
+
+    let imageName = `tweet_${Date.now()}_${image[0].name}.${fileType}`;
+
+    imageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/tweet_images/${imageName}`;
+
+    const image = await uploadImage({
+      image: image[0],
+      bucketName: 'tweet_images',
+      imageName: imageName,
+    });
+  }
+
   const date = new Date();
   const replyTweet = {
     id: id,
-    image: '',
+    image: imageUrl.length > 0 ? imageUrl : '',
     likes: [],
     saves: [],
     content: content,
@@ -363,7 +379,7 @@ export async function notifyOriginalTweetOfReply({
 // when removing a reply
 // 1) remove the reply, and link it to the original tweet
 export async function removeReply({ replyId, userID }) {
-  const { data, error } = await supabase.rpc('add_reply', {
+  const { data, error } = await supabase.rpc('remove_reply', {
     reply_id: replyId,
     user_id: userID,
   });
