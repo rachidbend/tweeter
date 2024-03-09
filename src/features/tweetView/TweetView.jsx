@@ -1,32 +1,19 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
-import {
-  IconBookMarkOutline,
-  IconCommentOutline,
-  IconHeartOutline,
-  IconImageOutline,
-  IconSync,
-} from '../styles/Icons';
+import { IconCommentOutline, IconImageOutline } from '../../styles/Icons';
 import { useForm } from 'react-hook-form';
-import { Months } from '../helpers/variables';
-import AvatarPlaceHolder from './AvatarPlaceHolder';
-import { useSaveTweet } from '../hooks/tweet/useSaveTweet';
-import { useGetUserData } from '../hooks/user/useGetUserData';
-import { useUser } from '../hooks/authHooks/useUser';
-import { useRemoveTweetFromBookmarks } from '../hooks/tweet/useRemoveTweetFromBookmarks';
-import { useNotifyUserOfSave } from '../hooks/tweet/useNotifyUserOfSave';
-import { useNotifyUserOfUnsave } from '../hooks/tweet/useNotifyUserOfUnsave';
-import { useLikeTweet } from '../hooks/tweet/useLikeTweet';
-import { useRemoveTweetFromLikes } from '../hooks/tweet/useRemoveTweetFromLikes';
-import { useNotifyUserOfLike } from '../hooks/tweet/useNotifyUserOfLike';
-import { useNotifyUserOfUnlike } from '../hooks/tweet/useNotifyUserOfUnlike';
-import { useRetweet } from '../hooks/tweet/useRetweet';
-import RetweetView from './RetweetView';
-import { useAddRetweetId } from '../hooks/tweet/useAddRetweetId';
-import useNotifyUserOfRetweet from '../hooks/tweet/useNotifyUserOfRetweet';
-import { useRemoveTweet } from '../hooks/tweet/useRemovetweet';
-import useRemoveTweetId from '../hooks/tweet/useRemoveTweetId';
-import { useNotifyUserOfRetweetRemove } from '../hooks/tweet/useNotifyUserOfRetweetRemove';
+import { Months } from '../../helpers/variables';
+import { useGetUserData } from '../../hooks/user/useGetUserData';
+import { useUser } from '../../hooks/authHooks/useUser';
+import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
+import RetweetView from '../../ui/RetweetView';
+import TweetLikeButton from './TweetLikeButton';
+import TweetSaveButton from './TweetSaveButton';
+import TweetRetweetButton from './TweetRetweetButton';
+import { useAddReply } from '../../hooks/tweet/reply/useAddReply';
+import useNotifyTweetOfReply from '../../hooks/tweet/reply/useNotifyTweetOfReply';
+import { Link } from 'react-router-dom';
+import Comment from './Comment';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -111,7 +98,7 @@ const ButtonsContainer = styled.div`
   margin-bottom: 0.9rem;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   font-family: var(--font-noto);
   width: 100%;
   font-size: 1.4rem;
@@ -142,28 +129,13 @@ const Button = styled.button`
   }
 `;
 
-const ButtonText = styled.span`
+export const ButtonText = styled.span`
   @media screen and (max-width: 450px) {
     display: none;
   }
 `;
 
 const CommentIcon = styled(IconCommentOutline)`
-  height: 2rem;
-  width: 2rem;
-  color: inherit;
-`;
-const RetweetIcon = styled(IconSync)`
-  height: 2rem;
-  width: 2rem;
-  color: inherit;
-`;
-const LikeIcon = styled(IconHeartOutline)`
-  height: 2rem;
-  width: 2rem;
-  color: inherit;
-`;
-const SaveIcon = styled(IconBookMarkOutline)`
   height: 2rem;
   width: 2rem;
   color: inherit;
@@ -251,7 +223,33 @@ const RetweetContainer = styled.div`
   border-left: 2px solid var(--color-grey-300);
   padding-left: 2.4rem;
 `;
-// start with the save functionality
+
+const ReplyingTo = styled.p`
+  font-family: var(--font-poppings);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  color: var(--color-grey-300);
+  margin-left: 6rem;
+  margin-bottom: 1.2rem;
+`;
+const ReplyingToUserName = styled(Link)`
+  font-family: var(--font-poppings);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  color: var(--color-grey-100);
+  margin-left: 0.6rem;
+`;
+
+const RepliesContainer = styled.div`
+  margin-top: 1rem;
+  border-top: 0.1rem solid var(--color-grey-600);
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+`;
 
 function TweetView({ currentUserAvatar, user, tweet }) {
   // userAvatar: userProfile.avatar_image,
@@ -265,131 +263,49 @@ function TweetView({ currentUserAvatar, user, tweet }) {
   const { userProfile } = useGetUserData(currentUser.id);
   const { register, handleSubmit, reset } = useForm();
 
+  const getThisProfile = tweet?.original_tweeter_id && currentUser.id;
+  const { userProfile: originalTweeter } = useGetUserData(getThisProfile);
+  const { addReply } = useAddReply();
+  const { notifyOriginalTweetOfReply } = useNotifyTweetOfReply();
   const onSubmit = data => {
+    if (!data.commentText) return;
+    console.log(data);
+
+    const date = new Date();
+    const id = `${tweet.id}-${currentUser.id}-${date}-reply`;
+    addReply(
+      {
+        originalTweet: tweet,
+        content: data.commentText,
+        image: data.commentImage,
+        id: id,
+      },
+      {
+        onSuccess: () => {
+          notifyOriginalTweetOfReply({
+            tweet_id: tweet.id,
+            tweeter_id: tweet.publisher_id,
+            reply_id: id,
+            replyer_id: currentUser.id,
+          });
+        },
+      }
+    );
+
     reset();
   };
 
-  // Bookmark handlers
-  const { saveTweet } = useSaveTweet();
-  const { notifyUserOfSave } = useNotifyUserOfSave();
-  const { removeFromSaves } = useRemoveTweetFromBookmarks();
-  const { notifyUserOfUnsave } = useNotifyUserOfUnsave();
-
-  function handleSave() {
-    saveTweet({ newBookmark: tweet });
-
-    notifyUserOfSave({ targetId: tweet.publisher_id, tweetId: tweet.id });
-  }
-  function handleRemoveSave() {
-    removeFromSaves({ tweet: tweet });
-    notifyUserOfUnsave({ targetId: tweet.publisher_id, tweetId: tweet.id });
-  }
-
-  // Like handlers
-  const { likeTweet } = useLikeTweet();
-  const { notifyUserOfLike } = useNotifyUserOfLike();
-  const { removeTweetFromLikes } = useRemoveTweetFromLikes();
-  const { notifyUserOfUnlike } = useNotifyUserOfUnlike();
-
-  function handleLike() {
-    likeTweet({ newLike: tweet });
-    notifyUserOfLike({ targetId: tweet.publisher_id, tweetId: tweet.id });
-  }
-
-  function handleUnlike() {
-    removeTweetFromLikes({ tweet: tweet });
-    notifyUserOfUnlike({ targetId: tweet.publisher_id, tweetId: tweet.id });
-  }
-
-  // Retweet handlers
-  const { retweet } = useRetweet();
-  const { addRetweetId } = useAddRetweetId();
-  const { notifyUserOfRetweet } = useNotifyUserOfRetweet();
-  function handleRetweet() {
-    // add the retweet as a tweet
-    const newRetweet =
-      // the id is created here to enable the rest of the code
-      {
-        id: `${currentUser.id}-${Date.now()}-retweet`,
-        hastag: '',
-      };
-
-    retweet(
-      { newTweet: newRetweet, tweet: tweet },
-      {
-        onSuccess: () => {
-          // these two have to be done after the retweet is successful to insure proper order, bacause if the retweet operation can interfeer with the notifying operation, thanks to using the index as a guide for the notifying SQL function
-
-          // add the tweet id to the retweet ids
-          addRetweetId({ tweetId: tweet.id });
-          // notify the user that their tweet has been retweeted
-          notifyUserOfRetweet({
-            targetId: tweet.publisher_id,
-            tweetId: tweet.id,
-            retweetId: newRetweet.id,
-          });
-        },
-      }
-    );
-  }
-
-  const { removeTweet } = useRemoveTweet();
-  const { removeRetweetId } = useRemoveTweetId();
-  const { notifyUserOfUnretweet } = useNotifyUserOfRetweetRemove();
-
-  function handleRemoveRetweet() {
-    // remove the retweet
-    const retweetObj = tweet.retweets.filter(retweet => {
-      return retweet.retweeter_id === currentUser.id;
-    });
-    // console.log(tweet?.retweets);
-    if (retweetObj.length === 0) return;
-    removeTweet(
-      { tweetId: retweetObj[0]?.retweet_id },
-      {
-        onSuccess: () => {
-          // these two have to be done after the retweet is successful to insure proper order, bacause if the retweet operation can interfeer with the notifying operation, thanks to using the index as a guide for the notifying SQL function
-
-          // remove the retweet id from the retweets array
-          removeRetweetId({ retweetId: tweet.id });
-          // Notify the original tweet of the retweet removal
-          notifyUserOfUnretweet({
-            targetId: tweet.publisher_id,
-            tweetId: tweet.id,
-          });
-        },
-      }
-    );
-  }
   // states
-  // if the current tweet is saved by the user
   const isSaved =
     userProfile?.bookmarks?.filter(bookmark => bookmark.id === tweet.id)
       .length > 0;
   const isLiked =
     userProfile?.likes?.filter(like => like.id === tweet.id).length > 0;
-
   const isRetweeted =
     userProfile?.retweets?.filter(id => id === tweet.id).length > 0;
 
   return (
     <StyledTweet>
-      {/*
-        avatar image
-        userName
-        publishing date of the tweet
-
-        text content of the tweet
-        image included in the tweet if any
-
-        a small section to show how many comments, retweets and saves the tweet has
-
-        a section for commenting, retweeting, liking, and saving the tweet
-
-        an input to comment
-
-        some of the commnets on the tweet
-        */}
       <Header>
         <AvatarContainer>
           {user.userAvatar ? (
@@ -406,9 +322,19 @@ function TweetView({ currentUserAvatar, user, tweet }) {
         <PublishTime>{publishingText}</PublishTime>
       </Header>
       <Content>
+        {/* when a tweet is a reply */}
+        {tweet.isReply && (
+          <ReplyingTo>
+            replying to:
+            <ReplyingToUserName to={`/user/${originalTweeter?.id}`}>
+              {originalTweeter?.user_name}
+            </ReplyingToUserName>
+          </ReplyingTo>
+        )}
         <TextContent>{tweet.content}</TextContent>
         {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
       </Content>
+
       {tweet.isRetweet && (
         <RetweetContainer>
           <RetweetView
@@ -419,7 +345,7 @@ function TweetView({ currentUserAvatar, user, tweet }) {
       )}
       <StatContainer>
         <Stat>{tweet.likes.length} Likes</Stat>
-        <Stat>{tweet.comments.length} Comment</Stat>
+        <Stat>{tweet.replies.length} Comment</Stat>
         <Stat>{tweet.retweets.length} Retweets</Stat>
         <Stat>{tweet.saves.length} Saved</Stat>
       </StatContainer>
@@ -428,27 +354,18 @@ function TweetView({ currentUserAvatar, user, tweet }) {
           <CommentIcon />
           <ButtonText>Comment</ButtonText>
         </Button>
-        <Button
-          onClick={isRetweeted ? handleRemoveRetweet : handleRetweet}
-          $isRetweeted={isRetweeted}
-        >
-          <RetweetIcon />
-          <ButtonText>{isRetweeted ? 'Retweeted' : 'Retweet'}</ButtonText>
-        </Button>
-        <Button
-          onClick={isLiked ? handleUnlike : handleLike}
-          $isLiked={isLiked}
-        >
-          <LikeIcon />
-          <ButtonText>{isLiked ? 'Liked' : 'Like'}</ButtonText>
-        </Button>
-        <Button
-          onClick={isSaved ? handleRemoveSave : handleSave}
-          $isSaved={isSaved}
-        >
-          <SaveIcon />
-          <ButtonText>{isSaved ? 'Saved' : 'Save'}</ButtonText>
-        </Button>
+
+        {/* tweet RETWEET button */}
+        <TweetRetweetButton
+          isRetweeted={isRetweeted}
+          tweet={tweet}
+          currentUser={currentUser}
+        />
+        {/* tweet LIKE button */}
+        <TweetLikeButton isLiked={isLiked} tweet={tweet} />
+
+        {/* tweet SAVE button */}
+        <TweetSaveButton isSaved={isSaved} tweet={tweet} />
       </ButtonsContainer>
       <InputContainer>
         {currentUserAvatar ? (
@@ -475,8 +392,87 @@ function TweetView({ currentUserAvatar, user, tweet }) {
           </ImageInputContainer>
         </CommentContainer>
       </InputContainer>
+      {tweet.replies.length > 0 && (
+        <RepliesContainer>
+          {tweet.replies.map((reply, index) => (
+            <Comment reply={reply} key={`${index}-${tweet.id}-reply`} />
+          ))}
+        </RepliesContainer>
+      )}
     </StyledTweet>
   );
 }
 
 export default TweetView;
+
+// how would a comment inside a tweet look like
+// const comment = {
+//   id,
+//   commented_at,
+//   text,
+//   image,
+//   likes: [
+//     {
+//       id,
+//       liker_id,
+//       liked_at,
+//     },
+//   ],
+// };
+const tweet = {
+  id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
+  image: '',
+  likes: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+  saves: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+  content: 'heeeyooooo',
+  replies: [
+    {
+      reply_id: '',
+      replyer_id: '',
+    },
+  ],
+  hashtags: [],
+  retweets: [
+    {
+      retweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709978281556-retweet',
+      retweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+    },
+  ],
+  isRetweet: false,
+  created_at: '2024-03-08T15:14:16.467Z',
+  publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+};
+
+const replyTweet = {
+  id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467-reply',
+  image: '',
+  likes: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+  saves: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+  content: 'heeeyooooo',
+  comments: [
+    {
+      comment_id: '',
+      commenter_id: '',
+    },
+  ],
+  hashtags: [],
+  retweets: [
+    {
+      retweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709978281556-retweet',
+      retweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+    },
+  ],
+  isRetweet: false,
+  isReply: true,
+  created_at: '2024-03-08T15:14:16.467Z',
+  publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+  original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
+};
+
+// to add a reply, the user inputs some text, and optionaly an image, and hits enter
+// the reply gets tweeted, and the original tweet is notified of the reply
+// to notify the original tweet, an object including the id of the reply and of the replyer, is added into the replies array inside of the tweet
+
+// if a tweet is a reply, indicated by the "isReply=true" property, fetch the original tweet, and display it above the reply itself, while indicating that it is a reply to another tweet
+
+// when viewing a tweet, if it has replies, then display the most recent, or most liked replies to it, by fetching them from the replies array and displaying the appropriate data.
