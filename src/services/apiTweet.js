@@ -389,7 +389,29 @@ export async function removeReply({ replyId, userID }) {
   return data;
 }
 // 2) notify the original tweet
-export async function notifyOriginalTweetOfRemovedReply() {}
+export async function notifyOriginalTweetOfRemovedReply({
+  originalTweetID,
+  originalTweeterId,
+  replyID,
+  replyerId,
+}) {
+  console.log({
+    originalTweetID,
+    originalTweeterId,
+    replyID,
+    replyerId,
+  });
+  const { data, error } = await supabase.rpc('notify_tweet_of_reply_removal', {
+    tweet_id: originalTweetID,
+    tweeter_id: originalTweeterId,
+    reply_id: replyID,
+    replyer_id: replyerId,
+  });
+
+  if (error) throw new Error(error.message);
+  console.log(data);
+  return data;
+}
 // ///////////////////////////////////////////////
 
 export async function getTweetById({ tweetId, publisherId }) {

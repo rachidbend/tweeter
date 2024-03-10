@@ -4,7 +4,11 @@ import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import { useGetTweet } from '../../hooks/tweet/useGetTweet';
 import { Months } from '../../helpers/variables';
-import { IconHeartOutline } from '../../styles/Icons';
+import {
+  IconDotsHorizontal,
+  IconHeartOutline,
+  IconTrashOutline,
+} from '../../styles/Icons';
 import { formatNumber } from '../../helpers/functions';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useLikeTweet } from '../../hooks/tweet/useLikeTweet';
@@ -12,6 +16,9 @@ import { useNotifyUserOfLike } from '../../hooks/tweet/useNotifyUserOfLike';
 import { useRemoveTweetFromLikes } from '../../hooks/tweet/useRemoveTweetFromLikes';
 import { useNotifyUserOfUnlike } from '../../hooks/tweet/useNotifyUserOfUnlike';
 import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
+import { useState } from 'react';
+import { useRemoveReply } from '../../hooks/tweet/reply/useRemoveReply';
+import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
 
 const StyledComment = styled.div`
   display: grid;
@@ -111,10 +118,56 @@ const Image = styled.img`
   height: auto;
   border-radius: 0.8rem;
 `;
-
 const AvatarContainer = styled.div``;
 
+const OptionsContainer = styled.div`
+  margin-left: auto;
+  position: relative;
+`;
+const OptionsButton = styled.button`
+  cursor: pointer;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: none;
+  border: none;
+  color: var(--color-grey-300);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const OptionsIcon = styled(IconDotsHorizontal)``;
+const Options = styled.div`
+  position: absolute;
+  right: 0;
+  background-color: var(--color-white);
+  padding: 1.2rem 2.4rem 1.2rem 1.2rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid var(--color-grey-600);
+  box-shadow: var(--shadow-100);
+`;
+
+const DeleteButton = styled.button`
+  color: var(--color-red-100);
+  font-family: var(--font-noto);
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  background: none;
+  border: none;
+`;
+const DeleteIcon = styled(IconTrashOutline)`
+  height: 1.4rem;
+  width: 1.4rem;
+  color: inherit;
+`;
+
 function Comment({ reply }) {
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+
   const { userProfile: originalTweeter, isLoading } = useGetUserData(
     reply.replyer_id
   );
@@ -124,6 +177,8 @@ function Comment({ reply }) {
     tweetId: reply.reply_id,
     publisherId: reply.replyer_id,
   });
+
+  const isCurrentUser = user.id === reply.replyer_id;
 
   // Like handlers
   const { likeTweet } = useLikeTweet();
@@ -139,6 +194,28 @@ function Comment({ reply }) {
   function handleUnlike() {
     removeTweetFromLikes({ tweet: tweet });
     notifyUserOfUnlike({ targetId: tweet.publisher_id, tweetId: tweet.id });
+  }
+
+  // removing the reply handlers
+  const { removeReply } = useRemoveReply();
+  const { notifyOriginalTweetOfReplyRemoval } = useNotifyTweetOfReplyRemoval();
+
+  function handleDelete() {
+    // setIsOptionsOpen(false);
+    if (!isCurrentUser) return;
+    removeReply(
+      { replyId: reply.reply_id },
+      {
+        onSuccess: () => {
+          notifyOriginalTweetOfReplyRemoval({
+            originalTweetID: tweet.original_tweet_id,
+            originalTweeterId: tweet.original_tweeter_id,
+            replyID: reply.reply_id,
+            replyerId: reply.replyer_id,
+          });
+        },
+      }
+    );
   }
 
   if (isLoading || isLoadingTweet || isLoadingUser) return <Spinner />;
@@ -167,6 +244,25 @@ function Comment({ reply }) {
           <Header>
             <Username>{originalTweeter.user_name}</Username>
             <PostingDate>{publishingText}</PostingDate>
+            {isCurrentUser && (
+              <OptionsContainer>
+                <OptionsButton
+                  onClick={() =>
+                    setIsOptionsOpen(isOptionsOpen => !isOptionsOpen)
+                  }
+                >
+                  <OptionsIcon />
+                </OptionsButton>
+                {isOptionsOpen && (
+                  <Options>
+                    <DeleteButton onClick={handleDelete}>
+                      <DeleteIcon />
+                      Delete
+                    </DeleteButton>
+                  </Options>
+                )}
+              </OptionsContainer>
+            )}
           </Header>
           <Content>{tweet.content}</Content>
           {tweet.image !== '' && <Image src={tweet.image} />}
