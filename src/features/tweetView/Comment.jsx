@@ -9,7 +9,7 @@ import {
   IconHeartOutline,
   IconTrashOutline,
 } from '../../styles/Icons';
-import { formatNumber } from '../../helpers/functions';
+import { formatDate, formatNumber } from '../../helpers/functions';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useLikeTweet } from '../../hooks/tweet/useLikeTweet';
 import { useNotifyUserOfLike } from '../../hooks/tweet/useNotifyUserOfLike';
@@ -19,6 +19,7 @@ import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
 import { useState } from 'react';
 import { useRemoveReply } from '../../hooks/tweet/reply/useRemoveReply';
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
+import { Link } from 'react-router-dom';
 
 const StyledComment = styled.div`
   display: grid;
@@ -35,12 +36,21 @@ const Avatar = styled.img`
   object-fit: cover;
   object-position: center;
 `;
-const Username = styled.p`
+const Username = styled(Link)`
   font-family: var(--font-poppings);
   font-size: 1.4rem;
   font-weight: 500;
   letter-spacing: -0.035em;
   color: var(--color-black);
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 0.1rem solid transparent;
+  transition: color var(--transition-200), border var(--transition-200);
+
+  &:hover {
+    color: var(--color-grey-300);
+    border-bottom: 0.1rem solid var(--color-grey-300);
+  }
 `;
 const PostingDate = styled.p`
   font-family: var(--font-noto);
@@ -178,7 +188,7 @@ function Comment({ reply }) {
     publisherId: reply.replyer_id,
   });
 
-  const isCurrentUser = user.id === reply.replyer_id;
+  const isCurrentUser = user?.id === reply?.replyer_id;
 
   // Like handlers
   const { likeTweet } = useLikeTweet();
@@ -204,14 +214,14 @@ function Comment({ reply }) {
     // setIsOptionsOpen(false);
     if (!isCurrentUser) return;
     removeReply(
-      { replyId: reply.reply_id },
+      { replyId: reply?.reply_id },
       {
         onSuccess: () => {
           notifyOriginalTweetOfReplyRemoval({
-            originalTweetID: tweet.original_tweet_id,
-            originalTweeterId: tweet.original_tweeter_id,
-            replyID: reply.reply_id,
-            replyerId: reply.replyer_id,
+            originalTweetID: tweet?.original_tweet_id,
+            originalTweeterId: tweet?.original_tweeter_id,
+            replyID: reply?.reply_id,
+            replyerId: reply?.replyer_id,
           });
         },
       }
@@ -219,13 +229,11 @@ function Comment({ reply }) {
   }
 
   if (isLoading || isLoadingTweet || isLoadingUser) return <Spinner />;
-  const publishingData = new Date(tweet.created_at);
-  const publishingText = `${publishingData.getDate()} ${
-    Months[publishingData.getMonth()]
-  } at ${publishingData.getHours()}:${publishingData.getMinutes()}`;
 
   const isLiked =
-    userProfile?.likes?.filter(like => like.id === tweet.id).length > 0;
+    userProfile?.likes?.filter(like => like?.id === tweet?.id).length > 0;
+
+  if (!tweet || !reply) return;
 
   return (
     <StyledComment>
@@ -233,7 +241,7 @@ function Comment({ reply }) {
         {originalTweeter?.avatar_image ? (
           <Avatar
             src={originalTweeter?.avatar_image}
-            alt={`avatar image of ${user.userName}`}
+            alt={`avatar image of ${user?.userName}`}
           />
         ) : (
           <AvatarPlaceHolder />
@@ -242,8 +250,10 @@ function Comment({ reply }) {
       <Container>
         <CommentContainer>
           <Header>
-            <Username>{originalTweeter.user_name}</Username>
-            <PostingDate>{publishingText}</PostingDate>
+            <Username to={`/user/${reply?.replyer_id}`}>
+              {originalTweeter?.user_name}
+            </Username>
+            <PostingDate>{formatDate(tweet?.created_at)}</PostingDate>
             {isCurrentUser && (
               <OptionsContainer>
                 <OptionsButton
@@ -264,8 +274,8 @@ function Comment({ reply }) {
               </OptionsContainer>
             )}
           </Header>
-          <Content>{tweet.content}</Content>
-          {tweet.image !== '' && <Image src={tweet.image} />}
+          <Content>{tweet?.content}</Content>
+          {tweet?.image !== '' && <Image src={tweet?.image} />}
         </CommentContainer>
         <LikeContainer>
           <LikeButton
@@ -284,19 +294,19 @@ function Comment({ reply }) {
 
 export default Comment;
 
-const obs = {
-  id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1710004633401-b9628375-9682-4879-a408-45e7e2b8b9db-Sat Mar 09 2024 19:01:29 GMT+0100 (GMT+01:00)-reply',
-  image: '',
-  likes: [],
-  saves: [],
-  content: 'this is a reply',
-  isReply: true,
-  replies: [],
-  hashtags: [],
-  retweets: [],
-  isRetweet: false,
-  created_at: '2024-03-09T18:01:29.627Z',
-  publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-  original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1710004633401',
-  original_tweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-};
+// const obs = {
+//   id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1710004633401-b9628375-9682-4879-a408-45e7e2b8b9db-Sat Mar 09 2024 19:01:29 GMT+0100 (GMT+01:00)-reply',
+//   image: '',
+//   likes: [],
+//   saves: [],
+//   content: 'this is a reply',
+//   isReply: true,
+//   replies: [],
+//   hashtags: [],
+//   retweets: [],
+//   isRetweet: false,
+//   created_at: '2024-03-09T18:01:29.627Z',
+//   publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+//   original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1710004633401',
+//   original_tweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+// };

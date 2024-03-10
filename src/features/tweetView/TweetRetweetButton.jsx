@@ -8,6 +8,7 @@ import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';
 import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
 import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/useNotifyUserOfRetweetRemove';
 import { IconSync } from '../../styles/Icons';
+import { useUser } from '../../hooks/authHooks/useUser';
 
 const RetweetIcon = styled(IconSync)`
   height: 2rem;
@@ -15,7 +16,8 @@ const RetweetIcon = styled(IconSync)`
   color: inherit;
 `;
 
-function TweetRetweetButton({ isRetweeted, tweet, currentUser }) {
+function TweetRetweetButton({ isRetweeted, tweet }) {
+  const { user: currentUser } = useUser();
   // Retweet handlers
   const { retweet } = useRetweet();
   const { addRetweetId } = useAddRetweetId();
