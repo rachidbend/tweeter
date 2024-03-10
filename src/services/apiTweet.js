@@ -53,7 +53,6 @@ export async function deleteTweet({ tweetId, tweeterId }) {
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
   return data;
 }
 
@@ -295,7 +294,6 @@ export async function notifyUserOfRetweet({
 }
 
 export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
-  console.log('notify of retweet removal', targetId, tweetId);
   const { data, error } = await supabase.rpc(
     'notify_tweet_of_retweet_removal',
     {
@@ -313,7 +311,6 @@ export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
 // when adding a reply
 // 1) tweet the reply, and link it to the original tweet
 export async function addReply({ originalTweet, content, image, userID, id }) {
-  console.log(image);
   let imageUrl = '';
   if (image.length > 0) {
     const fileType = image[0].type.split('/').at(1);
@@ -353,7 +350,7 @@ export async function addReply({ originalTweet, content, image, userID, id }) {
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
+
   return data;
 }
 
@@ -372,7 +369,7 @@ export async function notifyOriginalTweetOfReply({
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
+
   return data;
 }
 
@@ -385,7 +382,7 @@ export async function removeReply({ replyId, userID }) {
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
+
   return data;
 }
 // 2) notify the original tweet
@@ -395,12 +392,6 @@ export async function notifyOriginalTweetOfRemovedReply({
   replyID,
   replyerId,
 }) {
-  console.log({
-    originalTweetID,
-    originalTweeterId,
-    replyID,
-    replyerId,
-  });
   const { data, error } = await supabase.rpc('notify_tweet_of_reply_removal', {
     tweet_id: originalTweetID,
     tweeter_id: originalTweeterId,
@@ -409,7 +400,7 @@ export async function notifyOriginalTweetOfRemovedReply({
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
+
   return data;
 }
 // ///////////////////////////////////////////////

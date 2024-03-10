@@ -9,15 +9,15 @@ import { useUser } from '../../hooks/authHooks/useUser';
 import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';
 import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
 import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/useNotifyUserOfRetweetRemove';
-import { useRemoveReply } from '../../hooks/tweet/reply/useRemoveReply';
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const StyledTweetHeader = styled.div`
   display: grid;
   grid-template-columns: 4rem auto;
   grid-template-rows: auto auto;
   column-gap: 1.75rem;
-  margin-bottom: 2.1rem;
+  margin-bottom: 0.6rem;
 `;
 
 const Avatar = styled.img`
@@ -70,7 +70,7 @@ const OptionsButton = styled.button`
   align-items: center;
 `;
 const OptionsIcon = styled(IconDotsHorizontal)``;
-const Options = styled.div`
+const Options = styled(motion.div)`
   position: absolute;
   right: 0;
   background-color: var(--color-white);
@@ -104,37 +104,36 @@ const UsernameContainer = styled.div`
   justify-content: space-between;
 `;
 
+// Component for rendering the header of a tweet
 function TweetHeader({ user, tweet }) {
-  // state for managing the visibility of the options list
+  // State for managing the visibility of the options list
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
-  // getting the current users info
+  // Getting the current user's info
   const { user: currentUser } = useUser();
 
-  // states that are reqired to function properly
+  // States that are required to function properly
   const isCurrentUser = tweet.publisher_id === currentUser.id;
   const isRetweet = tweet.isRetweet;
   const isReply = tweet.isReply;
 
-  // custom hooks for deleting a tweet
+  // Custom hooks for deleting a tweet
   const { removeTweet } = useRemoveTweet();
   const { removeRetweetId } = useRemoveTweetId();
   const { notifyUserOfUnretweet } = useNotifyUserOfRetweetRemove();
-  // removing the reply handlers
-  const { removeReply } = useRemoveReply();
   const { notifyOriginalTweetOfReplyRemoval } = useNotifyTweetOfReplyRemoval();
 
+  // Function to handle tweet deletion
   function handleDelete() {
     // NORMAL tweet
     if (!isReply && !isRetweet) {
-      // if the tweet is a normal tweet, we delete it
+      // If the tweet is a normal tweet, we delete it
       removeTweet({ tweetId: tweet.id });
-      console.log('delete normal tweet');
     }
 
     // REPLY tweet
     if (isReply && !isRetweet) {
-      // if the tweet is a reply, we delete the reply, and we notify the original tweet of the reply deletion
+      // If the tweet is a reply, we delete the reply, and we notify the original tweet of the reply deletion
 
       if (!isCurrentUser) return;
       removeTweet(
@@ -150,14 +149,12 @@ function TweetHeader({ user, tweet }) {
           },
         }
       );
-
-      console.log('delete reply');
     }
 
     // RETWEET
     if (!isReply && isRetweet) {
-      // if the tweet is a retweet, we delete the retweet, and notify the orifinal tweet of retweet deletion
-      console.log(tweet);
+      // If the tweet is a retweet, we delete the retweet, and notify the original tweet of retweet deletion
+
       removeTweet(
         { tweetId: tweet.id },
         {
@@ -170,13 +167,12 @@ function TweetHeader({ user, tweet }) {
           },
         }
       );
-
-      console.log('delete retweet');
     }
   }
 
   return (
     <StyledTweetHeader>
+      {/* Avatar image */}
       <AvatarContainer>
         {user.userAvatar ? (
           <Avatar
@@ -188,26 +184,43 @@ function TweetHeader({ user, tweet }) {
         )}
       </AvatarContainer>
 
+      {/* username  */}
       <UsernameContainer>
         <UserName to={`/user/${tweet?.publisher_id}`}>{user.userName}</UserName>
+        {/* if the current user is the owner of the tweet, he can see the following options list */}
         {isCurrentUser && (
           <OptionsContainer>
+            {/* button to toggle options list visibility */}
             <OptionsButton
               onClick={() => setIsOptionsOpen(isOptionsOpen => !isOptionsOpen)}
             >
               <OptionsIcon />
             </OptionsButton>
-            {isOptionsOpen && (
-              <Options>
-                <DeleteButton onClick={handleDelete}>
-                  <DeleteIcon />
-                  Delete
-                </DeleteButton>
-              </Options>
-            )}
+            {/* list of options */}
+            <AnimatePresence>
+              {isOptionsOpen && (
+                <Options
+                  initial={{
+                    opacity: 0,
+                  }}
+                  animate={{
+                    opacity: 1,
+                  }}
+                  exit={{
+                    opacity: 0,
+                  }}
+                >
+                  <DeleteButton onClick={handleDelete}>
+                    <DeleteIcon />
+                    Delete
+                  </DeleteButton>
+                </Options>
+              )}
+            </AnimatePresence>
           </OptionsContainer>
         )}
       </UsernameContainer>
+      {/* formated time of creation of the tweet  */}
       <PublishTime>{formatDate(tweet?.created_at)}</PublishTime>
     </StyledTweetHeader>
   );

@@ -7,6 +7,8 @@ import { IconImageOutline } from '../../styles/Icons';
 import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
+import Spinner from '../../ui/Spinner';
+import { useState } from 'react';
 
 const CommentInput = styled.input`
   height: 100%;
@@ -82,10 +84,15 @@ const UserAvatar = styled.img`
 `;
 
 function TweetReplyInput({ tweet }) {
+  const [replyImage, setReplyImage] = useState();
+  // Form handler (react hook form)
   const { register, handleSubmit, reset } = useForm();
-  const { user: currentUser } = useUser();
-  const { userProfile } = useGetUserData(currentUser.id);
 
+  // getting the current user's data
+  const { user: currentUser, isLoadingUser } = useUser();
+  const { userProfile, isLoading } = useGetUserData(currentUser.id);
+
+  // custom hooks to add a reply and notify the original tweet
   const { addReply } = useAddReply();
   const { notifyOriginalTweetOfReply } = useNotifyTweetOfReply();
 
@@ -93,6 +100,7 @@ function TweetReplyInput({ tweet }) {
   const onSubmit = data => {
     // if there is no content, the reply will not be posted
     if (!data.commentText) return;
+    console.log(replyImage);
 
     // creating the id of the reply
     const date = new Date();
@@ -103,7 +111,7 @@ function TweetReplyInput({ tweet }) {
       {
         originalTweet: tweet,
         content: data.commentText,
-        image: data.commentImage,
+        image: replyImage,
         id: id,
       },
       {
@@ -115,12 +123,21 @@ function TweetReplyInput({ tweet }) {
             reply_id: id,
             replyer_id: currentUser.id,
           });
+          setReplyImage('');
         },
       }
     );
 
     reset();
   };
+
+  function handleImageChange(e) {
+    const file = e.target.files;
+    setReplyImage(file);
+    console.log(file);
+  }
+
+  if (isLoading || isLoadingUser) return <Spinner />;
 
   return (
     <InputContainer>
@@ -143,7 +160,7 @@ function TweetReplyInput({ tweet }) {
           <UploadImage
             type="file"
             id={`image-input-${tweet.id}`}
-            {...register('commentImage')}
+            {...register('image', { onChange: handleImageChange })}
           />
         </ImageInputContainer>
       </CommentContainer>

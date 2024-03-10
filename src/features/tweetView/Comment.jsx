@@ -20,8 +20,9 @@ import { useState } from 'react';
 import { useRemoveReply } from '../../hooks/tweet/reply/useRemoveReply';
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
 import { Link } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 
-const StyledComment = styled.div`
+const StyledComment = styled(motion.div)`
   display: grid;
   grid-template-columns: 4rem 1fr;
   grid-template-rows: auto;
@@ -146,7 +147,7 @@ const OptionsButton = styled.button`
   align-items: center;
 `;
 const OptionsIcon = styled(IconDotsHorizontal)``;
-const Options = styled.div`
+const Options = styled(motion.div)`
   position: absolute;
   right: 0;
   background-color: var(--color-white);
@@ -236,7 +237,15 @@ function Comment({ reply }) {
   if (!tweet || !reply) return;
 
   return (
-    <StyledComment>
+    <StyledComment
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{ opacity: 0 }}
+    >
       <AvatarContainer>
         {originalTweeter?.avatar_image ? (
           <Avatar
@@ -263,14 +272,26 @@ function Comment({ reply }) {
                 >
                   <OptionsIcon />
                 </OptionsButton>
-                {isOptionsOpen && (
-                  <Options>
-                    <DeleteButton onClick={handleDelete}>
-                      <DeleteIcon />
-                      Delete
-                    </DeleteButton>
-                  </Options>
-                )}
+                <AnimatePresence>
+                  {isOptionsOpen && (
+                    <Options
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                      }}
+                    >
+                      <DeleteButton onClick={handleDelete}>
+                        <DeleteIcon />
+                        Delete
+                      </DeleteButton>
+                    </Options>
+                  )}
+                </AnimatePresence>
               </OptionsContainer>
             )}
           </Header>
@@ -293,20 +314,3 @@ function Comment({ reply }) {
 }
 
 export default Comment;
-
-// const obs = {
-//   id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1710004633401-b9628375-9682-4879-a408-45e7e2b8b9db-Sat Mar 09 2024 19:01:29 GMT+0100 (GMT+01:00)-reply',
-//   image: '',
-//   likes: [],
-//   saves: [],
-//   content: 'this is a reply',
-//   isReply: true,
-//   replies: [],
-//   hashtags: [],
-//   retweets: [],
-//   isRetweet: false,
-//   created_at: '2024-03-09T18:01:29.627Z',
-//   publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-//   original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1710004633401',
-//   original_tweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-// };
