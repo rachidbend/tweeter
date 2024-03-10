@@ -252,8 +252,6 @@ const RepliesContainer = styled.div`
 `;
 
 function TweetView({ currentUserAvatar, user, tweet }) {
-  // userAvatar: userProfile.avatar_image,
-  // userName: userProfile.user_name,
   const publishingData = new Date(tweet.created_at);
   const publishingText = `${publishingData.getDate()} ${
     Months[publishingData.getMonth()]
@@ -404,20 +402,6 @@ function TweetView({ currentUserAvatar, user, tweet }) {
 
 export default TweetView;
 
-// how would a comment inside a tweet look like
-// const comment = {
-//   id,
-//   commented_at,
-//   text,
-//   image,
-//   likes: [
-//     {
-//       id,
-//       liker_id,
-//       liked_at,
-//     },
-//   ],
-// };
 const tweet = {
   id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
   image: '',
@@ -467,11 +451,3 @@ const replyTweet = {
   publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
   original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
 };
-
-// to add a reply, the user inputs some text, and optionaly an image, and hits enter
-// the reply gets tweeted, and the original tweet is notified of the reply
-// to notify the original tweet, an object including the id of the reply and of the replyer, is added into the replies array inside of the tweet
-
-// if a tweet is a reply, indicated by the "isReply=true" property, fetch the original tweet, and display it above the reply itself, while indicating that it is a reply to another tweet
-
-// when viewing a tweet, if it has replies, then display the most recent, or most liked replies to it, by fetching them from the replies array and displaying the appropriate data.

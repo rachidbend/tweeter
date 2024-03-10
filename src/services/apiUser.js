@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 
 export async function getUserData(userID) {
+  if (userID === undefined) return null;
   let { data: profiles, error } = await supabase
     .from('profiles')
     .select('*')
