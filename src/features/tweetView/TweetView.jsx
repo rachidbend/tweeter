@@ -8,8 +8,9 @@ import TweetButtons from './TweetButtons';
 import TweetHeader from './TweetHeader';
 import TweetReply from './TweetReply';
 import TweetReplyInput from './TweetReplyInput';
+import { AnimatePresence, motion } from 'framer-motion';
 
-const StyledTweet = styled.div`
+const StyledTweet = styled(motion.div)`
   background-color: var(--color-white);
   padding: 2rem;
   border-radius: 0.8rem;
@@ -26,6 +27,7 @@ const TextContent = styled.p`
   letter-spacing: -0.035em;
   margin-bottom: 2rem;
   color: var(--color-grey-200);
+  margin-top: 1.5rem;
 `;
 const ImageContent = styled.img`
   width: 100%;
@@ -88,9 +90,47 @@ const RepliesContainer = styled.div`
   gap: 2rem;
 `;
 
+// tweet structure
+/*
+  1) tweet header
+    - user avater
+    - user name
+    - publishing date
+    - additional options (delete tweet)
+
+  2) tweet content
+    - if is reply, show original tweet above
+    - tweet content
+    - if retweet, show origial tweet contetn bellow 
+
+  3) tweet stats
+    - stats (number of likes, saves, retweets and replies)
+
+  4) tweet interactive buttons
+    - buttons (to reply, like, retweet, and save) 
+
+  5) tweet reply input
+    - reply input (to add post a reply of the tweet)
+    (adding an image to the reply is currently NOT functional)
+
+  6) tweet replies section
+    - all replies 
+    - like button for a reply
+*/
+
 function TweetView({ user, tweet }) {
   return (
-    <StyledTweet>
+    <StyledTweet
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+        transition: {
+          delay: 0.2,
+        },
+      }}
+    >
       {/* Header of the tweet */}
       <TweetHeader tweet={tweet} user={user} />
 
@@ -98,11 +138,14 @@ function TweetView({ user, tweet }) {
       <Content>
         {/* when a tweet is a reply */}
         {tweet.isReply && (
-          <TweetReply originalTweeterId={tweet?.original_tweeter_id} />
+          <TweetReply
+            originalTweeterId={tweet?.original_tweeter_id}
+            originalTweetId={tweet?.original_tweet_id}
+          />
         )}
 
         {/* Main content of the tweet */}
-        <TextContent>{tweet.content}</TextContent>
+        {tweet?.content && <TextContent>{tweet.content}</TextContent>}
         {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
       </Content>
 
@@ -126,9 +169,11 @@ function TweetView({ user, tweet }) {
       {/* if there are any replies, show them */}
       {tweet.replies.length > 0 && (
         <RepliesContainer>
-          {tweet.replies.map((reply, index) => (
-            <Comment reply={reply} key={`${index}-${tweet.id}-reply`} />
-          ))}
+          <AnimatePresence>
+            {tweet.replies.map((reply, index) => (
+              <Comment reply={reply} key={`${index}-${tweet.id}-reply`} />
+            ))}
+          </AnimatePresence>
         </RepliesContainer>
       )}
     </StyledTweet>
@@ -136,37 +181,3 @@ function TweetView({ user, tweet }) {
 }
 
 export default TweetView;
-
-// refactoring this component
-// 1) the tweet should be in three parts, this component will choose which one to display depending on two paramiter, isReplie, isRetweet
-
-// - one that shows normal tweets (is not a retweet or a reply)
-// - one that shows retweets (is a retweet)
-// - one that shows replies (is a replie)
-
-// tweet structure
-/*
-  1) tweet header
-    - user avater
-    - user name
-    - publishing date
-    - additional options (delete tweet)
-
-  2) tweet content
-    - if is reply, show original tweet above
-    - tweet content
-    - if retweet, show origial tweet contetn bellow 
-
-  3) tweet stats
-    - stats
-
-  4) tweet interactive buttons
-    - buttons
-
-  5) tweet reply input
-    - reply input
-
-  6) tweet replies section
-    - all replies 
-    - like button for a reply
-*/

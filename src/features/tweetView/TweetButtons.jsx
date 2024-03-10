@@ -26,6 +26,9 @@ function TweetButtons({ tweet }) {
 
   return (
     <StyledTweetButtons>
+      {/**************************************
+      for now, the comment button does nothing 
+      ***************************************/}
       <Button>
         <CommentIcon />
         <ButtonText>Comment</ButtonText>
@@ -33,6 +36,7 @@ function TweetButtons({ tweet }) {
 
       {/* tweet RETWEET button */}
       <TweetRetweetButton isRetweeted={isRetweeted} tweet={tweet} />
+
       {/* tweet LIKE button */}
       <TweetLikeButton isLiked={isLiked} tweet={tweet} />
 

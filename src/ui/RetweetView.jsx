@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useGetTweet } from '../hooks/tweet/useGetTweet';
 import Spinner from './Spinner';
 import { useGetUserData } from '../hooks/user/useGetUserData';
-import { Months } from '../helpers/variables';
 import { formatDate } from '../helpers/functions';
 
 const StyledRetweetView = styled.div``;

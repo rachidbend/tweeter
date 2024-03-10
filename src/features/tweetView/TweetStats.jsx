@@ -18,13 +18,15 @@ const Stat = styled.p`
   letter-spacing: -0.035em;
 `;
 
+// Component that displays the stats of a tweet
+// including: likes, replies, retweets, and saves (bookmarks)
 function TweetStats({ tweet }) {
   return (
     <StyledTweetStats>
-      <Stat>{formatNumber(tweet.likes.length)} Likes</Stat>
-      <Stat>{formatNumber(tweet.replies.length)} Comment</Stat>
-      <Stat>{formatNumber(tweet.retweets.length)} Retweets</Stat>
-      <Stat>{formatNumber(tweet.saves.length)} Saved</Stat>
+      <Stat>{formatNumber(tweet?.likes.length)} Likes</Stat>
+      <Stat>{formatNumber(tweet?.replies.length)} Comment</Stat>
+      <Stat>{formatNumber(tweet?.retweets.length)} Retweets</Stat>
+      <Stat>{formatNumber(tweet?.saves.length)} Saved</Stat>
     </StyledTweetStats>
   );
 }
