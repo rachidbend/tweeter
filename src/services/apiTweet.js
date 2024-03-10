@@ -32,6 +32,7 @@ export async function addTweet({ oldTweets, newTweet, userId }) {
     likes: [],
     saves: [],
     isRetweet: false,
+    isReply: false,
   };
 
   const { data, error } = await supabase
@@ -42,6 +43,17 @@ export async function addTweet({ oldTweets, newTweet, userId }) {
 
   if (error) throw new Error(error.message);
 
+  return data;
+}
+
+export async function deleteTweet({ tweetId, tweeterId }) {
+  const { data, error } = await supabase.rpc('delete_tweet', {
+    tweet_id: tweetId,
+    tweeter_id: tweeterId,
+  });
+
+  if (error) throw new Error(error.message);
+  console.log(data);
   return data;
 }
 
@@ -217,8 +229,8 @@ export async function retweet({ oldTweets, newTweet, userId, tweet }) {
     likes: [],
     saves: [],
     isRetweet: true,
-    originalTweetId: tweet.id,
-    originalTweetPublishdeId: tweet.publisher_id,
+    original_tweet_id: tweet.id,
+    original_tweeter_id: tweet.publisher_id,
   };
 
   const { data, error } = await supabase
@@ -282,20 +294,8 @@ export async function notifyUserOfRetweet({
   return data;
 }
 
-export async function removeTweet({ oldTweets, tweetId, userId }) {
-  const filteredTweets = oldTweets.filter(tweet => tweet.id !== tweetId);
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ tweets: filteredTweets })
-    .eq('id', userId)
-    .select();
-
-  if (error) throw new Error(error.message);
-
-  return data;
-}
-
 export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
+  console.log('notify of retweet removal', targetId, tweetId);
   const { data, error } = await supabase.rpc(
     'notify_tweet_of_retweet_removal',
     {

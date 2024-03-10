@@ -1,3 +1,5 @@
+import { Months } from './variables';
+
 export function setPositionSpan(spanRef, toRef) {
   // // 1. get the position of the element we want to go to
   const toRefPosition = toRef.current.offsetLeft;
@@ -23,4 +25,26 @@ export function formatNumber(num) {
   } else {
     return num.toString();
   }
+}
+
+export function formatDate(date) {
+  const publishingDate = new Date(date);
+  const publishingText = `${publishingDate.getDate()} ${
+    Months[publishingDate.getMonth()]
+  } at ${publishingDate.getHours()}:${publishingDate.getMinutes()}`;
+
+  return publishingText;
+}
+
+function isItemInArray(item, array) {
+  return array?.some(element => element.id === item.id);
+}
+
+export function tweetState(tweet, userProfile) {
+  const isSaved = isItemInArray(tweet, userProfile?.bookmarks);
+
+  const isLiked = isItemInArray(tweet, userProfile?.likes);
+  const isRetweeted = userProfile?.retweets?.includes(tweet.id);
+
+  return { isSaved, isLiked, isRetweeted };
 }

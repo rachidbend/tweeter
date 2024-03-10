@@ -1,19 +1,13 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
-import { IconCommentOutline, IconImageOutline } from '../../styles/Icons';
-import { useForm } from 'react-hook-form';
-import { Months } from '../../helpers/variables';
-import { useGetUserData } from '../../hooks/user/useGetUserData';
-import { useUser } from '../../hooks/authHooks/useUser';
-import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
+import { IconCommentOutline } from '../../styles/Icons';
 import RetweetView from '../../ui/RetweetView';
-import TweetLikeButton from './TweetLikeButton';
-import TweetSaveButton from './TweetSaveButton';
-import TweetRetweetButton from './TweetRetweetButton';
-import { useAddReply } from '../../hooks/tweet/reply/useAddReply';
-import useNotifyTweetOfReply from '../../hooks/tweet/reply/useNotifyTweetOfReply';
-import { Link } from 'react-router-dom';
 import Comment from './Comment';
+import TweetStats from './TweetStats';
+import TweetButtons from './TweetButtons';
+import TweetHeader from './TweetHeader';
+import TweetReply from './TweetReply';
+import TweetReplyInput from './TweetReplyInput';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -22,38 +16,6 @@ const StyledTweet = styled.div`
   box-shadow: var(--shadow-100);
 `;
 
-// header
-const Header = styled.div`
-  display: grid;
-  grid-template-columns: 4rem auto;
-  grid-template-rows: auto auto;
-  column-gap: 1.75rem;
-  margin-bottom: 2.1rem;
-`;
-const Avatar = styled.img`
-  height: 4rem;
-  width: 4rem;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 0.8rem;
-`;
-const AvatarContainer = styled.div`
-  grid-row: 1/3;
-`;
-const UserName = styled.p`
-  font-family: var(--font-poppings);
-  font-size: 1.6rem;
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  color: var(--color-black);
-`;
-const PublishTime = styled.p`
-  font-family: var(--font-noto);
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: var(--color-grey-400);
-  letter-spacing: -0.035em;
-`;
 // Main content
 const Content = styled.div``;
 const TextContent = styled.p`
@@ -72,32 +34,8 @@ const ImageContent = styled.img`
   margin-bottom: 1.2rem;
 `;
 // the stats of the tweet (number of comment, retweets, and saves)
-const StatContainer = styled.div`
-  display: flex;
-  justify-content: end;
-  gap: 1.6rem;
-  padding-bottom: 0.8rem;
-  border-bottom: 0.1rem solid var(--color-grey-600);
-  margin-bottom: 0.4rem;
-`;
-const Stat = styled.p`
-  font-family: var(--font-noto);
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: var(--color-grey-400);
-  letter-spacing: -0.035em;
-`;
 
-// buttons (Comment, retweet, like, save)
-const ButtonsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 0.704rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 0.1rem solid var(--color-grey-600);
-  margin-bottom: 0.9rem;
-`;
-
+// commonly used components
 export const Button = styled.button`
   font-family: var(--font-noto);
   width: 100%;
@@ -123,7 +61,7 @@ export const Button = styled.button`
   background-color: transparent;
   cursor: pointer;
 
-  transition: background var(--transition-300), color var(--transition-300);
+  transition: background var(--transition-300), color var(--transition-100);
   &:hover {
     background-color: var(--color-grey-600);
   }
@@ -135,111 +73,10 @@ export const ButtonText = styled.span`
   }
 `;
 
-const CommentIcon = styled(IconCommentOutline)`
+export const CommentIcon = styled(IconCommentOutline)`
   height: 2rem;
   width: 2rem;
   color: inherit;
-`;
-
-// input for the current user to add a comment
-const InputContainer = styled.div`
-  display: grid;
-  grid-template-columns: 4rem 1fr;
-
-  gap: 1.622rem;
-`;
-const UserAvatar = styled.img`
-  width: 4rem;
-  height: 4rem;
-  border-radius: 0.8rem;
-  object-fit: cover;
-  object-position: center;
-`;
-
-const CommentInput = styled.input`
-  height: 100%;
-  width: 100%;
-  border: 0.1rem solid var(--color-grey-600);
-  border-radius: 0.8rem;
-  padding: 0 1.2rem;
-  background-color: var(--color-grey-700);
-
-  font-family: var(--font-noto);
-  font-size: 1.4rem;
-  font-weight: 500;
-  line-height: 19px;
-  letter-spacing: -0.035em;
-  color: var(--color-grey-200);
-  outline: none;
-  transition: border var(--transition-200);
-  &::placeholder {
-    color: var(--color-grey-400);
-  }
-
-  &:hover,
-  &:focus {
-    border: 0.1rem solid var(--color-blue-100);
-  }
-`;
-const ImageInputContainer = styled.div``;
-const UploadImageLabel = styled.label`
-  color: var(--color-grey-400);
-  cursor: pointer;
-  transition: color var(--transition-200);
-  position: absolute;
-  top: 50%;
-  right: 0.75rem;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5rem;
-  transform: translateY(-50%);
-  &:hover {
-    color: var(--color-blue-100);
-  }
-`;
-const ImageIcon = styled(IconImageOutline)`
-  height: 2rem;
-  width: 2rem;
-  color: inherit;
-`;
-const UploadImage = styled.input`
-  height: 0px;
-  width: 0px;
-  opacity: 0;
-  visibility: hidden;
-`;
-
-const CommentContainer = styled.form`
-  position: relative;
-`;
-
-// section that includes some of the most liked comments
-const Comments = styled.div``;
-
-const RetweetContainer = styled.div`
-  margin-left: 4rem;
-  border-left: 2px solid var(--color-grey-300);
-  padding-left: 2.4rem;
-`;
-
-const ReplyingTo = styled.p`
-  font-family: var(--font-poppings);
-  font-size: 1.2rem;
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  color: var(--color-grey-300);
-  margin-left: 6rem;
-  margin-bottom: 1.2rem;
-`;
-const ReplyingToUserName = styled(Link)`
-  font-family: var(--font-poppings);
-  font-size: 1.2rem;
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  color: var(--color-grey-100);
-  margin-left: 0.6rem;
 `;
 
 const RepliesContainer = styled.div`
@@ -251,144 +88,42 @@ const RepliesContainer = styled.div`
   gap: 2rem;
 `;
 
-function TweetView({ currentUserAvatar, user, tweet }) {
-  const publishingData = new Date(tweet.created_at);
-  const publishingText = `${publishingData.getDate()} ${
-    Months[publishingData.getMonth()]
-  } at ${publishingData.getHours()}:${publishingData.getMinutes()}`;
-
-  const { user: currentUser } = useUser();
-  const { userProfile } = useGetUserData(currentUser.id);
-  const { register, handleSubmit, reset } = useForm();
-
-  const getThisProfile = tweet?.original_tweeter_id && currentUser.id;
-  const { userProfile: originalTweeter } = useGetUserData(getThisProfile);
-  const { addReply } = useAddReply();
-  const { notifyOriginalTweetOfReply } = useNotifyTweetOfReply();
-  const onSubmit = data => {
-    if (!data.commentText) return;
-    console.log(data);
-    const date = new Date();
-    const id = `${tweet.id}-${currentUser.id}-${date}-reply`;
-    addReply(
-      {
-        originalTweet: tweet,
-        content: data.commentText,
-        image: data.commentImage,
-        id: id,
-      },
-      {
-        onSuccess: () => {
-          notifyOriginalTweetOfReply({
-            tweet_id: tweet.id,
-            tweeter_id: tweet.publisher_id,
-            reply_id: id,
-            replyer_id: currentUser.id,
-          });
-        },
-      }
-    );
-
-    reset();
-  };
-
-  // states
-  const isSaved =
-    userProfile?.bookmarks?.filter(bookmark => bookmark.id === tweet.id)
-      .length > 0;
-  const isLiked =
-    userProfile?.likes?.filter(like => like.id === tweet.id).length > 0;
-  const isRetweeted =
-    userProfile?.retweets?.filter(id => id === tweet.id).length > 0;
-
+function TweetView({ user, tweet }) {
   return (
     <StyledTweet>
-      <Header>
-        <AvatarContainer>
-          {user.userAvatar ? (
-            <Avatar
-              src={user.userAvatar}
-              alt={`avatar image of ${user.userName}`}
-            />
-          ) : (
-            <AvatarPlaceHolder />
-          )}
-        </AvatarContainer>
+      {/* Header of the tweet */}
+      <TweetHeader tweet={tweet} user={user} />
 
-        <UserName>{user.userName}</UserName>
-        <PublishTime>{publishingText}</PublishTime>
-      </Header>
+      {/* container of the main content of the tweet */}
       <Content>
         {/* when a tweet is a reply */}
         {tweet.isReply && (
-          <ReplyingTo>
-            replying to:
-            <ReplyingToUserName to={`/user/${originalTweeter?.id}`}>
-              {originalTweeter?.user_name}
-            </ReplyingToUserName>
-          </ReplyingTo>
+          <TweetReply originalTweeterId={tweet?.original_tweeter_id} />
         )}
+
+        {/* Main content of the tweet */}
         <TextContent>{tweet.content}</TextContent>
         {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
       </Content>
 
+      {/* if this is a retweet, show the original tweet */}
       {tweet.isRetweet && (
-        <RetweetContainer>
-          <RetweetView
-            tweetId={tweet?.originalTweetId}
-            publisherId={tweet?.originalTweetPublishdeId}
-          />
-        </RetweetContainer>
-      )}
-      <StatContainer>
-        <Stat>{tweet.likes.length} Likes</Stat>
-        <Stat>{tweet.replies.length} Comment</Stat>
-        <Stat>{tweet.retweets.length} Retweets</Stat>
-        <Stat>{tweet.saves.length} Saved</Stat>
-      </StatContainer>
-      <ButtonsContainer>
-        <Button>
-          <CommentIcon />
-          <ButtonText>Comment</ButtonText>
-        </Button>
-
-        {/* tweet RETWEET button */}
-        <TweetRetweetButton
-          isRetweeted={isRetweeted}
-          tweet={tweet}
-          currentUser={currentUser}
+        <RetweetView
+          tweetId={tweet?.original_tweet_id}
+          publisherId={tweet?.original_tweeter_id}
         />
-        {/* tweet LIKE button */}
-        <TweetLikeButton isLiked={isLiked} tweet={tweet} />
+      )}
 
-        {/* tweet SAVE button */}
-        <TweetSaveButton isSaved={isSaved} tweet={tweet} />
-      </ButtonsContainer>
-      <InputContainer>
-        {currentUserAvatar ? (
-          <UserAvatar src={currentUserAvatar} />
-        ) : (
-          <AvatarPlaceHolder />
-        )}
+      {/* showing the stats of the tweet */}
+      <TweetStats tweet={tweet} />
 
-        <CommentContainer onSubmit={handleSubmit(onSubmit)}>
-          <CommentInput
-            placeholder="Tweet your reply"
-            type="text"
-            {...register('commentText', { required: true })}
-          />
-          <ImageInputContainer>
-            <UploadImageLabel htmlFor={`image-input-${tweet.id}`}>
-              <ImageIcon />
-            </UploadImageLabel>
-            <UploadImage
-              type="file"
-              id={`image-input-${tweet.id}`}
-              {...register('commentImage')}
-            />
-          </ImageInputContainer>
-        </CommentContainer>
-      </InputContainer>
+      {/* ineraction buttons (retweet, like, save) */}
+      <TweetButtons tweet={tweet} />
+
+      {/* Reply input */}
+      <TweetReplyInput tweet={tweet} />
+
+      {/* if there are any replies, show them */}
       {tweet.replies.length > 0 && (
         <RepliesContainer>
           {tweet.replies.map((reply, index) => (
@@ -402,52 +137,36 @@ function TweetView({ currentUserAvatar, user, tweet }) {
 
 export default TweetView;
 
-const tweet = {
-  id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
-  image: '',
-  likes: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
-  saves: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
-  content: 'heeeyooooo',
-  replies: [
-    {
-      reply_id: '',
-      replyer_id: '',
-    },
-  ],
-  hashtags: [],
-  retweets: [
-    {
-      retweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709978281556-retweet',
-      retweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-    },
-  ],
-  isRetweet: false,
-  created_at: '2024-03-08T15:14:16.467Z',
-  publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-};
+// refactoring this component
+// 1) the tweet should be in three parts, this component will choose which one to display depending on two paramiter, isReplie, isRetweet
 
-const replyTweet = {
-  id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467-reply',
-  image: '',
-  likes: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
-  saves: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
-  content: 'heeeyooooo',
-  comments: [
-    {
-      comment_id: '',
-      commenter_id: '',
-    },
-  ],
-  hashtags: [],
-  retweets: [
-    {
-      retweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709978281556-retweet',
-      retweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-    },
-  ],
-  isRetweet: false,
-  isReply: true,
-  created_at: '2024-03-08T15:14:16.467Z',
-  publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-  original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
-};
+// - one that shows normal tweets (is not a retweet or a reply)
+// - one that shows retweets (is a retweet)
+// - one that shows replies (is a replie)
+
+// tweet structure
+/*
+  1) tweet header
+    - user avater
+    - user name
+    - publishing date
+    - additional options (delete tweet)
+
+  2) tweet content
+    - if is reply, show original tweet above
+    - tweet content
+    - if retweet, show origial tweet contetn bellow 
+
+  3) tweet stats
+    - stats
+
+  4) tweet interactive buttons
+    - buttons
+
+  5) tweet reply input
+    - reply input
+
+  6) tweet replies section
+    - all replies 
+    - like button for a reply
+*/

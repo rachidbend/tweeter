@@ -4,6 +4,7 @@ import { useGetTweet } from '../hooks/tweet/useGetTweet';
 import Spinner from './Spinner';
 import { useGetUserData } from '../hooks/user/useGetUserData';
 import { Months } from '../helpers/variables';
+import { formatDate } from '../helpers/functions';
 
 const StyledRetweetView = styled.div``;
 const Username = styled.p`
@@ -48,6 +49,12 @@ const ImageContent = styled.img`
   margin-bottom: 1.2rem;
 `;
 
+const RetweetContainer = styled.div`
+  margin-left: 4rem;
+  border-left: 2px solid var(--color-grey-300);
+  padding-left: 2.4rem;
+`;
+
 function RetweetView({ tweetId, publisherId }) {
   const { tweet, isLoading, error } = useGetTweet({
     tweetId: tweetId,
@@ -57,29 +64,21 @@ function RetweetView({ tweetId, publisherId }) {
   if (isLoading || isLoadingUser) return <Spinner />;
   if (error) return <p>{error.message}</p>;
 
-  const publishingData = new Date(tweet.created_at);
-  const publishingText = `${publishingData.getDate()} ${
-    Months[publishingData.getMonth()]
-  } at ${publishingData.getHours()}:${publishingData.getMinutes()}`;
+  const publishingText = formatDate(tweet.created_at);
 
   return (
-    <StyledRetweetView>
-      {/* 
-    user name
-    creation time
-    content
-    image if it exists
-    link to the original tweet
-    */}
-      <Header>
-        <Username>{userProfile.user_name}</Username>
-        <PublishTime>{publishingText}</PublishTime>
-      </Header>
-      <Content>
-        <TextContent>{tweet.content}</TextContent>
-        {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
-      </Content>
-    </StyledRetweetView>
+    <RetweetContainer>
+      <StyledRetweetView>
+        <Header>
+          <Username>{userProfile.user_name}</Username>
+          <PublishTime>{publishingText}</PublishTime>
+        </Header>
+        <Content>
+          <TextContent>{tweet.content}</TextContent>
+          {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
+        </Content>
+      </StyledRetweetView>
+    </RetweetContainer>
   );
 }
 
