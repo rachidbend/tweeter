@@ -1,35 +1,35 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { likeTweet as likeTweetApi } from '../../services/apiTweet';
-import { useUser } from '../authHooks/useUser';
-import { useGetUserData } from '../user/useGetUserData';
+import { removeTweetFromLikes as removeTweetFromLikesApi } from '../../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
+import { useGetUserData } from '../../user/useGetUserData';
 import toast from 'react-hot-toast';
 
-export function useLikeTweet() {
+export function useRemoveTweetFromLikes() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const { userProfile } = useGetUserData(user.id);
 
   const {
-    mutate: likeTweet,
+    mutate: removeTweetFromLikes,
     isPending,
     error,
   } = useMutation({
-    mutationFn: ({ newLike }) =>
-      likeTweetApi({
-        oldLikes: userProfile.likes,
-        newLike,
+    mutationFn: ({ tweet }) =>
+      removeTweetFromLikesApi({
+        oldlikes: userProfile.likes,
+        tweet,
         userId: user.id,
       }),
     onSettled: () => {
       queryClient.invalidateQueries(['profile', user.id]);
     },
     onSuccess: () => {
-      toast.success('liked the tweet!');
+      toast.success('saved the tweet!');
     },
     onError: error => {
       toast.error(error.message);
     },
   });
 
-  return { likeTweet, isPending, error };
+  return { removeTweetFromLikes, isPending, error };
 }

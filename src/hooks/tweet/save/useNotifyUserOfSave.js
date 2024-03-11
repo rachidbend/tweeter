@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { notifyUserOfSave as notifyUserOfSaveApi } from '../../services/apiTweet';
-import { useUser } from '../authHooks/useUser';
+import { notifyUserOfSave as notifyUserOfSaveApi } from '../../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
 import toast from 'react-hot-toast';
 
 export function useNotifyUserOfSave() {

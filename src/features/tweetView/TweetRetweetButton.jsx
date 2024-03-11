@@ -2,11 +2,11 @@
 import styled from 'styled-components';
 import { Button, ButtonText } from './TweetView';
 import { useRetweet } from '../../hooks/tweet/useRetweet';
-import { useAddRetweetId } from '../../hooks/tweet/useAddRetweetId';
-import useNotifyUserOfRetweet from '../../hooks/tweet/useNotifyUserOfRetweet';
+import { useAddRetweetId } from '../../hooks/tweet/retweet/useAddRetweetId';
+import useNotifyUserOfRetweet from '../../hooks/tweet/retweet/useNotifyUserOfRetweet';
 import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';
 import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
-import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/useNotifyUserOfRetweetRemove';
+import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/retweet/useNotifyUserOfRetweetRemove';
 import { IconSync } from '../../styles/Icons';
 import { useUser } from '../../hooks/authHooks/useUser';
 

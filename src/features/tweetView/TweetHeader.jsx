@@ -8,7 +8,7 @@ import { IconDotsHorizontal, IconTrashOutline } from '../../styles/Icons';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';
 import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
-import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/useNotifyUserOfRetweetRemove';
+import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/retweet/useNotifyUserOfRetweetRemove';
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
 import { AnimatePresence, motion } from 'framer-motion';
 
