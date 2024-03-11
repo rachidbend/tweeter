@@ -115,6 +115,13 @@ function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
     [activeFilter, tweets, handleFilterTweets, likedTweets]
   );
 
+  useEffect(
+    function () {
+      setActiveFilter('tweets');
+    },
+    [tweets]
+  );
+
   if (isLoading) return <Spinner />;
   if (error) toast.error(error.message);
 
