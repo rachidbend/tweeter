@@ -5,13 +5,15 @@ import { setPositionSpan } from '../../helpers/functions';
 import { useGetLikes } from '../../hooks/useGetLikes';
 import Spinner from '../../ui/Spinner';
 import toast from 'react-hot-toast';
+import { useGetUserData } from '../../hooks/user/useGetUserData';
+import { motion } from 'framer-motion';
 
-const StyledUserProfileFilter = styled.ul`
+const StyledTweetsFilter = styled(motion.ul)`
   position: relative;
   background-color: var(--color-white);
   border-radius: 0.8rem;
   box-shadow: var(--shadow-100);
-
+  width: 100%;
   padding: 2.6rem 2rem 3.1rem 2rem;
   display: flex;
   flex-direction: column;
@@ -43,7 +45,12 @@ const SideBorder = styled.span`
   transition: top var(--transition-100);
 `;
 
-function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
+function TweetsFilter({
+  tweets,
+  handleFilterTweets,
+  userId,
+  isBookmark = false,
+}) {
   // there are 4 filters,
   // - all tweets, including retweets (but not replies)
   // - replies
@@ -54,6 +61,7 @@ function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
   // names of the filters, 'tweets', 'replies', 'media', and 'likes'
   const [activeFilter, setActiveFilter] = useState('tweets');
   const { likedTweets, isLoading, error } = useGetLikes(userId);
+  const { userProfile, isLoading: isLoadingUser } = useGetUserData(userId);
 
   const spanRef = useRef();
   const tweetsRef = useRef();
@@ -93,9 +101,9 @@ function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
       // if the filter is set to replies
       else if (activeFilter === 'replies') {
         // showo only the tweets that are replies
-        const filteredTweets = tweets?.filter(
-          tweet => tweet.isReply && !tweet.isRetweet
-        );
+        const filteredTweets = tweets?.filter(tweet => {
+          return tweet.isReply && !tweet.isRetweet;
+        });
         handleFilterTweets(filteredTweets);
       }
       // if the filter is set to media
@@ -107,12 +115,25 @@ function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
         handleFilterTweets(filteredTweets);
       } // if the filter is set to likes
       else if (activeFilter === 'likes') {
-        // show only the tweets that this user has liked
-        console.log();
-        handleFilterTweets(likedTweets[0]);
+        if (isBookmark) {
+          const filteredTweets = tweets.filter(tweet => {
+            return userProfile.likes.some(like => like.id === tweet.id);
+          });
+          handleFilterTweets(filteredTweets);
+        } else {
+          // show only the tweets that this user has liked
+          handleFilterTweets(likedTweets[0]);
+        }
       }
     },
-    [activeFilter, tweets, handleFilterTweets, likedTweets]
+    [
+      activeFilter,
+      tweets,
+      handleFilterTweets,
+      likedTweets,
+      isBookmark,
+      userProfile?.likes,
+    ]
   );
 
   useEffect(
@@ -122,11 +143,14 @@ function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
     [tweets]
   );
 
-  if (isLoading) return <Spinner />;
+  if (isLoading || isLoadingUser) return <Spinner />;
   if (error) toast.error(error.message);
 
   return (
-    <StyledUserProfileFilter>
+    <StyledTweetsFilter
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { delay: 0.2 } }}
+    >
       <SideBorder ref={spanRef}></SideBorder>
       <Filter onClick={() => setActiveFilter('tweets')} ref={tweetsRef}>
         Tweets
@@ -140,8 +164,8 @@ function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
       <Filter onClick={() => setActiveFilter('likes')} ref={likesRef}>
         Likes
       </Filter>
-    </StyledUserProfileFilter>
+    </StyledTweetsFilter>
   );
 }
 
-export default UserProfileFilter;
+export default TweetsFilter;

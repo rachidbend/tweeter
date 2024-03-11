@@ -118,7 +118,9 @@ const RepliesContainer = styled.div`
     - like button for a reply
 */
 
-function TweetView({ user, tweet }) {
+function TweetView({ tweet }) {
+  if (!tweet) return;
+
   return (
     <StyledTweet
       initial={{
@@ -132,7 +134,7 @@ function TweetView({ user, tweet }) {
       }}
     >
       {/* Header of the tweet */}
-      <TweetHeader tweet={tweet} user={user} />
+      <TweetHeader tweet={tweet} />
 
       {/* container of the main content of the tweet */}
       <Content>
@@ -146,7 +148,7 @@ function TweetView({ user, tweet }) {
 
         {/* Main content of the tweet */}
         {tweet?.content && <TextContent>{tweet.content}</TextContent>}
-        {tweet.image.length > 0 && <ImageContent src={tweet.image} />}
+        {tweet?.image.length > 0 && <ImageContent src={tweet?.image} />}
       </Content>
 
       {/* if this is a retweet, show the original tweet */}
