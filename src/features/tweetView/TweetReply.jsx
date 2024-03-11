@@ -54,7 +54,7 @@ function TweetReply({ originalTweeterId, originalTweetId }) {
   });
 
   if (isLoading) return <Spinner />;
-
+  if (!tweet) return;
   return (
     <StyledTweetReply>
       <ReplyingTo>

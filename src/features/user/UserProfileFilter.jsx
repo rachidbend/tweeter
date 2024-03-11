@@ -1,6 +1,13 @@
+/* eslint-disable react/prop-types */
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { setPositionSpan } from '../../helpers/functions';
+import { useGetLikes } from '../../hooks/useGetLikes';
+import Spinner from '../../ui/Spinner';
+import toast from 'react-hot-toast';
 
 const StyledUserProfileFilter = styled.ul`
+  position: relative;
   background-color: var(--color-white);
   border-radius: 0.8rem;
   box-shadow: var(--shadow-100);
@@ -17,17 +24,115 @@ const Filter = styled.li`
   font-weight: 600;
   letter-spacing: -0.035em;
   list-style: none;
-
+  cursor: pointer;
   color: var(--color-grey-300);
 `;
 
-function UserProfileFilter() {
+const SideBorder = styled.span`
+  width: 0.3rem;
+  height: 3.2rem;
+  background-color: var(--color-blue-100);
+
+  border-top-right-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  transition: top var(--transition-100);
+`;
+
+function UserProfileFilter({ tweets, handleFilterTweets, userId }) {
+  // there are 4 filters,
+  // - all tweets, including retweets (but not replies)
+  // - replies
+  // - media (tweets that include images)
+  // - likes (the tweets that the user has liked)
+
+  // this is what ditermines which filter is active, because only one can be active at a time, the default filter is 'tweets'
+  // names of the filters, 'tweets', 'replies', 'media', and 'likes'
+  const [activeFilter, setActiveFilter] = useState('tweets');
+  const { likedTweets, isLoading, error } = useGetLikes(userId);
+
+  const spanRef = useRef();
+  const tweetsRef = useRef();
+  const repliesRef = useRef();
+  const mediaRef = useRef();
+  const likesRef = useRef();
+
+  useEffect(
+    function () {
+      if (
+        !tweetsRef.current ||
+        !repliesRef.current ||
+        !mediaRef.current ||
+        !likesRef.current
+      ) {
+        return;
+      }
+
+      if (activeFilter === 'tweets') {
+        setPositionSpan(spanRef, tweetsRef, 'vertical');
+      } else if (activeFilter === 'replies') {
+        setPositionSpan(spanRef, repliesRef, 'vertical');
+      } else if (activeFilter === 'media') {
+        setPositionSpan(spanRef, mediaRef, 'vertical');
+      } else if (activeFilter === 'likes') {
+        setPositionSpan(spanRef, likesRef, 'vertical');
+      } else {
+        setPositionSpan(spanRef, tweetsRef, 'vertical');
+      }
+
+      // if the filter is set to tweets
+      if (activeFilter === 'tweets') {
+        // show only the tweets that are not replies
+        const filteredTweets = tweets?.filter(tweet => !tweet.isReply);
+        handleFilterTweets(filteredTweets);
+      }
+      // if the filter is set to replies
+      else if (activeFilter === 'replies') {
+        // showo only the tweets that are replies
+        const filteredTweets = tweets?.filter(
+          tweet => tweet.isReply && !tweet.isRetweet
+        );
+        handleFilterTweets(filteredTweets);
+      }
+      // if the filter is set to media
+      else if (activeFilter === 'media') {
+        // show only the tweets that include an image
+        const filteredTweets = tweets?.filter(
+          tweet => !tweet.isReply && !tweet.isRetweet && tweet.image !== ''
+        );
+        handleFilterTweets(filteredTweets);
+      } // if the filter is set to likes
+      else if (activeFilter === 'likes') {
+        // show only the tweets that this user has liked
+        console.log();
+        handleFilterTweets(likedTweets[0]);
+      }
+    },
+    [activeFilter, tweets, handleFilterTweets, likedTweets]
+  );
+
+  if (isLoading) return <Spinner />;
+  if (error) toast.error(error.message);
+
   return (
     <StyledUserProfileFilter>
-      <Filter>Tweets</Filter>
-      <Filter>Tweets & replies</Filter>
-      <Filter>Media</Filter>
-      <Filter>Likes</Filter>
+      <SideBorder ref={spanRef}></SideBorder>
+      <Filter onClick={() => setActiveFilter('tweets')} ref={tweetsRef}>
+        Tweets
+      </Filter>
+      <Filter onClick={() => setActiveFilter('replies')} ref={repliesRef}>
+        Tweets & replies
+      </Filter>
+      <Filter onClick={() => setActiveFilter('media')} ref={mediaRef}>
+        Media
+      </Filter>
+      <Filter onClick={() => setActiveFilter('likes')} ref={likesRef}>
+        Likes
+      </Filter>
     </StyledUserProfileFilter>
   );
 }

@@ -416,6 +416,16 @@ export async function getTweetById({ tweetId, publisherId }) {
   return data;
 }
 
+export async function getLikedTweets({ userId }) {
+  const { data, error } = await supabase.rpc('get_likes', {
+    user_id: userId,
+  });
+
+  if (error) throw new Error(error.message);
+  console.log(data);
+  return data;
+}
+
 const tweet = {
   id: 'random id',
   created_at: 'current time',
