@@ -107,7 +107,7 @@ const UsernameContainer = styled.div`
 `;
 
 // Component for rendering the header of a tweet
-function TweetHeader({ user, tweet }) {
+function TweetHeader({ tweet }) {
   // State for managing the visibility of the options list
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const { userProfile, isLoading, error } = useGetUserData(tweet.publisher_id);
@@ -181,7 +181,7 @@ function TweetHeader({ user, tweet }) {
         {userProfile.avatar_image ? (
           <Avatar
             src={userProfile.avatar_image}
-            alt={`avatar image of ${user?.userName}`}
+            alt={`avatar image of ${userProfile.avatar_image}`}
           />
         ) : (
           <AvatarPlaceHolder />
