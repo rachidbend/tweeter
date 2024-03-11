@@ -84,7 +84,7 @@ const UserAvatar = styled.img`
 `;
 
 function TweetReplyInput({ tweet }) {
-  const [replyImage, setReplyImage] = useState();
+  const [replyImage, setReplyImage] = useState('');
   // Form handler (react hook form)
   const { register, handleSubmit, reset } = useForm();
 
