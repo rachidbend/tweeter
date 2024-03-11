@@ -11,10 +11,10 @@ import {
 } from '../../styles/Icons';
 import { formatDate, formatNumber } from '../../helpers/functions';
 import { useUser } from '../../hooks/authHooks/useUser';
-import { useLikeTweet } from '../../hooks/tweet/useLikeTweet';
-import { useNotifyUserOfLike } from '../../hooks/tweet/useNotifyUserOfLike';
-import { useRemoveTweetFromLikes } from '../../hooks/tweet/useRemoveTweetFromLikes';
-import { useNotifyUserOfUnlike } from '../../hooks/tweet/useNotifyUserOfUnlike';
+import { useLikeTweet } from '../../hooks/tweet/like/useLikeTweet';
+import { useNotifyUserOfLike } from '../../hooks/tweet/like/useNotifyUserOfLike';
+import { useRemoveTweetFromLikes } from '../../hooks/tweet/like/useRemoveTweetFromLikes';
+import { useNotifyUserOfUnlike } from '../../hooks/tweet/like/useNotifyUserOfUnlike';
 import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
 import { useState } from 'react';
 import { useRemoveReply } from '../../hooks/tweet/reply/useRemoveReply';

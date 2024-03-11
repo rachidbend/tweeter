@@ -1,35 +1,34 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { removeTweetFromLikes as removeTweetFromLikesApi } from '../../services/apiTweet';
-import { useUser } from '../authHooks/useUser';
-import { useGetUserData } from '../user/useGetUserData';
+import { removeTweetFromBookmarks } from '../../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
+import { useGetUserData } from '../../user/useGetUserData';
 import toast from 'react-hot-toast';
 
-export function useRemoveTweetFromLikes() {
+export function useRemoveTweetFromBookmarks() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const { userProfile } = useGetUserData(user.id);
-
   const {
-    mutate: removeTweetFromLikes,
+    mutate: removeFromSaves,
     isPending,
     error,
   } = useMutation({
     mutationFn: ({ tweet }) =>
-      removeTweetFromLikesApi({
-        oldlikes: userProfile.likes,
+      removeTweetFromBookmarks({
+        oldBookmarks: userProfile.bookmarks,
         tweet,
         userId: user.id,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profile', user.id]);
+      queryClient.invalidateQueries(['profiles']);
     },
     onSuccess: () => {
-      toast.success('saved the tweet!');
+      toast.success('removed from bookmarks!');
     },
     onError: error => {
       toast.error(error.message);
     },
   });
 
-  return { removeTweetFromLikes, isPending, error };
+  return { removeFromSaves, isPending, error };
 }

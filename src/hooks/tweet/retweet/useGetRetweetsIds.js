@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { useUser } from '../authHooks/useUser';
-import { getRetweetsIds } from '../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
+import { getRetweetsIds } from '../../../services/apiTweet';
 
 export default function useGetRetweetsIds() {
   const { user } = useUser();

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { removeRetweetId as removeRetweetIdApi } from '../../services/apiTweet';
 import { useUser } from '../authHooks/useUser';
-import useGetRetweetsIds from './useGetRetweetsIds';
+import useGetRetweetsIds from './retweet/useGetRetweetsIds';
 import toast from 'react-hot-toast';
 
 export default function useRemoveTweetId() {

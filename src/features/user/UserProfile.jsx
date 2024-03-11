@@ -7,6 +7,7 @@ import { useUser } from '../../hooks/authHooks/useUser';
 import UserHeader from '../user/UserHeader';
 import UserProfileFilter from './UserProfileFilter';
 import TweetView from '../tweetView/TweetView';
+import { useState } from 'react';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -58,6 +59,7 @@ const TweetsContainer = styled.div`
 
 // This is the main UserProfile component
 function UserProfile() {
+  const [filteredTweets, setFilteredTweets] = useState([]);
   // Get the user ID from the URL parameters
   const { id } = useParams();
 
@@ -90,9 +92,13 @@ function UserProfile() {
       <PageContainer>
         <UserHeader currentUser={currentUser} userProfile={userProfile} />
         <ContentContainer>
-          <UserProfileFilter />
+          <UserProfileFilter
+            tweets={tweets}
+            handleFilterTweets={setFilteredTweets}
+            userId={id}
+          />
           <TweetsContainer>
-            {tweets.map(tweet => (
+            {filteredTweets.map(tweet => (
               <TweetView
                 key={tweet.id}
                 user={{

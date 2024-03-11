@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useUser } from '../authHooks/useUser';
-import { useGetUserData } from '../user/useGetUserData';
-import { addRetweetId as addRetweetIdApi } from '../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
+import { useGetUserData } from '../../user/useGetUserData';
+import { addRetweetId as addRetweetIdApi } from '../../../services/apiTweet';
 import toast from 'react-hot-toast';
 
 export function useAddRetweetId() {

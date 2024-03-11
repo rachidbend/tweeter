@@ -1,28 +1,28 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { notifyUserOfUnlike as notifyUserOfUnlikeApi } from '../../services/apiTweet';
-import { useUser } from '../authHooks/useUser';
+import { notifyUserOfLike as notifyUserOfLikeApi } from '../../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
 import toast from 'react-hot-toast';
 
-export function useNotifyUserOfUnlike() {
+export function useNotifyUserOfLike() {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const {
-    mutate: notifyUserOfUnlike,
+    mutate: notifyUserOfLike,
     isPending,
     error,
   } = useMutation({
     mutationFn: ({ targetId, tweetId }) =>
-      notifyUserOfUnlikeApi({ targetId, tweetId, userId: user.id }),
+      notifyUserOfLikeApi({ targetId, tweetId, userId: user.id }),
     onSettled: () => {
       queryClient.invalidateQueries(['profiles']);
     },
     onSuccess: () => {
-      toast.success('notifyed the publisher of the tweet unlike to the tweet!');
+      toast.success('notifyed the publisher of the tweet like to the tweet!');
     },
     onError: error => {
       toast.error(error.message);
     },
   });
 
-  return { notifyUserOfUnlike, isPending, error };
+  return { notifyUserOfLike, isPending, error };
 }
