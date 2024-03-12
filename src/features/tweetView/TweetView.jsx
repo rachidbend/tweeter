@@ -148,7 +148,7 @@ function TweetView({ tweet }) {
 
         {/* Main content of the tweet */}
         {tweet?.content && <TextContent>{tweet.content}</TextContent>}
-        {tweet?.image.length > 0 && <ImageContent src={tweet?.image} />}
+        {tweet?.image !== '' && <ImageContent src={tweet?.image} />}
       </Content>
 
       {/* if this is a retweet, show the original tweet */}
@@ -169,7 +169,7 @@ function TweetView({ tweet }) {
       <TweetReplyInput tweet={tweet} />
 
       {/* if there are any replies, show them */}
-      {tweet.replies.length > 0 && (
+      {tweet?.replies?.length > 0 && (
         <RepliesContainer>
           <AnimatePresence>
             {tweet.replies.map((reply, index) => (

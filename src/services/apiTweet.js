@@ -422,7 +422,7 @@ export async function getLikedTweets({ userId }) {
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
+
   return data;
 }
 
@@ -432,58 +432,70 @@ export async function getSavedTweets({ userId }) {
   });
 
   if (error) throw new Error(error.message);
-  console.log(data);
+
   return data;
 }
 
-const tweet = {
-  id: 'random id',
-  created_at: 'current time',
-  visibility: 'all / followers',
-  content: 'the tect content of the tweet',
-  image: 'if it was uploaded',
-  hashtags: 'all hashtags on the content, if there are any',
-  replies: [
-    {
-      id: 'id of the comment',
-      userId: 'the id of the user who commented',
-      comment: 'content of the comment',
-      commentLikes: [
-        {
-          id: 'id of the like',
-          userId: 'id of the user whoc liked the comment',
-        },
-      ],
-    },
-    'another comment',
-  ],
-  retweets: [],
-  likes: [],
-  saves: [],
-};
+// ////////////////////////////////////////////////////////////////////////////
 
-const replyTweet = {
-  id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
-  image: '',
-  likes: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
-  saves: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
-  content: 'heeeyooooo',
-  comments: [
-    {
-      comment_id: '',
-      commenter_id: '',
-    },
-  ],
-  hashtags: [],
-  retweets: [
-    {
-      retweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709978281556-retweet',
-      retweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-    },
-  ],
-  isRetweet: false,
-  isReply: true,
-  created_at: '2024-03-08T15:14:16.467Z',
-  publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
-  original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
-};
+export async function getUserTimeline(userId) {
+  const { data, error } = await supabase.rpc('get_recent_tweets', {
+    user_id: userId,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+// const tweet = {
+//   id: 'random id',
+//   created_at: 'current time',
+//   visibility: 'all / followers',
+//   content: 'the tect content of the tweet',
+//   image: 'if it was uploaded',
+//   hashtags: 'all hashtags on the content, if there are any',
+//   replies: [
+//     {
+//       id: 'id of the comment',
+//       userId: 'the id of the user who commented',
+//       comment: 'content of the comment',
+//       commentLikes: [
+//         {
+//           id: 'id of the like',
+//           userId: 'id of the user whoc liked the comment',
+//         },
+//       ],
+//     },
+//     'another comment',
+//   ],
+//   retweets: [],
+//   likes: [],
+//   saves: [],
+// };
+
+// const replyTweet = {
+//   id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
+//   image: '',
+//   likes: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+//   saves: ['b9628375-9682-4879-a408-45e7e2b8b9db'],
+//   content: 'heeeyooooo',
+//   comments: [
+//     {
+//       comment_id: '',
+//       commenter_id: '',
+//     },
+//   ],
+//   hashtags: [],
+//   retweets: [
+//     {
+//       retweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709978281556-retweet',
+//       retweeter_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+//     },
+//   ],
+//   isRetweet: false,
+//   isReply: true,
+//   created_at: '2024-03-08T15:14:16.467Z',
+//   publisher_id: 'b9628375-9682-4879-a408-45e7e2b8b9db',
+//   original_tweet_id: 'b9628375-9682-4879-a408-45e7e2b8b9db-1709910856467',
+// };

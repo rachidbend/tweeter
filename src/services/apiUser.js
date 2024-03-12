@@ -11,3 +11,11 @@ export async function getUserData(userID) {
 
   return profiles.at(0);
 }
+
+export async function getAccountRecommendations() {
+  const { data, error } = await supabase.rpc('get_user_recommendations', {});
+
+  if (error) throw new Error(error);
+
+  return data;
+}
