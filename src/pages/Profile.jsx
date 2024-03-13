@@ -29,13 +29,12 @@ const BackgroundImagePlaceHolder = styled.div`
 `;
 
 const PageContainer = styled.div`
-  padding: 0 5.4rem;
-  max-width: calc(107.3rem + (5.4rem * 2));
-  margin: 0 auto;
+  width: min(var(--content-max-width), 100% - var(--page-padding-large) * 2);
+  margin-inline: auto;
 
   @media screen and (max-width: 450px) {
     max-width: 100%;
-    padding: 0 1.66rem;
+    width: min(100% - var(--page-padding-small) * 2);
   }
 `;
 

@@ -17,14 +17,16 @@ const StyledHome = styled.div`
   gap: 2.5rem;
 
   justify-content: center;
-  margin: 0 auto;
-  margin-top: 2.5rem;
-  padding: 0 5.4rem;
 
-  max-width: calc(107.3rem + (5.4rem * 2));
+  margin-top: 2.5rem;
+
+  width: min(var(--content-max-width), 100% - var(--page-padding-large) * 2);
+  margin-inline: auto;
+
   @media screen and (max-width: 450px) {
     gap: 0;
-    padding: 0 1.6rem;
+    width: min(100% - var(--page-padding-small) * 2);
+    margin-inline: auto;
     grid-template-columns: 1fr;
     margin-top: 1.469rem;
   }

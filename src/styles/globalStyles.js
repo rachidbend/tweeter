@@ -40,6 +40,10 @@ export const GlobalStyles = styled.createGlobalStyle`
     --transition-100: 0.3s ease;
     --transition-200: 0.2s ease;
     --transition-300: 0.26s ease;
+
+    --content-max-width: 107.3rem;
+    --page-padding-large: 5.4rem;
+    --page-padding-small: 1.66rem;
   }
 
   html {
