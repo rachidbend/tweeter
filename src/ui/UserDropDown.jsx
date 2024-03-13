@@ -5,6 +5,7 @@ import { FaUserGroup } from 'react-icons/fa6';
 import { MdExitToApp } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { useLogout } from '../hooks/authHooks/useLogout';
+import { Link } from 'react-router-dom';
 
 const StyledUserDropDown = styled(motion.div)`
   position: absolute;
@@ -46,6 +47,10 @@ const Item = styled.li`
     background-color: var(--color-grey-600);
     color: var(--color-grey-100);
   }
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const Logout = styled.button`
@@ -120,9 +125,11 @@ function UserDropDown() {
       }}
     >
       <List>
-        <Item>
-          <ProfileIcon /> my profile
-        </Item>
+        <StyledLink to="/profile">
+          <Item>
+            <ProfileIcon /> my profile
+          </Item>
+        </StyledLink>
         <Item>
           <ChatIcon /> group chat
         </Item>

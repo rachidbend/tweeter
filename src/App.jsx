@@ -3,7 +3,7 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from 'react-router-dom';
-import Nav from './ui/Nav';
+
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import Bookmarks from './pages/Bookmarks';
@@ -18,6 +18,7 @@ import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import UserProfile from './features/user/UserProfile';
+import Profile from './pages/Profile';
 
 const queryClient = new QueryClient();
 
@@ -59,12 +60,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'profile',
-        element: (
-          <div>
-            profile page
-            <Nav />
-          </div>
-        ),
+        element: <Profile />,
       },
     ],
   },

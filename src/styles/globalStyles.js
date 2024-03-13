@@ -24,6 +24,7 @@ export const GlobalStyles = styled.createGlobalStyle`
     --color-grey-500: hsla(0, 0%, 88%, 1); /* borders */
     --color-grey-600: hsla(0, 0%, 95%, 1); /* page background */
     --color-grey-700: hsla(0, 0%, 98%, 1); /* comment input background */
+    --color-background-overlay: hsla(0, 0%, 0%, 0.1);
 
     /* ************************************************* */
     /* --color-blue-100: hsla(214, 84%, 56%, 1);
