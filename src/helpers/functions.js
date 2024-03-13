@@ -1,6 +1,6 @@
 import { Months } from './variables';
 
-export function setPositionSpan(spanRef, toRef, direction) {
+export function setPositionSpan(spanRef, toRef, direction = 'horizontal') {
   if (direction === 'horizontal') {
     // // 1. get the position of the element we want to go to
     const toRefPosition = toRef.current.offsetLeft;
