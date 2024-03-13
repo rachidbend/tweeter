@@ -9,6 +9,7 @@ import TweetView from '../features/tweetView/TweetView';
 import { useUser } from '../hooks/authHooks/useUser';
 import ProfileOverlay from '../ui/ProfileOverlay';
 import ModalWrapper from '../ui/ModalWrapper';
+import { useForm } from 'react-hook-form';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -74,6 +75,13 @@ function Profile() {
   } = useGetUserData(user.id);
 
   // handle open overlay
+  function handleModalClose() {
+    setIsOverlayOpen(false);
+  }
+
+  function handleModalOpen() {
+    setIsOverlayOpen(true);
+  }
 
   // If any of the data is still loading, display a loading spinner
   if (isLoadingUser || isLoadingCurrentUser) return <Spinner />;
@@ -83,14 +91,6 @@ function Profile() {
 
   // Extract the necessary data from the userProfile object
   const { background_image, avatar_image, user_name, tweets } = currentUser;
-
-  function handleModalClose() {
-    setIsOverlayOpen(false);
-  }
-
-  function handleModalOpen() {
-    setIsOverlayOpen(true);
-  }
 
   return (
     <StyledUserProfile>
