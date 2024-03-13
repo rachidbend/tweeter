@@ -57,7 +57,7 @@ export async function deleteTweet({ tweetId, tweeterId }) {
 }
 
 // upload an image
-async function uploadImage({ image, imageName, bucketName }) {
+export async function uploadImage({ image, imageName, bucketName }) {
   const { data, error } = await supabase.storage
     .from(bucketName)
     .upload(imageName, image, {

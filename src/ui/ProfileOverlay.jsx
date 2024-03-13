@@ -2,10 +2,14 @@
 import styled from 'styled-components';
 import { IconAddImage, IconClose, IconSave } from '../styles/Icons';
 import { motion } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import useUpdateUser from '../hooks/useUpdateUser';
 
 const Overlay = styled(motion.div)`
   height: 100vh;
   height: 100svh;
+
+  overflow: hidden;
   width: 100%;
   background-color: var(--color-background-overlay);
   /* opacity: 0.4; */
@@ -102,6 +106,11 @@ const SaveButton = styled.button`
   &:hover {
     color: var(--color-blue-100);
     background-color: transparent;
+
+    span {
+      border: 0.2rem solid var(--color-blue-100);
+      border-bottom-color: var(--color-white);
+    }
   }
 `;
 
@@ -156,7 +165,8 @@ const ImageLabel = styled.label`
   color: var(--color-blue-100);
   background-color: rgba(0, 0, 0, 0.5);
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     color: var(--color-white);
     background-color: var(--color-blue-100);
   }
@@ -227,17 +237,22 @@ const UserNameInput = styled.input`
   background-color: var(--color-grey-700);
   border-radius: 0.8rem;
   padding: 1.05rem 1.2rem;
-  color: var(--color-grey-100);
+  color: var(--color-black);
   font-family: var(--font-noto);
   font-size: 1.4rem;
   font-weight: 500;
   letter-spacing: -0.035em;
   margin-bottom: 2.4rem;
   outline: none;
+  transition: border var(--transition-100);
 
   &:hover,
-  &:active {
+  &:focus {
     border: 0.2rem solid var(--color-blue-100);
+  }
+
+  &::placeholder {
+    color: var(--color-grey-300);
   }
 `;
 const DescriptionInput = styled.textarea`
@@ -247,16 +262,22 @@ const DescriptionInput = styled.textarea`
   background-color: var(--color-grey-700);
   border-radius: 0.8rem;
   padding: 1.05rem 1.2rem;
-  color: var(--color-grey-100);
+  color: var(--color-black);
   font-family: var(--font-noto);
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 1.9rem;
   letter-spacing: -0.035em;
+  outline: none;
+  transition: border var(--transition-100);
 
   &:hover,
-  &:active {
+  &:focus {
     border: 0.2rem solid var(--color-blue-100);
+  }
+
+  &::placeholder {
+    color: var(--color-grey-300);
   }
 `;
 
@@ -271,7 +292,58 @@ const TextInputsContainer = styled.div`
   }
 `;
 
+// small spinner
+
+const SmallSpinner = styled.span`
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 0.2rem solid var(--color-white);
+  border-bottom-color: var(--color-blue-100);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
 function ProfileOverlay({ onOpen, onClose, profileData }) {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      username: profileData.user_name,
+      description: profileData.user_description,
+    },
+  });
+
+  const { updateUser, isPending, error } = useUpdateUser();
+
+  function onSubmit(data) {
+    updateUser(
+      {
+        username: data.username,
+        description: data.description,
+        avatarImage: data.avatarImage,
+        backgroundImage: data.backgroundImage,
+      },
+      {
+        onSuccess: () => {
+          onClose();
+        },
+      }
+    );
+  }
+
+  function handleClose(e) {
+    e.preventDefault();
+    onClose();
+  }
+
   return (
     <Overlay
       initial={{
@@ -285,50 +357,65 @@ function ProfileOverlay({ onOpen, onClose, profileData }) {
       }}
     >
       <StyledProfileOverlay>
-        <Header>
-          <CloseButton onClick={onClose}>
-            <CloseIcon />
-          </CloseButton>
-          <Heading>edit profile</Heading>
-          <SaveButton>
-            <SaveIcon /> save
-          </SaveButton>
-        </Header>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Header>
+            <CloseButton onClick={handleClose}>
+              <CloseIcon />
+            </CloseButton>
+            <Heading>edit profile</Heading>
+            <SaveButton type="submit">
+              {!isPending && <SaveIcon />}
+              {isPending && <SmallSpinner />} save
+            </SaveButton>
+          </Header>
 
-        <BackgroundContainer className="background image">
-          <BackgroundImage
-            src={profileData.background_image}
-            alt="background image"
-          />
-          <ImageLabel htmlFor="profile-background-image-input">
-            <AddPhotoIcon />
-          </ImageLabel>
-          <ImageInput type="file" id="profile-background-image-input" />
-        </BackgroundContainer>
+          <BackgroundContainer className="background image">
+            <BackgroundImage
+              src={profileData.background_image}
+              alt="background image"
+            />
 
-        <Container className="container">
-          <AvatarContainer className="avatar container">
-            <AvatarImage src={profileData.avatar_image} alt="avatar image" />
-            <ImageLabel>
+            <ImageLabel htmlFor="profile-background-image-input">
               <AddPhotoIcon />
+              <ImageInput
+                type="file"
+                id="profile-background-image-input"
+                {...register('backgroundImage')}
+              />
             </ImageLabel>
-            <ImageInput type="file" />
-          </AvatarContainer>
+          </BackgroundContainer>
 
-          <TextInputsContainer>
-            <TextLabels>Name:</TextLabels>
-            <UserNameInput
-              type="text"
-              name="username"
-              placeholder="Your name"
-            />
-            <TextLabels>Description:</TextLabels>
-            <DescriptionInput
-              name="description"
-              placeholder="Describe yourself"
-            />
-          </TextInputsContainer>
-        </Container>
+          <Container className="container">
+            <AvatarContainer className="avatar container">
+              <AvatarImage src={profileData.avatar_image} alt="avatar image" />
+
+              <ImageLabel htmlFor="profile-avatar-image-input">
+                <AddPhotoIcon />
+                <ImageInput
+                  type="file"
+                  id="profile-avatar-image-input"
+                  {...register('avatarImage')}
+                />
+              </ImageLabel>
+            </AvatarContainer>
+
+            <TextInputsContainer>
+              <TextLabels>Name:</TextLabels>
+              <UserNameInput
+                type="text"
+                name="username"
+                placeholder="Your name"
+                {...register('username')}
+              />
+              <TextLabels>Description:</TextLabels>
+              <DescriptionInput
+                name="description"
+                placeholder="Describe yourself"
+                {...register('description')}
+              />
+            </TextInputsContainer>
+          </Container>
+        </form>
       </StyledProfileOverlay>
     </Overlay>
   );
