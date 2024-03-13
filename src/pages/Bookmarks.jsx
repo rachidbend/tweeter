@@ -8,22 +8,22 @@ import toast from 'react-hot-toast';
 import TweetsFilter from '../features/user/TweetsFilter';
 
 const StyledBookmarks = styled.div`
-  margin: 0 auto;
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
   grid-template-columns: 30.4rem 1fr;
-  padding: 0 2.4rem;
+
   justify-content: center;
   align-items: start;
   margin-top: 4.5rem;
   gap: 2.2rem;
 
-  max-width: calc(107.3rem + 2.4rem * 2);
+  width: min(var(--content-max-width), 100% - var(--page-padding-large) * 2);
+  margin-inline: auto;
 
   @media screen and (max-width: 450px) {
-    max-width: 100%;
-    padding: 0 1.66rem;
+    width: min(100% - var(--page-padding-small) * 2);
+
     display: grid;
     align-items: start;
     justify-content: start;
