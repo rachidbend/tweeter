@@ -5,7 +5,11 @@ import { useAddFollow } from '../../hooks/follow/useAddFollow';
 import { useUnfollow } from '../../hooks/follow/useUnfollow';
 import { useRemoveFollow } from '../../hooks/follow/useRemoveFollow';
 import toast from 'react-hot-toast';
-import { IconUserOutline, IconUserUnfollowOutline } from '../../styles/Icons';
+import {
+  IconEdit,
+  IconUserOutline,
+  IconUserUnfollowOutline,
+} from '../../styles/Icons';
 import { IoMdPersonAdd } from 'react-icons/io';
 
 const StyledUserHeader = styled.div`
@@ -106,7 +110,7 @@ const FollowButton = styled.button`
   font-weight: 500;
   letter-spacing: -0.035em;
   align-self: flex-start;
-  border: 2px solid var(--color-blue-100);
+  border: 0.2rem solid var(--color-blue-100);
   border-radius: 0.4rem;
   cursor: pointer;
   padding: 0.8rem 2.4rem;
@@ -179,8 +183,52 @@ const StatSpan = styled.span`
   color: var(--color-grey-300);
 `;
 
+const EditButton = styled.button`
+  margin-left: auto;
+  align-self: flex-start;
+
+  font-family: var(--font-noto);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  align-self: flex-start;
+  border: 0.2rem solid var(--color-blue-100);
+  border-radius: 0.4rem;
+  cursor: pointer;
+  padding: 0.8rem 2.4rem;
+  color: var(--color-blue-100);
+  background-color: var(--color-white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  transition: background var(--transition-200), color var(--transition-200),
+    border var(--transition-200);
+
+  &:hover {
+    color: var(--color-grey-400);
+    border: 0.2rem solid var(--color-grey-400);
+  }
+
+  @media screen and (max-width: 450px) {
+    margin: 0 auto;
+  }
+`;
+
+const EditIcon = styled(IconEdit)`
+  height: 1.4rem;
+  width: 1.4rem;
+  color: inherit;
+`;
+
 // This component displays the user's profile header
-function UserHeader({ currentUser, userProfile }) {
+function UserHeader({
+  currentUser,
+  userProfile,
+  isProfile = false,
+  handleEdit,
+}) {
   // Hooks for following and unfollowing users
   //  hooks that effect the current user
   const { follow, isPending: isFollowing, error: followError } = useFollow();
@@ -247,17 +295,25 @@ function UserHeader({ currentUser, userProfile }) {
         </Description>
       </InfoContainer>
       {/* Display a button to follow/unfollow the user */}
-      <FollowButton
-        disabled={
-          isUnfollowing || isFollowing || isRemovingFollow || isAddingFollow
-        }
-        onClick={isFollowingUser ? handleUnfollow : handleFollow}
-      >
-        {/* Display an icon based on whether the user is followed */}
-        {isFollowingUser ? <UnfollowIcon /> : <FollowIcon />}
-        {/* Display text based on whether the user is followed */}
-        {isFollowingUser ? 'Unfollow' : 'Follow'}
-      </FollowButton>
+      {!isProfile && (
+        <FollowButton
+          disabled={
+            isUnfollowing || isFollowing || isRemovingFollow || isAddingFollow
+          }
+          onClick={isFollowingUser ? handleUnfollow : handleFollow}
+        >
+          {/* Display an icon based on whether the user is followed */}
+          {isFollowingUser ? <UnfollowIcon /> : <FollowIcon />}
+          {/* Display text based on whether the user is followed */}
+          {isFollowingUser ? 'Unfollow' : 'Follow'}
+        </FollowButton>
+      )}
+
+      {isProfile && (
+        <EditButton onClick={handleEdit}>
+          <EditIcon /> Edit Profile
+        </EditButton>
+      )}
     </StyledUserHeader>
   );
 }
