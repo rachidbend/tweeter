@@ -12,7 +12,7 @@ const Overlay = styled(motion.div)`
   overflow: hidden;
   width: 100%;
   background-color: var(--color-background-overlay);
-  /* opacity: 0.4; */
+
   position: fixed;
   top: 0;
   left: 0;
@@ -23,10 +23,6 @@ const Overlay = styled(motion.div)`
   justify-content: center;
   align-items: center;
   z-index: 9999;
-
-  @media screen and (max-width: 450px) {
-    /* padding: 0 2.4rem; */
-  }
 `;
 
 const StyledProfileOverlay = styled.div`
@@ -123,7 +119,6 @@ const SaveIcon = styled(IconSave)`
 // BACKGROUND image
 
 const BackgroundContainer = styled.div`
-  /* margin: 0 -2.2rem; */
   position: relative;
 
   padding-bottom: 1.4rem;
@@ -156,14 +151,13 @@ const ImageLabel = styled.label`
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  /* border: 0.2rem solid var(--color-white); */
 
   cursor: pointer;
   transition: color var(--transition-200), background var(--transition-200),
     border var(--transition-200);
 
   color: var(--color-blue-100);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--color-black-transparent);
 
   &:hover,
   &:focus-within {
@@ -313,7 +307,8 @@ const SmallSpinner = styled.span`
     }
   }
 `;
-function ProfileOverlay({ onOpen, onClose, profileData }) {
+function ProfileOverlay({ onClose, profileData }) {
+  // hook for managing the form
   const { register, handleSubmit } = useForm({
     defaultValues: {
       username: profileData.user_name,
@@ -321,9 +316,12 @@ function ProfileOverlay({ onOpen, onClose, profileData }) {
     },
   });
 
-  const { updateUser, isPending, error } = useUpdateUser();
+  // custom hook to update user data
+  const { updateUser, isPending } = useUpdateUser();
 
   function onSubmit(data) {
+    // when the user submts (clicks on save)
+    // we update the data of the user
     updateUser(
       {
         username: data.username,
@@ -333,12 +331,15 @@ function ProfileOverlay({ onOpen, onClose, profileData }) {
       },
       {
         onSuccess: () => {
+          // when the updating was successful, we close the modal
           onClose();
         },
       }
     );
   }
 
+  // used to prevent the close button from triggering the submit
+  // kept as a button for accessibility (to be selectable)
   function handleClose(e) {
     e.preventDefault();
     onClose();
@@ -358,23 +359,27 @@ function ProfileOverlay({ onOpen, onClose, profileData }) {
     >
       <StyledProfileOverlay>
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* header containing a close button, a title, and the save button */}
           <Header>
             <CloseButton onClick={handleClose}>
               <CloseIcon />
             </CloseButton>
             <Heading>edit profile</Heading>
+            {/* when saving, show a spinner */}
             <SaveButton type="submit">
               {!isPending && <SaveIcon />}
               {isPending && <SmallSpinner />} save
             </SaveButton>
           </Header>
 
+          {/* container for the background image */}
           <BackgroundContainer className="background image">
             <BackgroundImage
               src={profileData.background_image}
               alt="background image"
             />
 
+            {/* file input to change the background image */}
             <ImageLabel htmlFor="profile-background-image-input">
               <AddPhotoIcon />
               <ImageInput
@@ -386,9 +391,11 @@ function ProfileOverlay({ onOpen, onClose, profileData }) {
           </BackgroundContainer>
 
           <Container className="container">
+            {/* container for the avatar image */}
             <AvatarContainer className="avatar container">
               <AvatarImage src={profileData.avatar_image} alt="avatar image" />
 
+              {/* file input to change the avatar image */}
               <ImageLabel htmlFor="profile-avatar-image-input">
                 <AddPhotoIcon />
                 <ImageInput
@@ -399,6 +406,7 @@ function ProfileOverlay({ onOpen, onClose, profileData }) {
               </ImageLabel>
             </AvatarContainer>
 
+            {/* container for the username and descriptions inputs */}
             <TextInputsContainer>
               <TextLabels>Name:</TextLabels>
               <UserNameInput

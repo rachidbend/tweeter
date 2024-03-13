@@ -9,7 +9,6 @@ import TweetView from '../features/tweetView/TweetView';
 import { useUser } from '../hooks/authHooks/useUser';
 import ProfileOverlay from '../ui/ProfileOverlay';
 import ModalWrapper from '../ui/ModalWrapper';
-import { useForm } from 'react-hook-form';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -61,7 +60,9 @@ const TweetsContainer = styled.div`
 
 // This is the main UserProfile component
 function Profile() {
+  // this is the state that allows the filter component to work properly
   const [filteredTweets, setFilteredTweets] = useState([]);
+  // state to
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   // Fetch the current user and their loading state
@@ -128,6 +129,7 @@ function Profile() {
         </ContentContainer>
       </PageContainer>
 
+      {/* using ModalWrapper to allow for exit animation using 'AnimatePresence' */}
       <ModalWrapper isShowing={isOverlayOpen}>
         <ProfileOverlay profileData={currentUser} onClose={handleModalClose} />
       </ModalWrapper>
