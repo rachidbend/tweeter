@@ -62,7 +62,7 @@ const UploadImage = styled.input`
   height: 0px;
   width: 0px;
   opacity: 0;
-  visibility: hidden;
+  /* visibility: hidden; */
 `;
 
 const CommentContainer = styled.form`
@@ -98,9 +98,9 @@ function TweetReplyInput({ tweet }) {
 
   // Handler to add a reply
   const onSubmit = data => {
+    console.log(replyImage[0]);
     // if there is no content, the reply will not be posted
     if (!data.commentText) return;
-    console.log(replyImage);
 
     // creating the id of the reply
     const date = new Date();
@@ -111,7 +111,7 @@ function TweetReplyInput({ tweet }) {
       {
         originalTweet: tweet,
         content: data.commentText,
-        image: replyImage,
+        replyImage: replyImage[0],
         id: id,
       },
       {
@@ -134,7 +134,6 @@ function TweetReplyInput({ tweet }) {
   function handleImageChange(e) {
     const file = e.target.files;
     setReplyImage(file);
-    console.log(file);
   }
 
   if (isLoading || isLoadingUser) return <Spinner />;
@@ -154,12 +153,12 @@ function TweetReplyInput({ tweet }) {
           {...register('commentText', { required: true })}
         />
         <ImageInputContainer>
-          <UploadImageLabel htmlFor={`image-input-${tweet.id}`}>
+          <UploadImageLabel htmlFor={`image-reply-input-${tweet.id}`}>
             <ImageIcon />
           </UploadImageLabel>
           <UploadImage
             type="file"
-            id={`image-input-${tweet.id}`}
+            id={`image-reply-input-${tweet.id}`}
             {...register('image', { onChange: handleImageChange })}
           />
         </ImageInputContainer>

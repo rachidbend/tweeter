@@ -310,17 +310,24 @@ export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
 // ///////////////////////////////////////////////
 // when adding a reply
 // 1) tweet the reply, and link it to the original tweet
-export async function addReply({ originalTweet, content, image, userID, id }) {
+export async function addReply({
+  originalTweet,
+  content,
+  replyImage,
+  userID,
+  id,
+}) {
   let imageUrl = '';
-  if (image.length > 0) {
-    const fileType = image[0].type.split('/').at(1);
+  console.log(replyImage);
+  if (replyImage) {
+    const fileType = replyImage.type.split('/').at(1);
 
-    let imageName = `tweet_${Date.now()}_${image[0].name}.${fileType}`;
-
+    let imageName = `tweet_${Date.now()}_${replyImage.name}.${fileType}`;
+    console.log(replyImage);
     imageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/tweet_images/${imageName}`;
 
     const image = await uploadImage({
-      image: image[0],
+      image: replyImage,
       bucketName: 'tweet_images',
       imageName: imageName,
     });
