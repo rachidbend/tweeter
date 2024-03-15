@@ -4,10 +4,14 @@ import { IconAddImage, IconClose, IconSave } from '../styles/Icons';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import useUpdateUser from '../hooks/useUpdateUser';
+import AvatarPlaceHolder from './AvatarPlaceHolder';
+import SmallSpinner from './SmallSpinner';
+import { useRef } from 'react';
+import useDeleteImage from '../hooks/useDeleteImage';
 
 const Overlay = styled(motion.div)`
-  height: 100vh;
-  height: 100svh;
+  /* height: 100vh;
+  height: 100svh; */
 
   overflow: hidden;
   width: 100%;
@@ -45,7 +49,7 @@ const StyledProfileOverlay = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
-  gap: 1.6rem;
+  gap: 1.2rem;
   padding-bottom: 0.8rem;
   margin-bottom: 2.4rem;
   border-bottom: 0.1rem solid var(--color-grey-500);
@@ -58,20 +62,24 @@ const CloseButton = styled.button`
   color: var(--color-grey-100);
   transition: color var(--transition-200);
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   &:hover {
     color: var(--color-blue-100);
   }
 `;
 
 const CloseIcon = styled(IconClose)`
-  height: 2.4rem;
-  width: 2.4rem;
+  height: 2.2rem;
+  width: 2.2rem;
   color: inherit;
 `;
 
 const Heading = styled.h3`
   font-family: var(--font-poppings);
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 600;
   letter-spacing: -0.035em;
   text-transform: capitalize;
@@ -136,6 +144,24 @@ const BackgroundImage = styled.img`
   @media screen and (max-width: 450px) {
     max-height: 14rem;
   }
+`;
+
+// placeholder for the background image
+const BackgroundImagePlaceHolder = styled.div`
+  width: 100%;
+  height: 20rem;
+  border-radius: 1.2rem;
+  background-color: var(--color-grey-400);
+
+  font-family: var(--font-poppings);
+  font-size: 1.4rem;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  display: flex;
+  justify-content: center;
+  padding-top: 4.8rem;
 `;
 
 const ImageLabel = styled.label`
@@ -251,6 +277,9 @@ const UserNameInput = styled.input`
 `;
 const DescriptionInput = styled.textarea`
   width: 100%;
+  min-width: 32rem;
+  max-width: 38.5rem;
+
   height: 7rem;
   border: 0.2rem solid var(--color-grey-400);
   background-color: var(--color-grey-700);
@@ -286,28 +315,9 @@ const TextInputsContainer = styled.div`
   }
 `;
 
-// small spinner
-
-const SmallSpinner = styled.span`
-  width: 1.4rem;
-  height: 1.4rem;
-  border: 0.2rem solid var(--color-white);
-  border-bottom-color: var(--color-blue-100);
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-
-  @keyframes rotation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
 function ProfileOverlay({ onClose, profileData }) {
+  const modalRef = useRef();
+
   // hook for managing the form
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -318,6 +328,9 @@ function ProfileOverlay({ onClose, profileData }) {
 
   // custom hook to update user data
   const { updateUser, isPending } = useUpdateUser();
+
+  // custom hook to delete an image
+  const { deleteImage } = useDeleteImage();
 
   function onSubmit(data) {
     // when the user submts (clicks on save)
@@ -333,6 +346,41 @@ function ProfileOverlay({ onClose, profileData }) {
         onSuccess: () => {
           // when the updating was successful, we close the modal
           onClose();
+
+          // then check which of the images was updated
+
+          // if only the background image was updated, then delete the previous background image from the storage
+          if (data.description.length > 0 && data.avatarImage.length === 0) {
+            deleteImage({
+              bucketName: 'user_images',
+              imageUrl: profileData.background_image,
+            });
+          }
+          // if only the avatar image was updated, then delete the previous avatar image from the storage
+          if (data.avatarImage.length > 0 && data.description.length === 0) {
+            deleteImage({
+              bucketName: 'user_images',
+              imageUrl: profileData.avatar_image,
+            });
+          }
+
+          // if both background and avatar images were changed, then remove the background image first then the avatar image, to avoid any issues they are not removed at the same time
+          if (data.avatarImage.length > 0 && data.description.length > 0) {
+            deleteImage(
+              {
+                bucketName: 'user_images',
+                imageUrl: profileData.background_image,
+              },
+              {
+                onSettled: () => {
+                  deleteImage({
+                    bucketName: 'user_images',
+                    imageUrl: profileData.avatar_image,
+                  });
+                },
+              }
+            );
+          }
         },
       }
     );
@@ -345,8 +393,14 @@ function ProfileOverlay({ onClose, profileData }) {
     onClose();
   }
 
+  // when the background itself is clicked, close the modal
+  function handleClickOutside(e) {
+    if (e.target === modalRef.current) onClose();
+  }
+
   return (
     <Overlay
+      ref={modalRef}
       initial={{
         opacity: 0,
       }}
@@ -356,6 +410,7 @@ function ProfileOverlay({ onClose, profileData }) {
       exit={{
         opacity: 0,
       }}
+      onClick={handleClickOutside}
     >
       <StyledProfileOverlay>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -374,10 +429,17 @@ function ProfileOverlay({ onClose, profileData }) {
 
           {/* container for the background image */}
           <BackgroundContainer className="background image">
-            <BackgroundImage
-              src={profileData.background_image}
-              alt="background image"
-            />
+            {/* if there is no background image show a place holder */}
+            {!profileData?.background_image && (
+              <BackgroundImagePlaceHolder>No image</BackgroundImagePlaceHolder>
+            )}
+            {/* if there is a background image then show it */}
+            {profileData?.background_image && (
+              <BackgroundImage
+                src={profileData.background_image}
+                alt="background image"
+              />
+            )}
 
             {/* file input to change the background image */}
             <ImageLabel htmlFor="profile-background-image-input">
@@ -393,7 +455,15 @@ function ProfileOverlay({ onClose, profileData }) {
           <Container className="container">
             {/* container for the avatar image */}
             <AvatarContainer className="avatar container">
-              <AvatarImage src={profileData.avatar_image} alt="avatar image" />
+              {!profileData.avatar_image && (
+                <AvatarPlaceHolder width="12rem" height="12rem" />
+              )}
+              {profileData.avatar_image && (
+                <AvatarImage
+                  src={profileData.avatar_image}
+                  alt="avatar image"
+                />
+              )}
 
               {/* file input to change the avatar image */}
               <ImageLabel htmlFor="profile-avatar-image-input">
