@@ -128,6 +128,7 @@ const Image = styled.img`
   width: 100%;
   height: auto;
   border-radius: 0.8rem;
+  margin-top: 1.2rem;
 `;
 const AvatarContainer = styled.div``;
 
