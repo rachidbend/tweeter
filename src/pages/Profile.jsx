@@ -11,7 +11,6 @@ import ProfileOverlay from '../ui/ProfileOverlay';
 import ModalWrapper from '../ui/ModalWrapper';
 
 const StyledUserProfile = styled.div`
-  width: 100%;
   min-height: 100vh;
   min-height: 100svh;
 `;

@@ -26,7 +26,7 @@ export const GlobalStyles = styled.createGlobalStyle`
     --color-grey-700: hsla(0, 0%, 98%, 1); /* comment input background */
 
     /* profile overlay background */
-    --color-background-overlay: hsla(0, 0%, 0%, 0.1);
+    --color-background-overlay: hsla(0, 0%, 0%, 0.2);
 
     /* profile image input label background  */
     --color-black-transparent: rgba(0, 0, 0, 0.5);

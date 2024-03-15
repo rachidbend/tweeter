@@ -108,3 +108,17 @@ export async function updateUser({
 
   return data;
 }
+
+// Delete image
+export async function deleteImage({ bucketName, imageUrl }) {
+  // get the name of the image from the url
+  const splitUrl = imageUrl.split(`/${bucketName}/`);
+  // remove the image from the correct bucket
+  const { data, error } = await supabase.storage
+    .from(bucketName)
+    .remove([splitUrl[1]]);
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}

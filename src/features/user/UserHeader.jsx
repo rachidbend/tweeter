@@ -57,8 +57,8 @@ const UserAvatar = styled.img`
 
 const UserAvatarPlaceHolder = styled(IconUserOutline)`
   display: block;
-  width: 16rem;
-  height: 16rem;
+  width: ${props => (props.$width ? props.$width : '16rem')};
+  height: ${props => (props.$height ? props.$height : '16rem')};
   color: var(--color-white);
   border-radius: 0.8rem;
   border: 0.4rem solid var(--color-white);
