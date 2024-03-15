@@ -23,10 +23,10 @@ const Stat = styled.p`
 function TweetStats({ tweet }) {
   return (
     <StyledTweetStats>
-      <Stat>{formatNumber(tweet?.likes.length)} Likes</Stat>
-      <Stat>{formatNumber(tweet?.replies.length)} Comment</Stat>
-      <Stat>{formatNumber(tweet?.retweets.length)} Retweets</Stat>
-      <Stat>{formatNumber(tweet?.saves.length)} Saved</Stat>
+      <Stat>{formatNumber(tweet?.likes?.length)} Likes</Stat>
+      <Stat>{formatNumber(tweet?.replies?.length)} Comment</Stat>
+      <Stat>{formatNumber(tweet?.retweets?.length)} Retweets</Stat>
+      <Stat>{formatNumber(tweet?.saves?.length)} Saved</Stat>
     </StyledTweetStats>
   );
 }

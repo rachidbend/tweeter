@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { notifyUserOfRetweet as notifyUserOfRetweetApi } from '../../services/apiTweet';
-import { useUser } from '../authHooks/useUser';
+import { notifyUserOfRetweet as notifyUserOfRetweetApi } from '../../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
 import toast from 'react-hot-toast';
 
 export default function useNotifyUserOfRetweet() {

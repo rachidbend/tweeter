@@ -8,9 +8,11 @@ import { IconDotsHorizontal, IconTrashOutline } from '../../styles/Icons';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';
 import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
-import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/useNotifyUserOfRetweetRemove';
+import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/retweet/useNotifyUserOfRetweetRemove';
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useGetUserData } from '../../hooks/user/useGetUserData';
+import Spinner from '../../ui/Spinner';
 
 const StyledTweetHeader = styled.div`
   display: grid;
@@ -105,10 +107,10 @@ const UsernameContainer = styled.div`
 `;
 
 // Component for rendering the header of a tweet
-function TweetHeader({ user, tweet }) {
+function TweetHeader({ tweet }) {
   // State for managing the visibility of the options list
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
-
+  const { userProfile, isLoading, error } = useGetUserData(tweet.publisher_id);
   // Getting the current user's info
   const { user: currentUser } = useUser();
 
@@ -170,14 +172,16 @@ function TweetHeader({ user, tweet }) {
     }
   }
 
+  if (isLoading) return <Spinner />;
+
   return (
     <StyledTweetHeader>
       {/* Avatar image */}
       <AvatarContainer>
-        {user.userAvatar ? (
+        {userProfile.avatar_image ? (
           <Avatar
-            src={user.userAvatar}
-            alt={`avatar image of ${user?.userName}`}
+            src={userProfile.avatar_image}
+            alt={`avatar image of ${userProfile.avatar_image}`}
           />
         ) : (
           <AvatarPlaceHolder />
@@ -186,7 +190,9 @@ function TweetHeader({ user, tweet }) {
 
       {/* username  */}
       <UsernameContainer>
-        <UserName to={`/user/${tweet?.publisher_id}`}>{user.userName}</UserName>
+        <UserName to={`/user/${tweet?.publisher_id}`}>
+          {userProfile.user_name}
+        </UserName>
         {/* if the current user is the owner of the tweet, he can see the following options list */}
         {isCurrentUser && (
           <OptionsContainer>

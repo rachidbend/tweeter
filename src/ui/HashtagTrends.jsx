@@ -9,16 +9,19 @@ const StyledHashtagTrends = styled.div`
   padding: 1rem 2rem;
   box-shadow: var(--shadow-100);
 `;
+
 const Header = styled.div`
   border-bottom: 0.1rem solid var(--color-grey-500);
   padding-bottom: 0.8rem;
   margin-bottom: 2.4rem;
 `;
+
 const Heading = styled.h3`
   font-family: var(--font-poppings);
   font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: -0.035em;
+  color: var(--color-grey-200);
 `;
 
 const Container = styled.div`
@@ -27,7 +30,9 @@ const Container = styled.div`
   gap: 2.4rem;
   padding-bottom: 2.8rem;
 `;
+
 const TrendContainer = styled.div``;
+
 const Title = styled.p`
   font-family: var(--font-noto);
   font-size: 1.6rem;
@@ -36,12 +41,12 @@ const Title = styled.p`
   color: var(--color-grey-100);
   margin-bottom: 0.8rem;
 `;
+
 const Stat = styled.p`
   font-family: var(--font-noto);
   font-size: 1.2rem;
   font-weight: 500;
   letter-spacing: -0.035em;
-
   color: var(--color-grey-300);
 `;
 

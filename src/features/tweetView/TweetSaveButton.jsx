@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { Button, ButtonText } from './TweetView';
-import { useSaveTweet } from '../../hooks/tweet/useSaveTweet';
-import { useNotifyUserOfSave } from '../../hooks/tweet/useNotifyUserOfSave';
-import { useRemoveTweetFromBookmarks } from '../../hooks/tweet/useRemoveTweetFromBookmarks';
-import { useNotifyUserOfUnsave } from '../../hooks/tweet/useNotifyUserOfUnsave';
+import { useSaveTweet } from '../../hooks/tweet/save/useSaveTweet';
+import { useNotifyUserOfSave } from '../../hooks/tweet/save/useNotifyUserOfSave';
+import { useRemoveTweetFromBookmarks } from '../../hooks/tweet/save/useRemoveTweetFromBookmarks';
+import { useNotifyUserOfUnsave } from '../../hooks/tweet/save/useNotifyUserOfUnsave';
 import { IconBookMarkOutline } from '../../styles/Icons';
 
 const SaveIcon = styled(IconBookMarkOutline)`

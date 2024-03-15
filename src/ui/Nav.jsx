@@ -49,6 +49,8 @@ const StyledSpan = styled(motion.span)`
   left: 0;
   border-radius: 0.8rem 0.8rem 0 0;
   background-color: var(--color-blue-100);
+
+  transition: left var(--transition-100);
 `;
 
 function Nav() {
@@ -80,7 +82,9 @@ function Nav() {
 
       // If an active link is found, update the span position
       if (activeRef) {
-        setPositionSpan(spanRef, activeRef);
+        setPositionSpan(spanRef, activeRef, 'horizontal');
+      } else {
+        setPositionSpan(spanRef, homeRef, 'horizontal');
       }
     },
     [location]
@@ -88,7 +92,7 @@ function Nav() {
 
   return (
     <StyledNav>
-      <StyledSpan layout ref={spanRef}></StyledSpan>
+      <StyledSpan ref={spanRef}></StyledSpan>
       <Item>
         <ItemLink ref={homeRef} to={'/home'}>
           home
