@@ -8,6 +8,7 @@ import AvatarPlaceHolder from './AvatarPlaceHolder';
 import SmallSpinner from './SmallSpinner';
 import { useRef } from 'react';
 import useDeleteImage from '../hooks/useDeleteImage';
+import OutsideClick from '../helpers/OutsideClick';
 
 const Overlay = styled(motion.div)`
   /* height: 100vh;
@@ -393,14 +394,8 @@ function ProfileOverlay({ onClose, profileData }) {
     onClose();
   }
 
-  // when the background itself is clicked, close the modal
-  function handleClickOutside(e) {
-    if (e.target === modalRef.current) onClose();
-  }
-
   return (
     <Overlay
-      ref={modalRef}
       initial={{
         opacity: 0,
       }}
@@ -410,9 +405,9 @@ function ProfileOverlay({ onClose, profileData }) {
       exit={{
         opacity: 0,
       }}
-      onClick={handleClickOutside}
     >
-      <StyledProfileOverlay>
+      <OutsideClick onClose={onClose} componentRef={modalRef} />
+      <StyledProfileOverlay ref={modalRef}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* header containing a close button, a title, and the save button */}
           <Header>
