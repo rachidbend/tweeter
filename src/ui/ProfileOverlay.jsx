@@ -40,8 +40,8 @@ const StyledProfileOverlay = styled.div`
 
   @media screen and (max-width: 450px) {
     width: 100%;
-    height: 100vh;
-    height: 100svh;
+    min-height: 100vh;
+    min-height: 100svh;
     border-radius: 0;
   }
 `;
@@ -302,6 +302,11 @@ const DescriptionInput = styled.textarea`
 
   &::placeholder {
     color: var(--color-grey-300);
+  }
+
+  @media screen and (max-width: 450px) {
+    min-width: 100%;
+    max-width: 100%;
   }
 `;
 
