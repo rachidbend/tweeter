@@ -16,11 +16,12 @@ import { useNotifyUserOfLike } from '../../hooks/tweet/like/useNotifyUserOfLike'
 import { useRemoveTweetFromLikes } from '../../hooks/tweet/like/useRemoveTweetFromLikes';
 import { useNotifyUserOfUnlike } from '../../hooks/tweet/like/useNotifyUserOfUnlike';
 import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRemoveReply } from '../../hooks/tweet/reply/useRemoveReply';
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import OutsideClick from '../../helpers/OutsideClick';
 
 const StyledComment = styled(motion.div)`
   display: grid;
@@ -178,6 +179,7 @@ const DeleteIcon = styled(IconTrashOutline)`
 `;
 
 function Comment({ reply }) {
+  const optionsButtonRef = useRef();
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   const { userProfile: originalTweeter, isLoading } = useGetUserData(
@@ -247,6 +249,10 @@ function Comment({ reply }) {
       }}
       exit={{ opacity: 0 }}
     >
+      <OutsideClick
+        componentRef={optionsButtonRef}
+        onClose={() => setIsOptionsOpen(false)}
+      />
       <AvatarContainer>
         {originalTweeter?.avatar_image ? (
           <Avatar
@@ -265,7 +271,7 @@ function Comment({ reply }) {
             </Username>
             <PostingDate>{formatDate(tweet?.created_at)}</PostingDate>
             {isCurrentUser && (
-              <OptionsContainer>
+              <OptionsContainer ref={optionsButtonRef}>
                 <OptionsButton
                   onClick={() =>
                     setIsOptionsOpen(isOptionsOpen => !isOptionsOpen)
