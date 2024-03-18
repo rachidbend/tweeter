@@ -12,6 +12,7 @@ import {
 } from '../../styles/Icons';
 import { IoMdPersonAdd } from 'react-icons/io';
 import { formatNumber } from '../../helpers/functions';
+import SmallSpinner from '../../ui/SmallSpinner';
 
 const StyledUserHeader = styled.div`
   position: relative;
@@ -304,9 +305,19 @@ function UserHeader({
           onClick={isFollowingUser ? handleUnfollow : handleFollow}
         >
           {/* Display an icon based on whether the user is followed */}
-          {isFollowingUser ? <UnfollowIcon /> : <FollowIcon />}
+          {isUnfollowing ||
+          isFollowing ||
+          isRemovingFollow ||
+          isAddingFollow ? (
+            <SmallSpinner />
+          ) : isFollowingUser ? (
+            <UnfollowIcon />
+          ) : (
+            <FollowIcon />
+          )}
           {/* Display text based on whether the user is followed */}
           {isFollowingUser ? 'Unfollow' : 'Follow'}
+          {}
         </FollowButton>
       )}
 
