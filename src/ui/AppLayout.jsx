@@ -2,8 +2,9 @@ import styled from 'styled-components';
 import Header from './Header';
 import { Outlet } from 'react-router-dom';
 import MobileNav from './MobileNav';
+import { motion } from 'framer-motion';
 
-const StyledAppLayout = styled.div`
+const StyledAppLayout = styled(motion.div)`
   min-height: 100vh;
   min-height: 100svh;
   background-color: var(--color-grey-600);
@@ -18,7 +19,12 @@ const StyledAppLayout = styled.div`
 
 function AppLayout() {
   return (
-    <StyledAppLayout>
+    <StyledAppLayout
+      initial={{
+        opacity: 0,
+      }}
+      animate={{ opacity: 1 }}
+    >
       <Header />
       <Outlet />
       <MobileNav />

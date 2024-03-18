@@ -201,7 +201,6 @@ function PublishTweet() {
   }
 
   function handleImageChange(e) {
-    console.log(e);
     if (e.target.files && e.target.files[0]) {
       let img = URL.createObjectURL(e.target.files[0]);
       setImage(img);

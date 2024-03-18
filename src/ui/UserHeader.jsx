@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import { TiArrowSortedDown } from 'react-icons/ti';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import UserDropDown from './UserDropDown';
 import { AnimatePresence } from 'framer-motion';
 import { useUser } from '../hooks/authHooks/useUser';
 import { useGetUserData } from '../hooks/user/useGetUserData';
 import Spinner from './Spinner';
 import AvatarPlaceHolder from './AvatarPlaceHolder';
+import OutsideClick from '../helpers/OutsideClick';
 
 const StyledUserHeader = styled.div`
   display: flex;
@@ -63,9 +64,19 @@ function UserHeader() {
   const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
     useGetUserData(user.id);
 
+  // ref used to close the drop down if there was a click outside of it
+  const userHeaderRef = useRef();
+
   if (isLoadingCurrentUser || isLoadingUser) return <Spinner />;
   return (
-    <StyledUserHeader onClick={() => setIsOpen(isOpen => !isOpen)}>
+    <StyledUserHeader
+      ref={userHeaderRef}
+      onClick={() => setIsOpen(isOpen => !isOpen)}
+    >
+      <OutsideClick
+        componentRef={userHeaderRef}
+        onClose={() => setIsOpen(false)}
+      />
       {currentUser.avatar_image ? (
         <Avatar src={currentUser.avatar_image} alt="user avatar" />
       ) : (

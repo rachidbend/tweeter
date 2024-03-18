@@ -6,6 +6,7 @@
     { "source": "/user/:path", "destination": "/" },
 
     { "source": "/login", "destination": "/" },
-    { "source": "/signup", "destination": "/" }
+    { "source": "/signup", "destination": "/" },
+    { "source": "/profile", "destination": "/" }
   ]
 }

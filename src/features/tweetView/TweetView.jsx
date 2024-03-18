@@ -96,7 +96,7 @@ const RepliesContainer = styled.div`
     - user avater
     - user name
     - publishing date
-    - additional options (delete tweet)
+    - additional options (delete tweet, edit tweet)
 
   2) tweet content
     - if is reply, show original tweet above
@@ -111,11 +111,12 @@ const RepliesContainer = styled.div`
 
   5) tweet reply input
     - reply input (to add post a reply of the tweet)
-    (adding an image to the reply is currently NOT functional)
+    (adding an image to the reply is currently functional)
 
   6) tweet replies section
     - all replies 
     - like button for a reply
+    - aditional options for each reply (delete reply)
 */
 
 function TweetView({ tweet }) {

@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { formatDate } from '../../helpers/functions';
 import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
-import { useState } from 'react';
-import { IconDotsHorizontal, IconTrashOutline } from '../../styles/Icons';
+import { useRef, useState } from 'react';
+import {
+  IconDotsHorizontal,
+  IconEdit,
+  IconTrashOutline,
+} from '../../styles/Icons';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';
 import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
@@ -13,6 +17,8 @@ import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweet
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
+import OutsideClick from '../../helpers/OutsideClick';
+import useDeleteImage from '../../hooks/useDeleteImage';
 
 const StyledTweetHeader = styled.div`
   display: grid;
@@ -76,24 +82,41 @@ const Options = styled(motion.div)`
   position: absolute;
   right: 0;
   background-color: var(--color-white);
-  padding: 1.2rem 2.4rem 1.2rem 1.2rem;
+  padding: 0.8rem;
   border-radius: 0.8rem;
   border: 0.1rem solid var(--color-grey-600);
   box-shadow: var(--shadow-100);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 0.8rem;
 `;
 
-const DeleteButton = styled.button`
-  color: var(--color-red-100);
+const Button = styled.button`
   font-family: var(--font-noto);
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   gap: 0.8rem;
   background: none;
   border: none;
+  padding: 0.8rem 1.6rem;
+  width: 100%;
+  border-radius: 0.6rem;
+
+  transition: var(--transition-200);
+  &:hover {
+    background-color: var(--color-grey-600);
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  color: var(--color-red-100);
 `;
 const DeleteIcon = styled(IconTrashOutline)`
   height: 1.4rem;
@@ -106,11 +129,21 @@ const UsernameContainer = styled.div`
   justify-content: space-between;
 `;
 
+const EditButton = styled(Button)`
+  color: var(--color-grey-300);
+`;
+const EditIcon = styled(IconEdit)`
+  height: 1.4rem;
+  width: 1.4rem;
+  color: inherit;
+`;
+
 // Component for rendering the header of a tweet
 function TweetHeader({ tweet }) {
+  const headerRef = useRef();
   // State for managing the visibility of the options list
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
-  const { userProfile, isLoading, error } = useGetUserData(tweet.publisher_id);
+  const { userProfile, isLoading } = useGetUserData(tweet.publisher_id);
   // Getting the current user's info
   const { user: currentUser } = useUser();
 
@@ -124,6 +157,7 @@ function TweetHeader({ tweet }) {
   const { removeRetweetId } = useRemoveTweetId();
   const { notifyUserOfUnretweet } = useNotifyUserOfRetweetRemove();
   const { notifyOriginalTweetOfReplyRemoval } = useNotifyTweetOfReplyRemoval();
+  const { deleteImage } = useDeleteImage();
 
   // Function to handle tweet deletion
   function handleDelete() {
@@ -131,6 +165,8 @@ function TweetHeader({ tweet }) {
     if (!isReply && !isRetweet) {
       // If the tweet is a normal tweet, we delete it
       removeTweet({ tweetId: tweet.id });
+      if (tweet.image)
+        deleteImage({ bucketName: 'tweet_images', imageUrl: tweet.image });
     }
 
     // REPLY tweet
@@ -148,6 +184,11 @@ function TweetHeader({ tweet }) {
               replyID: tweet.id,
               replyerId: tweet.publisher_id,
             });
+            if (tweet.image)
+              deleteImage({
+                bucketName: 'tweet_images',
+                imageUrl: tweet.image,
+              });
           },
         }
       );
@@ -166,6 +207,11 @@ function TweetHeader({ tweet }) {
               targetId: tweet.original_tweeter_id,
               tweetId: tweet.original_tweet_id,
             });
+            if (tweet.image)
+              deleteImage({
+                bucketName: 'tweet_images',
+                imageUrl: tweet.image,
+              });
           },
         }
       );
@@ -175,7 +221,11 @@ function TweetHeader({ tweet }) {
   if (isLoading) return <Spinner />;
 
   return (
-    <StyledTweetHeader>
+    <StyledTweetHeader ref={headerRef}>
+      <OutsideClick
+        onClose={() => setIsOptionsOpen(false)}
+        componentRef={headerRef}
+      />
       {/* Avatar image */}
       <AvatarContainer>
         {userProfile.avatar_image ? (
@@ -220,6 +270,10 @@ function TweetHeader({ tweet }) {
                     <DeleteIcon />
                     Delete
                   </DeleteButton>
+                  <EditButton>
+                    <EditIcon />
+                    Edit
+                  </EditButton>
                 </Options>
               )}
             </AnimatePresence>

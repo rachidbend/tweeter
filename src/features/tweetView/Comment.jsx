@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import { useGetTweet } from '../../hooks/tweet/useGetTweet';
-import { Months } from '../../helpers/variables';
 import {
   IconDotsHorizontal,
   IconHeartOutline,
@@ -16,11 +15,13 @@ import { useNotifyUserOfLike } from '../../hooks/tweet/like/useNotifyUserOfLike'
 import { useRemoveTweetFromLikes } from '../../hooks/tweet/like/useRemoveTweetFromLikes';
 import { useNotifyUserOfUnlike } from '../../hooks/tweet/like/useNotifyUserOfUnlike';
 import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRemoveReply } from '../../hooks/tweet/reply/useRemoveReply';
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import OutsideClick from '../../helpers/OutsideClick';
+import useDeleteImage from '../../hooks/useDeleteImage';
 
 const StyledComment = styled(motion.div)`
   display: grid;
@@ -128,6 +129,7 @@ const Image = styled.img`
   width: 100%;
   height: auto;
   border-radius: 0.8rem;
+  margin-top: 1.2rem;
 `;
 const AvatarContainer = styled.div``;
 
@@ -177,6 +179,7 @@ const DeleteIcon = styled(IconTrashOutline)`
 `;
 
 function Comment({ reply }) {
+  const optionsButtonRef = useRef();
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   const { userProfile: originalTweeter, isLoading } = useGetUserData(
@@ -210,6 +213,7 @@ function Comment({ reply }) {
   // removing the reply handlers
   const { removeReply } = useRemoveReply();
   const { notifyOriginalTweetOfReplyRemoval } = useNotifyTweetOfReplyRemoval();
+  const { deleteImage } = useDeleteImage();
 
   function handleDelete() {
     // setIsOptionsOpen(false);
@@ -224,6 +228,11 @@ function Comment({ reply }) {
             replyID: reply?.reply_id,
             replyerId: reply?.replyer_id,
           });
+          if (tweet.image)
+            deleteImage({
+              bucketName: 'tweet_images',
+              imageUrl: tweet.image,
+            });
         },
       }
     );
@@ -246,6 +255,10 @@ function Comment({ reply }) {
       }}
       exit={{ opacity: 0 }}
     >
+      <OutsideClick
+        componentRef={optionsButtonRef}
+        onClose={() => setIsOptionsOpen(false)}
+      />
       <AvatarContainer>
         {originalTweeter?.avatar_image ? (
           <Avatar
@@ -264,7 +277,7 @@ function Comment({ reply }) {
             </Username>
             <PostingDate>{formatDate(tweet?.created_at)}</PostingDate>
             {isCurrentUser && (
-              <OptionsContainer>
+              <OptionsContainer ref={optionsButtonRef}>
                 <OptionsButton
                   onClick={() =>
                     setIsOptionsOpen(isOptionsOpen => !isOptionsOpen)

@@ -12,8 +12,8 @@ export function useAddReply() {
     isPending,
     error,
   } = useMutation({
-    mutationFn: ({ originalTweet, content, image, id }) =>
-      addReplyApi({ originalTweet, content, image, userID: user.id, id }),
+    mutationFn: ({ originalTweet, content, replyImage, id }) =>
+      addReplyApi({ originalTweet, content, replyImage, userID: user.id, id }),
     onSettled: () => {
       queryClient.invalidateQueries(['profiles']);
     },
