@@ -18,6 +18,7 @@ export function useFollow() {
     mutationFn: ({ newFollowing }) =>
       followUser({
         following: currentUser.following,
+        followingCount: currentUser.following_count,
         newFollowing,
         userId: user.id,
       }),

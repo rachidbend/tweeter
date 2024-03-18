@@ -11,6 +11,7 @@ import { useUser } from '../../hooks/authHooks/useUser';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
 import Spinner from '../../ui/Spinner';
+import SmallSpinner from '../../ui/SmallSpinner';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -144,7 +145,7 @@ const TweetButton = styled.button`
   border-radius: 0.4rem;
   cursor: pointer;
   transition: background var(--transition-100), color var(--transition-100);
-
+  width: 8rem;
   &:hover {
     color: var(--color-blue-100);
     background-color: var(--color-white);
@@ -175,7 +176,7 @@ function PublishTweet() {
   const [replyChoice, setReplyChoice] = useState('everyone');
   const [image, setImage] = useState(null);
 
-  const { addTweet, isPending } = useAddTweet();
+  const { addTweet, isPending: isTweeting } = useAddTweet();
   const { register, handleSubmit, reset } = useForm();
 
   const { user } = useUser();
@@ -246,7 +247,9 @@ function PublishTweet() {
               </AnimatePresence>
             </VisibilityButtonContainer>
           </ImageAndVisibilityContainer>
-          <TweetButton disabled={isPending}>tweet</TweetButton>
+          <TweetButton disabled={isTweeting}>
+            {isTweeting ? <SmallSpinner /> : 'tweet'}
+          </TweetButton>
         </ButtonsContainer>
       </ContainerForm>
     </StyledTweet>

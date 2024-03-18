@@ -122,3 +122,23 @@ export async function deleteImage({ bucketName, imageUrl }) {
 
   return data;
 }
+
+export async function getUserToFollow({ userId }) {
+  let { data: profiles, error } = await supabase
+    .from('profiles')
+    .select(
+      `
+    id,
+    user_name,
+    user_description,
+    avatar_image, 
+    background_image, 
+    followers_count
+  `
+    )
+    .eq('id', userId);
+
+  if (error) throw new Error(error.message);
+
+  return profiles[0];
+}
