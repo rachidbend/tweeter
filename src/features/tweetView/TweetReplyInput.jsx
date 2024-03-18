@@ -117,7 +117,7 @@ function TweetReplyInput({ tweet }) {
       {
         originalTweet: tweet,
         content: data.commentText,
-        replyImage: replyImage[0],
+        replyImage: data.image[0],
         id: id,
       },
       {
@@ -139,7 +139,8 @@ function TweetReplyInput({ tweet }) {
 
   function handleImageChange(e) {
     const file = e.target.files;
-    setReplyImage(file);
+    const img = URL.createObjectURL(file[0]);
+    setReplyImage(img);
   }
 
   if (isLoading || isLoadingUser) return <Spinner />;
@@ -162,9 +163,7 @@ function TweetReplyInput({ tweet }) {
           <UploadImageLabel htmlFor={`image-reply-input-${tweet.id}`}>
             {!replyImage && <ImageIcon />}
 
-            {replyImage && (
-              <PreviewImage src={URL.createObjectURL(replyImage[0])} />
-            )}
+            {replyImage && <PreviewImage src={replyImage} />}
           </UploadImageLabel>
           <UploadImage
             type="file"
