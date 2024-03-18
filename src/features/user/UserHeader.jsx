@@ -11,6 +11,7 @@ import {
   IconUserUnfollowOutline,
 } from '../../styles/Icons';
 import { IoMdPersonAdd } from 'react-icons/io';
+import { formatNumber } from '../../helpers/functions';
 
 const StyledUserHeader = styled.div`
   position: relative;
@@ -277,12 +278,12 @@ function UserHeader({
           <StatContainer>
             {/* Display the number of people the user is following */}
             <Stat>
-              {userProfile.following.length}
+              {formatNumber(userProfile.following_count)}
               <StatSpan>Following</StatSpan>
             </Stat>
             {/* Display the number of followers the user has */}
             <Stat>
-              {userProfile.followers.length}
+              {formatNumber(userProfile.followers_count)}
               <StatSpan>Followers</StatSpan>
             </Stat>
           </StatContainer>
