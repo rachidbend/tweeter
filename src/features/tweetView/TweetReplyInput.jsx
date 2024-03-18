@@ -83,6 +83,12 @@ const UserAvatar = styled.img`
   object-position: center;
 `;
 
+const PreviewImage = styled.img`
+  width: auto;
+  height: 2rem;
+  border-radius: 0.4rem;
+`;
+
 function TweetReplyInput({ tweet }) {
   const [replyImage, setReplyImage] = useState('');
   // Form handler (react hook form)
@@ -154,7 +160,11 @@ function TweetReplyInput({ tweet }) {
         />
         <ImageInputContainer>
           <UploadImageLabel htmlFor={`image-reply-input-${tweet.id}`}>
-            <ImageIcon />
+            {!replyImage && <ImageIcon />}
+
+            {replyImage && (
+              <PreviewImage src={URL.createObjectURL(replyImage[0])} />
+            )}
           </UploadImageLabel>
           <UploadImage
             type="file"

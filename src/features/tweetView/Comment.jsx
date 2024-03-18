@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import { useGetTweet } from '../../hooks/tweet/useGetTweet';
-import { Months } from '../../helpers/variables';
 import {
   IconDotsHorizontal,
   IconHeartOutline,
@@ -22,6 +21,7 @@ import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweet
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import OutsideClick from '../../helpers/OutsideClick';
+import useDeleteImage from '../../hooks/useDeleteImage';
 
 const StyledComment = styled(motion.div)`
   display: grid;
@@ -213,6 +213,7 @@ function Comment({ reply }) {
   // removing the reply handlers
   const { removeReply } = useRemoveReply();
   const { notifyOriginalTweetOfReplyRemoval } = useNotifyTweetOfReplyRemoval();
+  const { deleteImage } = useDeleteImage();
 
   function handleDelete() {
     // setIsOptionsOpen(false);
@@ -227,6 +228,11 @@ function Comment({ reply }) {
             replyID: reply?.reply_id,
             replyerId: reply?.replyer_id,
           });
+          if (tweet.image)
+            deleteImage({
+              bucketName: 'tweet_images',
+              imageUrl: tweet.image,
+            });
         },
       }
     );
