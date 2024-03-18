@@ -30,7 +30,7 @@ function WhoToFollow() {
   if (isLoading) return <Spinner />;
 
   if (error) toast.error(error.message);
-  // console.log(recommendations);
+  console.log(recommendations);
   return (
     <StyledWhoToFollow>
       <Header>

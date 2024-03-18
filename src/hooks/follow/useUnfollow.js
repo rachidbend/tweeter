@@ -16,6 +16,7 @@ export function useUnfollow() {
     mutationFn: ({ unfollowId }) =>
       unfollowUser({
         following: currentUser.following,
+        followingCount: currentUser.following_count,
         unfollowId,
         userId: user.id,
       }),

@@ -22,10 +22,18 @@ export async function removeFollowerToUser({ targetId, followerId }) {
   return data;
 }
 
-export async function followUser({ following, newFollowing, userId }) {
+export async function followUser({
+  following,
+  newFollowing,
+  followingCount,
+  userId,
+}) {
   const { data, error } = await supabase
     .from('profiles')
-    .update({ following: [newFollowing, ...following] })
+    .update({
+      following: [newFollowing, ...following],
+      following_count: followingCount + 1,
+    })
     .eq('id', userId)
     .select();
 
@@ -34,16 +42,21 @@ export async function followUser({ following, newFollowing, userId }) {
   return data;
 }
 
-export async function unfollowUser({ following, unfollowId, userId }) {
+export async function unfollowUser({
+  following,
+  unfollowId,
+  followingCount,
+  userId,
+}) {
   const filteredFollowing = following.filter(id => {
-    console.log(id);
-    console.log(unfollowId);
     return id !== unfollowId;
   });
-  console.log(filteredFollowing);
   const { data, error } = await supabase
     .from('profiles')
-    .update({ following: filteredFollowing })
+    .update({
+      following: filteredFollowing,
+      following_count: followingCount - 1,
+    })
     .eq('id', userId)
     .select();
 
