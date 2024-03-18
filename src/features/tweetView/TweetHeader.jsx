@@ -18,6 +18,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import OutsideClick from '../../helpers/OutsideClick';
+import useDeleteImage from '../../hooks/useDeleteImage';
 
 const StyledTweetHeader = styled.div`
   display: grid;
@@ -106,7 +107,7 @@ const Button = styled.button`
   border: none;
   padding: 0.8rem 1.6rem;
   width: 100%;
-  border-radius: 0.4rem;
+  border-radius: 0.6rem;
 
   transition: var(--transition-200);
   &:hover {
@@ -142,7 +143,7 @@ function TweetHeader({ tweet }) {
   const headerRef = useRef();
   // State for managing the visibility of the options list
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
-  const { userProfile, isLoading, error } = useGetUserData(tweet.publisher_id);
+  const { userProfile, isLoading } = useGetUserData(tweet.publisher_id);
   // Getting the current user's info
   const { user: currentUser } = useUser();
 
@@ -156,6 +157,7 @@ function TweetHeader({ tweet }) {
   const { removeRetweetId } = useRemoveTweetId();
   const { notifyUserOfUnretweet } = useNotifyUserOfRetweetRemove();
   const { notifyOriginalTweetOfReplyRemoval } = useNotifyTweetOfReplyRemoval();
+  const { deleteImage } = useDeleteImage();
 
   // Function to handle tweet deletion
   function handleDelete() {
@@ -163,6 +165,8 @@ function TweetHeader({ tweet }) {
     if (!isReply && !isRetweet) {
       // If the tweet is a normal tweet, we delete it
       removeTweet({ tweetId: tweet.id });
+      if (tweet.image)
+        deleteImage({ bucketName: 'tweet_images', imageUrl: tweet.image });
     }
 
     // REPLY tweet
@@ -180,6 +184,11 @@ function TweetHeader({ tweet }) {
               replyID: tweet.id,
               replyerId: tweet.publisher_id,
             });
+            if (tweet.image)
+              deleteImage({
+                bucketName: 'tweet_images',
+                imageUrl: tweet.image,
+              });
           },
         }
       );
@@ -198,6 +207,11 @@ function TweetHeader({ tweet }) {
               targetId: tweet.original_tweeter_id,
               tweetId: tweet.original_tweet_id,
             });
+            if (tweet.image)
+              deleteImage({
+                bucketName: 'tweet_images',
+                imageUrl: tweet.image,
+              });
           },
         }
       );
