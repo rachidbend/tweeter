@@ -9,6 +9,7 @@ import TweetHeader from './TweetHeader';
 import TweetReply from './TweetReply';
 import TweetReplyInput from './TweetReplyInput';
 import { AnimatePresence, motion } from 'framer-motion';
+import { memo } from 'react';
 
 const StyledTweet = styled(motion.div)`
   background-color: var(--color-white);
@@ -119,7 +120,7 @@ const RepliesContainer = styled.div`
     - aditional options for each reply (delete reply)
 */
 
-function TweetView({ tweet }) {
+const TweetView = memo(function TweetView({ tweet }) {
   if (!tweet) return;
 
   return (
@@ -181,6 +182,6 @@ function TweetView({ tweet }) {
       )}
     </StyledTweet>
   );
-}
+});
 
 export default TweetView;
