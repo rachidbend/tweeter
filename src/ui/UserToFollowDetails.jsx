@@ -49,13 +49,15 @@ const Username = styled(Link)`
   letter-spacing: -0.035em;
   color: var(--color-black);
   margin-bottom: 0.48rem;
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-thickness: 0.1rem;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.4rem;
+  transition: text-decoration var(--transition-200), color var(--transition-200);
 
-  border-bottom: 0.1rem solid transparent;
-  transition: border var(--transition-200), color var(--transition-200);
   &:hover {
+    text-decoration-color: var(--color-grey-400);
     color: var(--color-grey-200);
-    border-bottom: 0.1rem solid var(--color-grey-400);
   }
 `;
 const FollowersStat = styled.p`

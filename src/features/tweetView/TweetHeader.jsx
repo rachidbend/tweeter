@@ -47,10 +47,15 @@ const UserName = styled(Link)`
   text-decoration: none;
   cursor: pointer;
   width: fit-content;
-  transition: color var(--transition-200), border var(--transition-200);
-  border-bottom: 0.1rem solid transparent;
+  transition: color var(--transition-200), text-decoration var(--transition-200);
+
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 0.1rem;
+  text-underline-offset: 0.4rem;
+
   &:hover {
-    border-bottom: 0.1rem solid var(--color-grey-300);
+    text-decoration-color: var(--color-grey-400);
     color: var(--color-grey-300);
   }
 `;
