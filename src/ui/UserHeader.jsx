@@ -9,12 +9,13 @@ import Spinner from './Spinner';
 import AvatarPlaceHolder from './AvatarPlaceHolder';
 import OutsideClick from '../helpers/OutsideClick';
 
-const StyledUserHeader = styled.div`
+const StyledUserHeader = styled.button`
   display: flex;
   align-items: center;
   position: relative;
   padding: 0.4rem;
   background-color: transparent;
+  border: none;
   border-radius: 0.8rem;
   cursor: pointer;
   transition: background var(--transition-100);

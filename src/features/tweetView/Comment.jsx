@@ -46,12 +46,17 @@ const Username = styled(Link)`
   color: var(--color-black);
   text-decoration: none;
   cursor: pointer;
-  border-bottom: 0.1rem solid transparent;
-  transition: color var(--transition-200), border var(--transition-200);
+
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 0.1rem;
+  text-underline-offset: 0.4rem;
+
+  transition: color var(--transition-200), text-decoration var(--transition-200);
 
   &:hover {
     color: var(--color-grey-300);
-    border-bottom: 0.1rem solid var(--color-grey-300);
+    text-decoration-color: var(--color-grey-400);
   }
 `;
 const PostingDate = styled.p`
