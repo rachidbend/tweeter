@@ -26,7 +26,7 @@ const List = styled.ul`
   border-bottom: 0.1rem solid var(--color-grey-500);
 `;
 
-const Item = styled.li`
+const Item = styled(Link)`
   display: flex;
   justify-content: start;
   align-items: center;
@@ -42,16 +42,14 @@ const Item = styled.li`
   text-transform: capitalize;
   list-style: none;
   transition: background var(--transition-100), color var(--transition-100);
-
+  text-decoration: none;
   &:hover {
     background-color: var(--color-grey-600);
     color: var(--color-grey-100);
   }
 `;
 
-const StyledLink = styled(Link)`
-  text-decoration: none;
-`;
+const StyledLink = styled(Link)``;
 
 const Logout = styled.button`
   display: flex;
@@ -125,11 +123,10 @@ function UserDropDown() {
       }}
     >
       <List>
-        <StyledLink to="/profile">
-          <Item>
-            <ProfileIcon /> my profile
-          </Item>
-        </StyledLink>
+        <Item to="/profile">
+          <ProfileIcon /> my profile
+        </Item>
+
         <Item>
           <ChatIcon /> group chat
         </Item>

@@ -8,7 +8,8 @@ export function useSearchTweets() {
     error,
     data,
   } = useMutation({
-    mutationFn: searchQuery => searchQueryApi(searchQuery),
+    mutationFn: ({ searchQuery, filter }) =>
+      searchQueryApi({ searchQuery, filter }),
   });
 
   return { searchTweets, isPending, error, data };
