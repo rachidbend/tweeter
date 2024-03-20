@@ -6,6 +6,8 @@ import { useSearchTweets } from '../hooks/search/useSearchTweets';
 import toast from 'react-hot-toast';
 import TweetView from '../features/tweetView/TweetView';
 import SmallSpinner from '../ui/SmallSpinner';
+import { useSearchAccounts } from '../hooks/search/useSearchAccounts';
+import UserView from '../ui/UserView';
 
 const StyledExplore = styled.div`
   min-height: 100vh;
@@ -97,7 +99,7 @@ const SearchButton = styled.button`
   }
 `;
 
-const TweetsContainer = styled.div`
+const ResultsContainer = styled.div`
   display: flex;
   justify-content: start;
   flex-direction: column;
@@ -110,7 +112,18 @@ function Explore() {
   const [searchFilter, setSearchFilter] = useState('top');
 
   // custom hook to get the search data
-  const { searchTweets, isPending, error, data } = useSearchTweets();
+  const {
+    searchTweets,
+    isPending: isSearchingTweets,
+    error: tweetsError,
+    data: tweetsData,
+  } = useSearchTweets();
+  const {
+    searchAccounts,
+    isPending: isSearchingAccounts,
+    error: accountsError,
+    data: accountsData,
+  } = useSearchAccounts();
 
   // handler for search query change
   function handleSearchChange(e) {
@@ -120,8 +133,10 @@ function Explore() {
   // handler to call the search function
   function handleSearch() {
     if (searchTweets === '') return;
-    console.log(searchFilter);
-    searchTweets({ searchQuery: searchQuery, filter: searchFilter });
+    if (searchFilter === 'top' || searchFilter === 'latest')
+      searchTweets({ searchQuery: searchQuery, filter: searchFilter });
+
+    if (searchFilter === 'people') searchAccounts({ searchQuery: searchQuery });
   }
 
   function handleFilterChange(filter) {
@@ -133,20 +148,27 @@ function Explore() {
   useEffect(
     function () {
       if (searchTweets === '') return;
-      searchTweets({ searchQuery: searchQuery, filter: searchFilter });
+      if (searchFilter === 'top' || searchFilter === 'latest')
+        searchTweets({ searchQuery: searchQuery, filter: searchFilter });
+
+      if (searchFilter === 'people')
+        searchAccounts({ searchQuery: searchQuery });
     },
     [searchFilter, searchTweets]
   );
 
-  // if (!isPending && data !== undefined) console.log(data);
-  if (error) toast.error(error.message);
+  // if (!isSearchingTweets && tweetsData !== undefined) console.log(tweetsData);
+  if (!isSearchingAccounts && accountsData !== undefined)
+    console.log(accountsData);
+  // if (tweetsError) toast.error(tweetsError.message);
+  if (accountsError) toast.error(accountsError.message);
 
   return (
     <StyledExplore>
       <SearchFilter onFilterChange={handleFilterChange} />
       <Container>
         <SearchContainer>
-          {isPending ? (
+          {isSearchingTweets ? (
             <SmallSpinner width="2.4rem" height="2.4rem" />
           ) : (
             <SearchIcon />
@@ -158,11 +180,21 @@ function Explore() {
           />
           <SearchButton onClick={handleSearch}>Search</SearchButton>
         </SearchContainer>
-        <TweetsContainer>
-          {data?.map(tweet => (
-            <TweetView tweet={tweet} key={`tweet-search-${tweet.id}`} />
-          ))}
-        </TweetsContainer>
+        <ResultsContainer>
+          {/* if the filter is set to top or latest, show the resulting tweets */}
+          {(searchFilter === 'top' || searchFilter === 'latest') &&
+            tweetsData?.map(tweet => (
+              <TweetView tweet={tweet} key={`tweet-search-${tweet.id}`} />
+            ))}
+
+          {searchFilter === 'people' &&
+            accountsData?.map(account => (
+              <UserView
+                userId={account.id}
+                key={`user-search-account-${account.id}`}
+              />
+            ))}
+        </ResultsContainer>
       </Container>
     </StyledExplore>
   );
@@ -171,21 +203,15 @@ function Explore() {
 export default Explore;
 
 /*
-1- popularity, the more popular a tweet is, the higher score it gets
-  - comments
-  - likes 
-  - retweets
-  - saves
-  each of them gets a score of 1 for each 
 
-  - time
+-- check which users have a match in the username or bio, if the query is present in either the bio or username, the user is added to a list of other matching users
 
-*/
+-- the matched users are orders by the number of followers they have
 
-/* SELECT id, content,
-(likes + retweets + replies) AS popularity_score,
-(EXTRACT(EPOCH FROM NOW() - timestamp)) AS recency_score,
-(likes + retweets + replies) + (EXTRACT(EPOCH FROM NOW() - timestamp)) AS total_score
-FROM tweets
-ORDER BY total_score DESC;
+
+SELECT profiles.id, profiles.username, profiles.description
+FROM profiles
+WHERE to_tsvector('english', profiles.username) @@ plainto_tsquery('english', 'search query')
+OR to_tsvector('english', profiles.description) @@ plainto_tsquery('english', 'search query');
+
 */

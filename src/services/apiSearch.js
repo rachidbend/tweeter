@@ -11,3 +11,15 @@ export async function searchTweets({ searchQuery, filter }) {
 
   return data;
 }
+
+export async function searchAccounts({ searchQuery }) {
+  const query = searchQuery.split(' ').join(' & ');
+
+  const { data, error } = await supabase.rpc('search_accounts', {
+    query: query,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
