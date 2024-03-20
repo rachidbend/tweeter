@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 const SyledSmallSpinner = styled.span`
-  width: 1.4rem;
-  height: 1.4rem;
+  width: ${props => (props.$width ? props.$width : '1.4rem')};
+  height: ${props => (props.$height ? props.$height : '1.4rem')};
   border: 0.2rem solid var(--color-white);
   border-bottom-color: var(--color-blue-100);
   border-radius: 50%;
@@ -20,8 +20,10 @@ const SyledSmallSpinner = styled.span`
   }
 `;
 
-function SmallSpinner() {
-  return <SyledSmallSpinner></SyledSmallSpinner>;
+function SmallSpinner({ width, height }) {
+  return (
+    <SyledSmallSpinner $width={width} $height={height}></SyledSmallSpinner>
+  );
 }
 
 export default SmallSpinner;

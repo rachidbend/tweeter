@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSearchTweets } from '../hooks/search/useSearchTweets';
 import toast from 'react-hot-toast';
 import TweetView from '../features/tweetView/TweetView';
+import SmallSpinner from '../ui/SmallSpinner';
 
 const StyledExplore = styled.div`
   min-height: 100vh;
@@ -60,6 +61,7 @@ const SearchInput = styled.input`
   border: 0.1rem solid transparent;
   flex-grow: 1;
   margin-right: 1.2rem;
+  margin-left: 0.6rem;
   &::placeholder {
     color: var(--color-grey-400);
   }
@@ -72,7 +74,6 @@ const SearchIcon = styled(IconSearchOutline)`
   width: 2.4rem;
   height: 2.4rem;
   color: var(--color-grey-400);
-  margin-right: 0.6rem;
 `;
 const SearchButton = styled.button`
   margin-left: auto;
@@ -145,7 +146,11 @@ function Explore() {
       <SearchFilter onFilterChange={handleFilterChange} />
       <Container>
         <SearchContainer>
-          <SearchIcon />
+          {isPending ? (
+            <SmallSpinner width="2.4rem" height="2.4rem" />
+          ) : (
+            <SearchIcon />
+          )}
           <SearchInput
             type="text"
             placeholder="search"
