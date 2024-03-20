@@ -23,3 +23,15 @@ export async function searchAccounts({ searchQuery }) {
 
   return data;
 }
+
+export async function searchMedia({ searchQuery }) {
+  const query = searchQuery.split(' ').join(' & ');
+
+  const { data, error } = await supabase.rpc('search_tweets_with_media', {
+    query: query,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}

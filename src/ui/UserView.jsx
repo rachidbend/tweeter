@@ -17,10 +17,6 @@ import { useUnfollow } from '../hooks/follow/useUnfollow';
 import { useRemoveFollow } from '../hooks/follow/useRemoveFollow';
 
 const StyledUserToFollowDetails = styled.div`
-  /* padding-bottom: 2.2rem;
-  margin-bottom: 2.4rem; */
-  /* border-bottom: 0.1rem solid var(--color-grey-500); */
-
   background-color: var(--color-white);
   padding: 2rem;
   border-radius: 0.8rem;
@@ -134,10 +130,22 @@ function UserView({ userId }) {
 
   // If the current user is not following this recommended user, he is allowed to see them and follow them
   const { follow, isPending: isFollowing, error: followError } = useFollow();
-  const { addFollow, isPending: isAddingFollow } = useAddFollow();
+  const {
+    addFollow,
+    isPending: isAddingFollow,
+    error: notifyFollowError,
+  } = useAddFollow();
 
-  const { unfollow, isPending: isUnfollowing } = useUnfollow();
-  const { removeFollow, isPending: isRemovingFollow } = useRemoveFollow();
+  const {
+    unfollow,
+    isPending: isUnfollowing,
+    error: unfollowError,
+  } = useUnfollow();
+  const {
+    removeFollow,
+    isPending: isRemovingFollow,
+    error: notifyUnfollowError,
+  } = useRemoveFollow();
 
   // Function to handle following a user
   function handleFollow() {
@@ -159,11 +167,16 @@ function UserView({ userId }) {
   if (error) toast.error(error.message);
 
   // destructuring the data needed from the user to follow data
-  const { id, avatar_image, followers_count, user_description, user_name } =
+  const { avatar_image, followers_count, user_description, user_name } =
     userToFollow;
 
   // If the current user is following this recommended user, he can't see this user
   const isFollowingUser = currentUser.following.includes(userId);
+
+  if (followError) toast.error(followError.message);
+  if (notifyFollowError) toast.error(notifyFollowError.message);
+  if (unfollowError) toast.error(unfollowError.message);
+  if (notifyUnfollowError) toast.error(notifyUnfollowError.message);
 
   return (
     <StyledUserToFollowDetails>

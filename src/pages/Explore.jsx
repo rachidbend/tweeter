@@ -8,6 +8,7 @@ import TweetView from '../features/tweetView/TweetView';
 import SmallSpinner from '../ui/SmallSpinner';
 import { useSearchAccounts } from '../hooks/search/useSearchAccounts';
 import UserView from '../ui/UserView';
+import { useSearchMedia } from '../hooks/search/useSearchMedia';
 
 const StyledExplore = styled.div`
   min-height: 100vh;
@@ -125,6 +126,13 @@ function Explore() {
     data: accountsData,
   } = useSearchAccounts();
 
+  const {
+    searchMedia,
+    isPending: isSearchingMedia,
+    error: mediaError,
+    data: mediaData,
+  } = useSearchMedia();
+
   // handler for search query change
   function handleSearchChange(e) {
     setSearchQuery(e.target.value);
@@ -137,6 +145,8 @@ function Explore() {
       searchTweets({ searchQuery: searchQuery, filter: searchFilter });
 
     if (searchFilter === 'people') searchAccounts({ searchQuery: searchQuery });
+
+    if (searchFilter === 'media') searchMedia({ searchQuery: searchQuery });
   }
 
   function handleFilterChange(filter) {
@@ -153,22 +163,24 @@ function Explore() {
 
       if (searchFilter === 'people')
         searchAccounts({ searchQuery: searchQuery });
+
+      if (searchFilter === 'media') searchMedia({ searchQuery: searchQuery });
     },
     [searchFilter, searchTweets]
   );
 
   // if (!isSearchingTweets && tweetsData !== undefined) console.log(tweetsData);
-  if (!isSearchingAccounts && accountsData !== undefined)
-    console.log(accountsData);
-  // if (tweetsError) toast.error(tweetsError.message);
+  if (!isSearchingMedia && mediaData !== undefined) console.log(mediaData);
+  if (tweetsError) toast.error(tweetsError.message);
   if (accountsError) toast.error(accountsError.message);
+  if (mediaError) toast.error(mediaError.message);
 
   return (
     <StyledExplore>
       <SearchFilter onFilterChange={handleFilterChange} />
       <Container>
         <SearchContainer>
-          {isSearchingTweets ? (
+          {isSearchingTweets || isSearchingAccounts || isSearchingMedia ? (
             <SmallSpinner width="2.4rem" height="2.4rem" />
           ) : (
             <SearchIcon />
@@ -192,6 +204,14 @@ function Explore() {
               <UserView
                 userId={account.id}
                 key={`user-search-account-${account.id}`}
+              />
+            ))}
+
+          {searchFilter === 'media' &&
+            mediaData?.map(tweet => (
+              <TweetView
+                tweet={tweet}
+                key={`user-search-account-${tweet.id}`}
               />
             ))}
         </ResultsContainer>
