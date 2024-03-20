@@ -12,12 +12,18 @@ import { useFollow } from '../hooks/follow/useFollow';
 import { useAddFollow } from '../hooks/follow/useAddFollow';
 import SmallSpinner from './SmallSpinner';
 import { Link } from 'react-router-dom';
+import { IconUserUnfollowOutline } from '../styles/Icons';
+import { useUnfollow } from '../hooks/follow/useUnfollow';
+import { useRemoveFollow } from '../hooks/follow/useRemoveFollow';
 
 const StyledUserToFollowDetails = styled.div`
-  padding-bottom: 2.2rem;
-  margin-bottom: 2.4rem;
-  border-bottom: 0.1rem solid var(--color-grey-500);
+  /* padding-bottom: 2.2rem;
+  margin-bottom: 2.4rem; */
+  /* border-bottom: 0.1rem solid var(--color-grey-500); */
 
+  background-color: var(--color-white);
+  padding: 2rem;
+  border-radius: 0.8rem;
   &:last-child {
     margin-bottom: 0;
     border-bottom: none;
@@ -79,15 +85,6 @@ const Description = styled.p`
   color: var(--color-grey-300);
 `;
 
-const Background = styled.img`
-  max-height: 7.7rem;
-  border-radius: 0.8rem;
-  width: 100%;
-  object-fit: cover;
-  object-position: center;
-  margin-top: 2.1rem;
-`;
-
 // follow button
 const FollowButton = styled.button`
   background-color: var(--color-blue-100);
@@ -118,12 +115,19 @@ const FollowButton = styled.button`
 const FollowIcon = styled(IoMdPersonAdd)`
   height: 1.4rem;
   width: 1.4rem;
+  color: inherit;
+`;
+
+const UnfollowIcon = styled(IconUserUnfollowOutline)`
+  height: 1.4rem;
+  width: 1.4rem;
+  color: inherit;
 `;
 // const BackgroundPlaceHolder = styled.div``;
 
-function UserToFollowDetails({ userId }) {
+function UserView({ userId }) {
   const { userToFollow, isLoading, error } = useGetUserToFollow(userId);
-
+  console.log(userId);
   const { user } = useUser();
   const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
     useGetUserData(user.id);
@@ -131,6 +135,9 @@ function UserToFollowDetails({ userId }) {
   // If the current user is not following this recommended user, he is allowed to see them and follow them
   const { follow, isPending: isFollowing, error: followError } = useFollow();
   const { addFollow, isPending: isAddingFollow } = useAddFollow();
+
+  const { unfollow, isPending: isUnfollowing } = useUnfollow();
+  const { removeFollow, isPending: isRemovingFollow } = useRemoveFollow();
 
   // Function to handle following a user
   function handleFollow() {
@@ -140,23 +147,23 @@ function UserToFollowDetails({ userId }) {
     addFollow({ targetId: userId, followerId: currentUser.id });
   }
 
+  // Function to handle unfollowing a user
+  function handleUnfollow() {
+    // Remove the user from the current user's following list
+    unfollow({ unfollowId: userId });
+    // Notify the unfollowed user that they have lost a follower
+    removeFollow({ targetId: userId, followerId: currentUser.id });
+  }
+
   if (isLoading || isLoadingCurrentUser) return <Spinner />;
   if (error) toast.error(error.message);
 
   // destructuring the data needed from the user to follow data
-  const {
-    id,
-    avatar_image,
-    background_image,
-    followers_count,
-    user_description,
-    user_name,
-  } = userToFollow;
+  const { id, avatar_image, followers_count, user_description, user_name } =
+    userToFollow;
 
   // If the current user is following this recommended user, he can't see this user
   const isFollowingUser = currentUser.following.includes(userId);
-
-  if (isFollowingUser) return null;
 
   return (
     <StyledUserToFollowDetails>
@@ -171,15 +178,16 @@ function UserToFollowDetails({ userId }) {
             followers
           </FollowersStat>
         </div>
-        <FollowButton onClick={handleFollow}>
-          {isFollowing || isAddingFollow ? (
+        <FollowButton onClick={isFollowingUser ? handleUnfollow : handleFollow}>
+          {isFollowing ||
+          isAddingFollow ||
+          isUnfollowing ||
+          isRemovingFollow ? (
             <SmallSpinner />
           ) : (
-            <>
-              <FollowIcon />
-            </>
+            <>{isFollowingUser ? <UnfollowIcon /> : <FollowIcon />}</>
           )}
-          Follow
+          {isFollowingUser ? 'Unfollow' : 'Follow'}
         </FollowButton>
       </Header>
       <Description>
@@ -187,9 +195,8 @@ function UserToFollowDetails({ userId }) {
           ? user_description
           : 'This user did not add a description'}
       </Description>
-      {background_image && <Background src={background_image} />}
     </StyledUserToFollowDetails>
   );
 }
 
-export default UserToFollowDetails;
+export default UserView;
