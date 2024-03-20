@@ -9,7 +9,10 @@ import Spinner from './Spinner';
 import AvatarPlaceHolder from './AvatarPlaceHolder';
 import OutsideClick from '../helpers/OutsideClick';
 
-const StyledUserHeader = styled.button`
+const StyledUserHeader = styled.div`
+  position: relative;
+`;
+const Container = styled.button`
   display: flex;
   align-items: center;
   position: relative;
@@ -24,7 +27,6 @@ const StyledUserHeader = styled.button`
     background-color: var(--color-grey-600);
   }
 `;
-
 const Avatar = styled.img`
   height: 3.2rem;
   width: 3.2rem;
@@ -70,23 +72,21 @@ function UserHeader() {
 
   if (isLoadingCurrentUser || isLoadingUser) return <Spinner />;
   return (
-    <StyledUserHeader
-      ref={userHeaderRef}
-      onClick={() => setIsOpen(isOpen => !isOpen)}
-    >
+    <StyledUserHeader ref={userHeaderRef}>
       <OutsideClick
         componentRef={userHeaderRef}
         onClose={() => setIsOpen(false)}
       />
-      {currentUser.avatar_image ? (
-        <Avatar src={currentUser.avatar_image} alt="user avatar" />
-      ) : (
-        <AvatarPlaceHolder width={'3.2rem'} />
-      )}
+      <Container onClick={() => setIsOpen(isOpen => !isOpen)}>
+        {currentUser.avatar_image ? (
+          <Avatar src={currentUser.avatar_image} alt="user avatar" />
+        ) : (
+          <AvatarPlaceHolder width={'3.2rem'} />
+        )}
 
-      <Username>{currentUser.user_name}</Username>
-      <ArrowDown />
-
+        <Username>{currentUser.user_name}</Username>
+        <ArrowDown />
+      </Container>
       <AnimatePresence>{isOpen && <UserDropDown />}</AnimatePresence>
     </StyledUserHeader>
   );

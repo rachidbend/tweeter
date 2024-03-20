@@ -45,7 +45,7 @@ const SideBorder = styled.span`
   transition: top var(--transition-100);
 `;
 
-function SearchFilter() {
+function SearchFilter({ onFilterChange }) {
   // there are 4 filters,
   // - top tweets (most ingaged with tweets)
   // - latest (latest tweets by order of most recent)
@@ -104,22 +104,27 @@ function SearchFilter() {
   // if (isLoading || isLoadingUser) return <Spinner />;
   // if (error) toast.error(error.message);
 
+  function handleFilter(filterName) {
+    setActiveFilter(filterName);
+    onFilterChange(filterName);
+  }
+
   return (
     <StyledTweetsFilter
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { delay: 0.2 } }}
     >
       <SideBorder ref={spanRef}></SideBorder>
-      <Filter onClick={() => setActiveFilter('top')} ref={topRef}>
+      <Filter onClick={() => handleFilter('top')} ref={topRef}>
         Top
       </Filter>
-      <Filter onClick={() => setActiveFilter('latest')} ref={latestRef}>
+      <Filter onClick={() => handleFilter('latest')} ref={latestRef}>
         Latest
       </Filter>
-      <Filter onClick={() => setActiveFilter('people')} ref={peopleRef}>
+      <Filter onClick={() => handleFilter('people')} ref={peopleRef}>
         People
       </Filter>
-      <Filter onClick={() => setActiveFilter('media')} ref={mediaRef}>
+      <Filter onClick={() => handleFilter('media')} ref={mediaRef}>
         Media
       </Filter>
     </StyledTweetsFilter>

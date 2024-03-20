@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import SearchFilter from '../features/search/SearchFilter';
 import { IconSearchOutline } from '../styles/Icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchTweets } from '../hooks/search/useSearchTweets';
 import toast from 'react-hot-toast';
 import TweetView from '../features/tweetView/TweetView';
@@ -106,6 +106,7 @@ const TweetsContainer = styled.div`
 function Explore() {
   // state to get the value of the search input
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchFilter, setSearchFilter] = useState('top');
 
   // custom hook to get the search data
   const { searchTweets, isPending, error, data } = useSearchTweets();
@@ -118,16 +119,30 @@ function Explore() {
   // handler to call the search function
   function handleSearch() {
     if (searchTweets === '') return;
-    console.log(searchQuery);
-    searchTweets(searchQuery);
+    console.log(searchFilter);
+    searchTweets({ searchQuery: searchQuery, filter: searchFilter });
   }
 
-  if (!isPending && data !== undefined) console.log(data);
+  function handleFilterChange(filter) {
+    // there are 4 filters, 'top', 'recent', 'people', and 'media'
+    // the first two (top and recent) are handeled bu the same function
+    setSearchFilter(filter);
+  }
+
+  useEffect(
+    function () {
+      if (searchTweets === '') return;
+      searchTweets({ searchQuery: searchQuery, filter: searchFilter });
+    },
+    [searchFilter, searchTweets]
+  );
+
+  // if (!isPending && data !== undefined) console.log(data);
   if (error) toast.error(error.message);
 
   return (
     <StyledExplore>
-      <SearchFilter />
+      <SearchFilter onFilterChange={handleFilterChange} />
       <Container>
         <SearchContainer>
           <SearchIcon />
@@ -149,3 +164,23 @@ function Explore() {
 }
 
 export default Explore;
+
+/*
+1- popularity, the more popular a tweet is, the higher score it gets
+  - comments
+  - likes 
+  - retweets
+  - saves
+  each of them gets a score of 1 for each 
+
+  - time
+
+*/
+
+/* SELECT id, content,
+(likes + retweets + replies) AS popularity_score,
+(EXTRACT(EPOCH FROM NOW() - timestamp)) AS recency_score,
+(likes + retweets + replies) + (EXTRACT(EPOCH FROM NOW() - timestamp)) AS total_score
+FROM tweets
+ORDER BY total_score DESC;
+*/
