@@ -9,6 +9,7 @@ import { useUser } from '../../hooks/authHooks/useUser';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const CommentInput = styled.input`
   height: 100%;
@@ -110,7 +111,7 @@ function TweetReplyInput({ tweet }) {
 
     // creating the id of the reply
     const date = new Date();
-    const id = `${tweet.id}-${currentUser.id}-${date}-reply`;
+    const id = uuidv4();
 
     // adds the reply as a tweet
     addReply(
