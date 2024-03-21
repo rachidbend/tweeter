@@ -317,7 +317,6 @@ function UserHeader({
           )}
           {/* Display text based on whether the user is followed */}
           {isFollowingUser ? 'Unfollow' : 'Follow'}
-          {}
         </FollowButton>
       )}
 

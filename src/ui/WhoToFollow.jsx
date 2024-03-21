@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import useGetAccountRecommendations from '../hooks/useGetAccountRecommendations';
 import Spinner from './Spinner';
 import toast from 'react-hot-toast';
-import UserToFollowDetails from './UserToFollowDetails';
 import { useUser } from '../hooks/authHooks/useUser';
+import UserView from './UserView';
 
 const StyledWhoToFollow = styled.div`
   background-color: var(--color-white);
@@ -54,10 +54,7 @@ function WhoToFollow() {
 
       <Container>
         {filteredRecommendations?.map(userId => (
-          <UserToFollowDetails
-            userId={userId}
-            key={`user_to_follow_id_${userId}`}
-          />
+          <UserView userId={userId} key={`user_to_follow_id_${userId}`} />
         ))}
       </Container>
     </StyledWhoToFollow>
