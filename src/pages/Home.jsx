@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import PublishTweet from '../features/tweeting/PublishTweet';
 import HashtagTrends from '../ui/HashtagTrends';
 import { useGetTimeline } from '../hooks/useGetTimeline';
@@ -65,17 +64,6 @@ function Home() {
     <StyledHome>
       <MainContent>
         <PublishTweet />
-        <Link to={'/user/b9628375-9682-4879-a408-45e7e2b8b9db'}>
-          Daniel Jensen
-        </Link>
-        <br />
-        <Link to={'/user/132c3b53-0015-4992-8dea-990990d6a93b'}>
-          Xanthe Neal
-        </Link>
-        <br />
-        <Link to={`/user/37544e6e-ea45-44ff-bacf-7804bad48e1d`}>
-          Rachid Bendaghor
-        </Link>
         <TweetsContainer>
           {sortedArray.map(tweet => (
             <TweetView tweet={tweet} key={`timeline${tweet.id}`} />

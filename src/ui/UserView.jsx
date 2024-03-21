@@ -18,8 +18,17 @@ import { useRemoveFollow } from '../hooks/follow/useRemoveFollow';
 
 const StyledUserToFollowDetails = styled.div`
   background-color: var(--color-white);
-  padding: 2rem;
-  border-radius: 0.8rem;
+  padding: ${props =>
+    props.$variant === 'searchPage' ? '2rem' : '0rem 0rem 2.2rem 0rem'};
+  border-radius: ${props =>
+    props.$variant === 'searchPage' ? '0.8rem' : '0rem'};
+
+  margin-bottom: ${props =>
+    props.$variant === 'searchPage' ? '0rem' : '2.4rem'};
+  border-bottom: ${props =>
+    props.$variant === 'searchPage'
+      ? 'none'
+      : '0.1rem solid var(--color-grey-500)'};
   &:last-child {
     margin-bottom: 0;
     border-bottom: none;
@@ -119,11 +128,18 @@ const UnfollowIcon = styled(IconUserUnfollowOutline)`
   width: 1.4rem;
   color: inherit;
 `;
-// const BackgroundPlaceHolder = styled.div``;
 
-function UserView({ userId }) {
+const Background = styled.img`
+  max-height: 7.7rem;
+  border-radius: 0.8rem;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  margin-top: 2.1rem;
+`;
+
+function UserView({ userId, variant }) {
   const { userToFollow, isLoading, error } = useGetUserToFollow(userId);
-  console.log(userId);
   const { user } = useUser();
   const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
     useGetUserData(user.id);
@@ -167,19 +183,28 @@ function UserView({ userId }) {
   if (error) toast.error(error.message);
 
   // destructuring the data needed from the user to follow data
-  const { avatar_image, followers_count, user_description, user_name } =
-    userToFollow;
+  const {
+    avatar_image,
+    followers_count,
+    user_description,
+    user_name,
+    background_image,
+  } = userToFollow;
 
   // If the current user is following this recommended user, he can't see this user
   const isFollowingUser = currentUser.following.includes(userId);
 
-  if (followError) toast.error(followError.message);
-  if (notifyFollowError) toast.error(notifyFollowError.message);
-  if (unfollowError) toast.error(unfollowError.message);
-  if (notifyUnfollowError) toast.error(notifyUnfollowError.message);
+  // takes care of all the error messages if any exist
+  [followError, notifyFollowError, unfollowError, notifyUnfollowError].forEach(
+    err => {
+      if (err) toast.error(err?.message);
+    }
+  );
+
+  if (isFollowingUser && variant !== 'searchPage') return null;
 
   return (
-    <StyledUserToFollowDetails>
+    <StyledUserToFollowDetails $variant={variant}>
       <Header>
         <AvatarContainer>
           {avatar_image ? <Avatar src={avatar_image} /> : <AvatarPlaceHolder />}
@@ -208,6 +233,9 @@ function UserView({ userId }) {
           ? user_description
           : 'This user did not add a description'}
       </Description>
+      {background_image && variant !== 'searchPage' && (
+        <Background src={background_image} />
+      )}
     </StyledUserToFollowDetails>
   );
 }

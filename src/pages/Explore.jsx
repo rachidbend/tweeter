@@ -22,7 +22,6 @@ const StyledExplore = styled.div`
   gap: 2.2rem;
 
   width: min(var(--content-max-width), 100% - var(--page-padding-large) * 2);
-
   margin-inline: auto;
 
   @media screen and (max-width: 450px) {
@@ -141,17 +140,17 @@ function Explore() {
   // handler to call the search function
   function handleSearch() {
     if (searchTweets === '') return;
+    // there are 4 filters, 'top', 'recent', 'people', and 'media'
+    // the first two (top and recent) are handeled by the same function
     if (searchFilter === 'top' || searchFilter === 'latest')
       searchTweets({ searchQuery: searchQuery, filter: searchFilter });
-
+    // the peopel filter is handeled by a separate function
     if (searchFilter === 'people') searchAccounts({ searchQuery: searchQuery });
-
+    // and the media filter is also handeled by a separate function
     if (searchFilter === 'media') searchMedia({ searchQuery: searchQuery });
   }
 
   function handleFilterChange(filter) {
-    // there are 4 filters, 'top', 'recent', 'people', and 'media'
-    // the first two (top and recent) are handeled bu the same function
     setSearchFilter(filter);
   }
 
@@ -199,14 +198,16 @@ function Explore() {
               <TweetView tweet={tweet} key={`tweet-search-${tweet.id}`} />
             ))}
 
+          {/* if the filter is set to people, show account that include the query in their username or description */}
           {searchFilter === 'people' &&
             accountsData?.map(account => (
               <UserView
+                variant="searchPage"
                 userId={account.id}
                 key={`user-search-account-${account.id}`}
               />
             ))}
-
+          {/* if the filter is set to media, show only the resulting tweets that have in image */}
           {searchFilter === 'media' &&
             mediaData?.map(tweet => (
               <TweetView
@@ -221,17 +222,3 @@ function Explore() {
 }
 
 export default Explore;
-
-/*
-
--- check which users have a match in the username or bio, if the query is present in either the bio or username, the user is added to a list of other matching users
-
--- the matched users are orders by the number of followers they have
-
-
-SELECT profiles.id, profiles.username, profiles.description
-FROM profiles
-WHERE to_tsvector('english', profiles.username) @@ plainto_tsquery('english', 'search query')
-OR to_tsvector('english', profiles.description) @@ plainto_tsquery('english', 'search query');
-
-*/
