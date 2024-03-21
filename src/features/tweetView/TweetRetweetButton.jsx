@@ -9,6 +9,7 @@ import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
 import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/retweet/useNotifyUserOfRetweetRemove';
 import { IconSync } from '../../styles/Icons';
 import { useUser } from '../../hooks/authHooks/useUser';
+import { v4 as uuidv4 } from 'uuid';
 
 const RetweetIcon = styled(IconSync)`
   height: 2rem;
@@ -24,10 +25,11 @@ function TweetRetweetButton({ isRetweeted, tweet }) {
   const { notifyUserOfRetweet } = useNotifyUserOfRetweet();
   function handleRetweet() {
     // add the retweet as a tweet
+
     const newRetweet =
       // the id is created here to enable the rest of the code
       {
-        id: `${currentUser.id}-${Date.now()}-retweet`,
+        id: uuidv4(),
         hastag: '',
       };
 

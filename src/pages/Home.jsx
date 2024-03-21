@@ -6,6 +6,7 @@ import Spinner from '../ui/Spinner';
 import toast from 'react-hot-toast';
 import TweetView from '../features/tweetView/TweetView';
 import WhoToFollow from '../ui/WhoToFollow';
+import { useEffect, useRef, useState } from 'react';
 
 const StyledHome = styled.div`
   min-height: 100vh;
@@ -50,24 +51,84 @@ const TweetsContainer = styled.div`
   gap: 2.4rem;
 `;
 
+const NextPageButton = styled.button`
+  cursor: pointer;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 1rem;
+`;
+
+const Sentinal = styled.div`
+  background-color: transparent;
+  height: 0px;
+`;
+
+const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 function Home() {
-  const { timeline, isLoading, error } = useGetTimeline();
+  const sentinalRef = useRef();
+
+  const [lastTweet, setLastTweet] = useState('');
+  const { timeline, isLoading, error, fetchNextPage, isFetching } =
+    useGetTimeline({
+      limit: 3,
+      lastTweetId: lastTweet,
+    });
+
+  function handleLastTweet() {
+    const latTweetEl = timeline.pages[0].slice(-1);
+
+    setLastTweet(latTweetEl[0].created_at);
+    fetchNextPage();
+  }
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (isFetching) return;
+      if (entry.isIntersecting) {
+        console.log('Sentinal is visible');
+        fetchNextPage();
+      }
+    });
+  });
+
+  useEffect(
+    function () {
+      if (sentinalRef.current) {
+        observer.observe(sentinalRef?.current);
+      }
+
+      return () => observer.disconnect();
+    },
+    [sentinalRef.current]
+  );
 
   if (isLoading) return <Spinner />;
   if (error) toast.error(error.message);
-
-  let sortedArray = timeline[0]
-    .slice()
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
   return (
     <StyledHome>
       <MainContent>
         <PublishTweet />
         <TweetsContainer>
-          {sortedArray.map(tweet => (
-            <TweetView tweet={tweet} key={`timeline${tweet.id}`} />
-          ))}
+          {timeline?.pages.map(page =>
+            page === null
+              ? ''
+              : page.map(tweet => (
+                  <TweetView tweet={tweet} key={`timeline${tweet.id}`} />
+                ))
+          )}
+          {/* <NextPageButton onClick={handleLastTweet}>next page</NextPageButton> */}
+          {isFetching && (
+            <SpinnerContainer>
+              <Spinner />
+            </SpinnerContainer>
+          )}
+          <Sentinal ref={sentinalRef}></Sentinal>
         </TweetsContainer>
       </MainContent>
       <SideContent>
@@ -79,3 +140,8 @@ function Home() {
 }
 
 export default Home;
+
+/*
+
+
+*/
