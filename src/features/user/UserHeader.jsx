@@ -259,9 +259,8 @@ function UserHeader({
     // Notify the unfollowed user that they have lost a follower
     removeFollow({ targetId: userProfile.id, followerId: currentUser.id });
   }
-
   // Check if the current user is following the user
-  const isFollowingUser = currentUser.following.includes(userProfile.id);
+  const isFollowingUser = currentUser.following.includes(userProfile?.id);
 
   return (
     <StyledUserHeader>
