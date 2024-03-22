@@ -95,34 +95,27 @@ function TweetsFilter({
       // if the filter is set to tweets
       if (activeFilter === 'tweets') {
         // show only the tweets that are not replies
-        const filteredTweets = tweets?.filter(tweet => !tweet.isReply);
-        handleFilterTweets(filteredTweets);
+
+        handleFilterTweets(activeFilter);
       }
       // if the filter is set to replies
       else if (activeFilter === 'replies') {
         // showo only the tweets that are replies
-        const filteredTweets = tweets?.filter(tweet => {
-          return tweet.isReply && !tweet.isRetweet;
-        });
-        handleFilterTweets(filteredTweets);
+
+        handleFilterTweets(activeFilter);
       }
       // if the filter is set to media
       else if (activeFilter === 'media') {
         // show only the tweets that include an image
-        const filteredTweets = tweets?.filter(
-          tweet => !tweet.isReply && !tweet.isRetweet && tweet.image !== ''
-        );
-        handleFilterTweets(filteredTweets);
+
+        handleFilterTweets(activeFilter);
       } // if the filter is set to likes
       else if (activeFilter === 'likes') {
         if (isBookmark) {
-          const filteredTweets = tweets.filter(tweet => {
-            return userProfile.likes.some(like => like.id === tweet.id);
-          });
-          handleFilterTweets(filteredTweets);
+          // handleFilterTweets(filteredTweets);
         } else {
           // show only the tweets that this user has liked
-          handleFilterTweets(likedTweets[0]);
+          handleFilterTweets(activeFilter);
         }
       }
     },
