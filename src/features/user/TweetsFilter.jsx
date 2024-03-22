@@ -145,7 +145,7 @@ function TweetsFilter({
 
   if (isLoading || isLoadingUser) return <Spinner />;
   if (error) toast.error(error.message);
-
+  // if (!tweets) return;
   return (
     <StyledTweetsFilter
       initial={{ opacity: 0 }}

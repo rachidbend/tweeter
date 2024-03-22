@@ -5,11 +5,12 @@ export async function getUserData(userID) {
   if (userID === undefined) return null;
   let { data: profiles, error } = await supabase
     .from('profiles')
-    .select('*')
+    .select(
+      'id, background_image, avatar_image, user_name, following, following_count, followers_count, user_description'
+    )
     .eq('id', userID);
 
   if (error) throw new Error(error.message);
-
   return profiles.at(0);
 }
 

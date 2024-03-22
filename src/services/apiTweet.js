@@ -445,17 +445,26 @@ export async function getSavedTweets({ userId }) {
 
 // ////////////////////////////////////////////////////////////////////////////
 
-export async function getUserTimeline({
-  userId,
-  limit,
-  lastTweetId,
-  pageParam,
-}) {
-  const latTweetEl = pageParam !== 0 ? pageParam.slice(-1)[0].created_at : '';
+export async function getUserTimeline({ userId, pageParam }) {
+  const lastTweetEl = pageParam !== 0 ? pageParam.slice(-1)[0].created_at : '';
   const { data, error } = await supabase.rpc('get_recent_tweets', {
     user_id: userId,
-    last_created_tweet: latTweetEl,
-    tweets_limit: limit,
+    last_created_tweet: lastTweetEl,
+    tweets_limit: 3,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function getUserTweets({ userId, pageParam }) {
+  const lastTweetEl = pageParam !== 0 ? pageParam.slice(-1)[0].created_at : '';
+  const { data, error } = await supabase.rpc('get_user_data', {
+    user_id: userId,
+    last_created_tweet: lastTweetEl,
+    tweets_limit: 3,
+    filter: 'tweets',
   });
 
   if (error) throw new Error(error.message);
