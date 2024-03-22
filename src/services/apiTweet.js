@@ -229,6 +229,7 @@ export async function retweet({ oldTweets, newTweet, userId, tweet }) {
     likes: [],
     saves: [],
     isRetweet: true,
+    isReply: false,
     original_tweet_id: tweet.id,
     original_tweeter_id: tweet.publisher_id,
   };
@@ -458,13 +459,13 @@ export async function getUserTimeline({ userId, pageParam }) {
   return data;
 }
 
-export async function getUserTweets({ userId, pageParam }) {
+export async function getUserTweets({ userId, pageParam, filter }) {
   const lastTweetEl = pageParam !== 0 ? pageParam.slice(-1)[0].created_at : '';
   const { data, error } = await supabase.rpc('get_user_data', {
     user_id: userId,
     last_created_tweet: lastTweetEl,
     tweets_limit: 3,
-    filter: 'tweets',
+    filter: filter,
   });
 
   if (error) throw new Error(error.message);

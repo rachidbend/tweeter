@@ -9,6 +9,7 @@ import TweetView from '../tweetView/TweetView';
 import { useEffect, useRef, useState } from 'react';
 import TweetsFilter from './TweetsFilter';
 import useGetUserTweets from '../../hooks/useGetUserTweets';
+import UserTweetsView from './UserTweetsView';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -52,27 +53,9 @@ const ContentContainer = styled.div`
   }
 `;
 
-const TweetsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3.524rem;
-`;
-
-const Sentinal = styled.div`
-  height: 0;
-  background-color: transparent;
-`;
-
-const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 // This is the main UserProfile component
 function UserProfile() {
-  const sentinalRef = useRef();
-  const [filteredTweets, setFilteredTweets] = useState([]);
+  const [filter, setFilter] = useState('tweets');
   // Get the user ID from the URL parameters
   const { id } = useParams();
 
@@ -83,47 +66,17 @@ function UserProfile() {
   const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
     useGetUserData(user.id);
 
-  const {
-    userTweets,
-    isLoading: isLoadingTweets,
-    error: tweetsError,
-    fetchNextPage,
-    isFetching,
-  } = useGetUserTweets({ userId: id });
   // Fetch the profile of the user specified in the URL parameters, along with its loading state and any error that occurred
   const { userProfile, isLoading, error } = useGetUserData(id);
 
-  const observer = new IntersectionObserver(entries => {
-    entries.map(entry => {
-      if (isFetching) return;
-      if (entry.isIntersecting) {
-        fetchNextPage();
-      }
-    });
-  });
-
-  useEffect(
-    function () {
-      if (sentinalRef.current) {
-        observer.observe(sentinalRef.current);
-      }
-
-      return () => {
-        observer.disconnect();
-      };
-    },
-    [sentinalRef.current]
-  );
-
   // If any of the data is still loading, display a loading spinner
-  if (isLoading || isLoadingUser || isLoadingCurrentUser || isLoadingTweets)
-    return <Spinner />;
+  if (isLoading || isLoadingUser || isLoadingCurrentUser) return <Spinner />;
 
   // If there was an error fetching the data, display an error message
   if (error) toast.error(error.message);
-  if (tweetsError) toast.error(tweetsError.message);
+
   // Extract the necessary data from the userProfile object
-  const { background_image, avatar_image, user_name } = userProfile;
+  const { background_image } = userProfile;
 
   return (
     <StyledUserProfile>
@@ -135,30 +88,8 @@ function UserProfile() {
       <PageContainer>
         <UserHeader currentUser={currentUser} userProfile={userProfile} />
         <ContentContainer>
-          <TweetsFilter handleFilterTweets={setFilteredTweets} userId={id} />
-          <TweetsContainer>
-            {userTweets?.pages.map(page =>
-              page === null
-                ? ''
-                : page.map(tweet => (
-                    <TweetView
-                      key={tweet.id}
-                      user={{
-                        userAvatar: avatar_image,
-                        userName: user_name,
-                      }}
-                      currentUserAvatar={currentUser.avatar_image}
-                      tweet={tweet}
-                    />
-                  ))
-            )}
-            {isFetching && (
-              <SpinnerContainer>
-                <Spinner />
-              </SpinnerContainer>
-            )}
-            <Sentinal ref={sentinalRef}></Sentinal>
-          </TweetsContainer>
+          <TweetsFilter handleFilterTweets={setFilter} userId={id} />
+          <UserTweetsView filter={filter} id={id} />
         </ContentContainer>
       </PageContainer>
     </StyledUserProfile>
