@@ -445,17 +445,12 @@ export async function getSavedTweets({ userId }) {
 
 // ////////////////////////////////////////////////////////////////////////////
 
-export async function getUserTimeline({
-  userId,
-  limit,
-  lastTweetId,
-  pageParam,
-}) {
+export async function getUserTimeline({ userId, pageParam }) {
   const latTweetEl = pageParam !== 0 ? pageParam.slice(-1)[0].created_at : '';
   const { data, error } = await supabase.rpc('get_recent_tweets', {
     user_id: userId,
     last_created_tweet: latTweetEl,
-    tweets_limit: limit,
+    tweets_limit: 3,
   });
 
   if (error) throw new Error(error.message);

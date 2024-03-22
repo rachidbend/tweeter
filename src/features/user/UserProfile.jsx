@@ -117,3 +117,9 @@ function UserProfile() {
 }
 
 export default UserProfile;
+
+/*
+start with the supabase function
+then the hooks, at least a geniral idea to figur e out a wayto use all four filters and keep the order the same
+then the API function
+*/

@@ -2,7 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useUser } from './authHooks/useUser';
 import { getUserTimeline } from '../services/apiTweet';
 
-export function useGetTimeline({ limit, lastTweetId }) {
+export function useGetTimeline() {
   const { user } = useUser();
 
   const {
@@ -13,10 +13,9 @@ export function useGetTimeline({ limit, lastTweetId }) {
     isFetching,
   } = useInfiniteQuery({
     queryKey: ['timeline'],
-    queryFn: ({ pageParam }) =>
-      getUserTimeline({ userId: user.id, limit, lastTweetId, pageParam }),
+    queryFn: ({ pageParam }) => getUserTimeline({ userId: user.id, pageParam }),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+    getNextPageParam: lastPage => {
       if (lastPage === null) {
         return undefined;
       }
