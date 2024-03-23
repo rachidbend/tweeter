@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import useGetUserTweets from '../../hooks/useGetUserTweets';
 import toast from 'react-hot-toast';
@@ -32,16 +33,6 @@ function UserTweetsView({ id, filter }) {
     fetchNextPage,
     isFetching,
   } = useGetUserTweets({ userId: id, filter: filter });
-
-  // const observer = new IntersectionObserver(entries => {
-  //   entries.map(entry => {
-  //     if (isFetching) return;
-  //     if (entry.isIntersecting) {
-  //       console.log('is fetching new page');
-  //       fetchNextPage();
-  //     }
-  //   });
-  // });
 
   useEffect(() => {
     // Function to initialize the observer
