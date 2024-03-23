@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabase } from './supabase';
 
 // add a tweet ///////////////////////////////////////////////
-export async function addTweet({ oldTweets, newTweet, userId }) {
+export async function addTweet({ newTweet, userId }) {
   let imageUrl = '';
   if (newTweet.image.length > 0) {
     const fileType = newTweet.image[0].type.split('/').at(1);
@@ -36,14 +36,19 @@ export async function addTweet({ oldTweets, newTweet, userId }) {
     isReply: false,
   };
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ tweets: [tweet, ...oldTweets] })
-    .eq('id', userId)
-    .select();
+  // const { data, error } = await supabase
+  //   .from('profiles')
+  //   .update({ tweets: [tweet, ...oldTweets] })
+  //   .eq('id', userId)
+  //   .select();
+
+  const { data, error } = await supabase.rpc('add_new_tweet', {
+    tweet: tweet,
+    user_id: userId,
+  });
 
   if (error) throw new Error(error.message);
-
+  console.log(data);
   return data;
 }
 
@@ -198,21 +203,8 @@ export async function notifyUserOfUnlike({ targetId, tweetId, userId }) {
 }
 
 // RETWEET ///////////////////////////////////////////////
-export async function retweet({ oldTweets, newTweet, userId, tweet }) {
-  // let imageUrl = '';
-  // if (newTweet.image.length > 0) {
-  //   const fileType = newTweet.image[0].type.split('/').at(1);
-
-  //   let imageName = `tweet_${Date.now()}_${newTweet.image[0].name}.${fileType}`;
-
-  //   imageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/tweet_images/${imageName}`;
-
-  //   const image = await uploadImage({
-  //     image: newTweet.image[0],
-  //     bucketName: 'tweet_images',
-  //     imageName: imageName,
-  //   });
-  // }
+export async function retweet({ newTweet, userId, tweet }) {
+  // the retweet should be able to be a normal retweet, or a quote
 
   const date = new Date();
   // the retweet is simply a repost of the original retweet, and not a quote for now (5/3/2024)
@@ -234,11 +226,10 @@ export async function retweet({ oldTweets, newTweet, userId, tweet }) {
     original_tweeter_id: tweet.publisher_id,
   };
 
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({ tweets: [retweet, ...oldTweets] })
-    .eq('id', userId)
-    .select();
+  const { data, error } = await supabase.rpc('add_new_tweet', {
+    tweet: retweet,
+    user_id: userId,
+  });
 
   if (error) throw new Error(error.message);
   return data;
@@ -316,7 +307,7 @@ export async function addReply({
   originalTweet,
   content,
   replyImage,
-  userID,
+  userId,
   id,
 }) {
   let imageUrl = '';
@@ -324,7 +315,6 @@ export async function addReply({
     const fileType = replyImage.type.split('/').at(1);
 
     let imageName = `tweet_${Date.now()}_${replyImage.name}.${fileType}`;
-    console.log(replyImage);
     imageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/tweet_images/${imageName}`;
 
     const image = await uploadImage({
@@ -347,14 +337,14 @@ export async function addReply({
     isRetweet: false,
     isReply: true,
     created_at: date,
-    publisher_id: userID,
+    publisher_id: userId,
     original_tweet_id: originalTweet.id,
     original_tweeter_id: originalTweet.publisher_id,
   };
-
-  const { data, error } = await supabase.rpc('add_reply', {
-    reply: replyTweet,
-    user_id: userID,
+  console.log(replyTweet);
+  const { data, error } = await supabase.rpc('add_new_tweet', {
+    tweet: replyTweet,
+    user_id: userId,
   });
 
   if (error) throw new Error(error.message);
@@ -441,7 +431,7 @@ export async function getSavedTweets({ userId }) {
 
   if (error) throw new Error(error.message);
 
-  return data;
+  return data[0];
 }
 
 // ////////////////////////////////////////////////////////////////////////////

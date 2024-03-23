@@ -13,7 +13,7 @@ export function useAddReply() {
     error,
   } = useMutation({
     mutationFn: ({ originalTweet, content, replyImage, id }) =>
-      addReplyApi({ originalTweet, content, replyImage, userID: user.id, id }),
+      addReplyApi({ originalTweet, content, replyImage, userId: user.id, id }),
     onSettled: () => {
       queryClient.invalidateQueries(['profiles']);
     },

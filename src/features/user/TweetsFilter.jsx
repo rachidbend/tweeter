@@ -45,12 +45,7 @@ const SideBorder = styled.span`
   transition: top var(--transition-100);
 `;
 
-function TweetsFilter({
-  tweets,
-  handleFilterTweets,
-  userId,
-  isBookmark = false,
-}) {
+function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
   // there are 4 filters,
   // - all tweets, including retweets (but not replies)
   // - replies
@@ -121,7 +116,6 @@ function TweetsFilter({
     },
     [
       activeFilter,
-      tweets,
       handleFilterTweets,
       likedTweets,
       isBookmark,
@@ -129,12 +123,9 @@ function TweetsFilter({
     ]
   );
 
-  useEffect(
-    function () {
-      setActiveFilter('tweets');
-    },
-    [tweets]
-  );
+  useEffect(function () {
+    setActiveFilter('tweets');
+  }, []);
 
   if (isLoading || isLoadingUser) return <Spinner />;
   if (error) toast.error(error.message);

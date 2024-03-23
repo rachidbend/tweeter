@@ -21,13 +21,27 @@ function TweetSaveButton({ isSaved, tweet }) {
   const { notifyUserOfUnsave } = useNotifyUserOfUnsave();
 
   function handleSave() {
-    saveTweet({ newBookmark: tweet });
-
-    notifyUserOfSave({ targetId: tweet.publisher_id, tweetId: tweet.id });
+    saveTweet(
+      { newBookmark: tweet },
+      {
+        onSuccess: () => {
+          notifyUserOfSave({ targetId: tweet.publisher_id, tweetId: tweet.id });
+        },
+      }
+    );
   }
   function handleRemoveSave() {
-    removeFromSaves({ tweet: tweet });
-    notifyUserOfUnsave({ targetId: tweet.publisher_id, tweetId: tweet.id });
+    removeFromSaves(
+      { tweet: tweet },
+      {
+        onSuccess: () => {
+          notifyUserOfUnsave({
+            targetId: tweet.publisher_id,
+            tweetId: tweet.id,
+          });
+        },
+      }
+    );
   }
 
   return (

@@ -6,7 +6,7 @@ export async function getUserData(userID) {
   let { data: profiles, error } = await supabase
     .from('profiles')
     .select(
-      'id, background_image, avatar_image, user_name, following, following_count, followers_count, user_description'
+      'id, background_image, avatar_image, user_name, following, following_count, followers_count, user_description, bookmarks, likes, retweets, replies'
     )
     .eq('id', userID);
 

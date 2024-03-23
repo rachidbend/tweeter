@@ -9,6 +9,7 @@ import TweetView from '../features/tweetView/TweetView';
 import { useUser } from '../hooks/authHooks/useUser';
 import ProfileOverlay from '../ui/ProfileOverlay';
 import ModalWrapper from '../ui/ModalWrapper';
+import UserTweetsView from '../features/user/UserTweetsView';
 
 const StyledUserProfile = styled.div`
   min-height: 100vh;
@@ -59,7 +60,7 @@ const TweetsContainer = styled.div`
 // This is the main UserProfile component
 function Profile() {
   // this is the state that allows the filter component to work properly
-  const [filteredTweets, setFilteredTweets] = useState([]);
+  const [filter, setFilter] = useState('tweets');
   // state to
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
@@ -89,7 +90,7 @@ function Profile() {
   if (error) toast.error(error.message);
 
   // Extract the necessary data from the userProfile object
-  const { background_image, avatar_image, user_name, tweets } = currentUser;
+  const { background_image } = currentUser;
 
   return (
     <StyledUserProfile>
@@ -106,24 +107,8 @@ function Profile() {
           handleEdit={handleModalOpen}
         />
         <ContentContainer>
-          <TweetsFilter
-            tweets={tweets}
-            handleFilterTweets={setFilteredTweets}
-            userId={user.id}
-          />
-          <TweetsContainer>
-            {filteredTweets.map(tweet => (
-              <TweetView
-                key={tweet.id}
-                user={{
-                  userAvatar: avatar_image,
-                  userName: user_name,
-                }}
-                currentUserAvatar={currentUser.avatar_image}
-                tweet={tweet}
-              />
-            ))}
-          </TweetsContainer>
+          <TweetsFilter handleFilterTweets={setFilter} userId={user.id} />
+          <UserTweetsView filter={filter} id={user.id} />
         </ContentContainer>
       </PageContainer>
 
