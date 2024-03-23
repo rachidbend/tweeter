@@ -9,7 +9,12 @@ export default function useGetUserTweets({ userId, filter, isBookmark }) {
     fetchNextPage,
     isFetching,
   } = useInfiniteQuery({
-    queryKey: ['user_tweets', filter, userId],
+    queryKey: [
+      'user_tweets',
+      isBookmark ? 'bookmarkPage' : 'otherPages',
+      filter,
+      userId,
+    ],
     queryFn: ({ pageParam }) =>
       getUserTweets({
         userId: userId,
