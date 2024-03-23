@@ -23,7 +23,7 @@ const SpinnerContainer = styled.div`
   align-items: center;
 `;
 
-function UserTweetsView({ id, filter }) {
+function UserTweetsView({ id, filter, isBookmark }) {
   const [observer, setObserver] = useState(null);
   const sentinalRef = useRef();
   const {
@@ -32,8 +32,8 @@ function UserTweetsView({ id, filter }) {
     error: tweetsError,
     fetchNextPage,
     isFetching,
-  } = useGetUserTweets({ userId: id, filter: filter });
-
+  } = useGetUserTweets({ userId: id, filter: filter, isBookmark: isBookmark });
+  // console.log(userTweets);
   useEffect(() => {
     // Function to initialize the observer
     const initializeObserver = () => {
