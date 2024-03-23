@@ -449,13 +449,19 @@ export async function getUserTimeline({ userId, pageParam }) {
   return data;
 }
 
-export async function getUserTweets({ userId, pageParam, filter }) {
+export async function getUserTweets({
+  userId,
+  pageParam,
+  filter,
+  isBookmark = false,
+}) {
   const lastTweetEl = pageParam !== 0 ? pageParam.slice(-1)[0].created_at : '';
   const { data, error } = await supabase.rpc('get_user_data', {
     user_id: userId,
     last_created_tweet: lastTweetEl,
     tweets_limit: 3,
     filter: filter,
+    is_bookmark: isBookmark,
   });
 
   if (error) throw new Error(error.message);

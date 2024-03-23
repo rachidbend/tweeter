@@ -48,6 +48,10 @@ const SearchContainer = styled.div`
   padding: 1.1rem 1.2rem 1.1rem 1rem;
   border-radius: 0.8rem;
   margin-bottom: 1.65rem;
+
+  &:focus-within {
+    outline: 2px solid var(--color-grey-300);
+  }
 `;
 const SearchInput = styled.input`
   font-family: var(--font-noto);
@@ -68,9 +72,9 @@ const SearchInput = styled.input`
     color: var(--color-grey-400);
   }
 
-  &:focus {
+  /* &:focus {
     border: 0.1rem solid var(--color-grey-500);
-  }
+  } */
 `;
 const SearchIcon = styled(IconSearchOutline)`
   width: 2.4rem;

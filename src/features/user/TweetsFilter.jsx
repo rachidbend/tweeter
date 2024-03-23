@@ -106,12 +106,7 @@ function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
         handleFilterTweets(activeFilter);
       } // if the filter is set to likes
       else if (activeFilter === 'likes') {
-        if (isBookmark) {
-          // handleFilterTweets(filteredTweets);
-        } else {
-          // show only the tweets that this user has liked
-          handleFilterTweets(activeFilter);
-        }
+        handleFilterTweets(activeFilter);
       }
     },
     [

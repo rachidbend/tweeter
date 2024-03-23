@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getUserTweets } from '../services/apiTweet';
 
-export default function useGetUserTweets({ userId, filter }) {
+export default function useGetUserTweets({ userId, filter, isBookmark }) {
   const {
     data: userTweets,
     isLoading,
@@ -10,7 +10,13 @@ export default function useGetUserTweets({ userId, filter }) {
     isFetching,
   } = useInfiniteQuery({
     queryKey: ['user_tweets', filter, userId],
-    queryFn: ({ pageParam }) => getUserTweets({ userId, pageParam, filter }),
+    queryFn: ({ pageParam }) =>
+      getUserTweets({
+        userId: userId,
+        pageParam,
+        filter: filter,
+        isBookmark: isBookmark,
+      }),
     initialPageParam: 0,
     getNextPageParam: lastPage => {
       if (lastPage === null) {

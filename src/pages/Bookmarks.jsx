@@ -6,6 +6,7 @@ import { useUser } from '../hooks/authHooks/useUser';
 import TweetView from '../features/tweetView/TweetView';
 import toast from 'react-hot-toast';
 import TweetsFilter from '../features/user/TweetsFilter';
+import UserTweetsView from '../features/user/UserTweetsView';
 
 const StyledBookmarks = styled.div`
   min-height: 100vh;
@@ -41,12 +42,7 @@ const TweetsContainer = styled.div`
 
 function Bookmarks() {
   const { user } = useUser();
-  const { savedTweets, isLoading, error } = useGetBookmarks();
-  const [filter, setFilter] = useState([]);
-
-  if (isLoading) return <Spinner />;
-  if (error) toast.error(error.message);
-  console.log(savedTweets);
+  const [filter, setFilter] = useState('tweets');
   return (
     <StyledBookmarks>
       <TweetsFilter
@@ -55,9 +51,7 @@ function Bookmarks() {
         isBookmark={true}
       />
       <TweetsContainer>
-        {savedTweets?.map(tweet => (
-          <TweetView tweet={tweet} key={`bookmarks-${tweet.id}`} />
-        ))}
+        <UserTweetsView isBookmark={true} filter={filter} id={user.id} />
       </TweetsContainer>
     </StyledBookmarks>
   );

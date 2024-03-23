@@ -11,7 +11,7 @@ import TweetReplyInput from './TweetReplyInput';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo } from 'react';
 
-const StyledTweet = styled(motion.div)`
+const StyledTweet = styled(motion.article)`
   background-color: var(--color-white);
   padding: 2rem;
   border-radius: 0.8rem;
