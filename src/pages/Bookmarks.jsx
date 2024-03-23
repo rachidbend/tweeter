@@ -42,21 +42,20 @@ const TweetsContainer = styled.div`
 function Bookmarks() {
   const { user } = useUser();
   const { savedTweets, isLoading, error } = useGetBookmarks();
-  const [filteredTweets, setFilteredTweets] = useState([]);
+  const [filter, setFilter] = useState([]);
 
   if (isLoading) return <Spinner />;
   if (error) toast.error(error.message);
-
+  console.log(savedTweets);
   return (
     <StyledBookmarks>
       <TweetsFilter
-        tweets={savedTweets[0]}
-        handleFilterTweets={setFilteredTweets}
+        handleFilterTweets={setFilter}
         userId={user.id}
         isBookmark={true}
       />
       <TweetsContainer>
-        {filteredTweets?.map(tweet => (
+        {savedTweets?.map(tweet => (
           <TweetView tweet={tweet} key={`bookmarks-${tweet.id}`} />
         ))}
       </TweetsContainer>

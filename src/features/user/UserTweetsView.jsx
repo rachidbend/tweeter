@@ -100,39 +100,3 @@ function UserTweetsView({ id, filter }) {
 }
 
 export default UserTweetsView;
-
-// useEffect(() => {
-//   // Function to initialize the observer
-//   const initializeObserver = () => {
-//     const newObserver = new IntersectionObserver(entries => {
-//       entries.forEach(entry => {
-//         if (isFetching) return;
-//         if (entry.isIntersecting) {
-//           console.log('is fetching new page');
-//           fetchNextPage();
-//         }
-//       });
-//     });
-
-//     if (sentinalRef.current) {
-//       newObserver.observe(sentinalRef.current);
-//     }
-
-//     // Clean up the previous observer before setting the new one
-//     if (observer) {
-//       observer.disconnect();
-//     }
-
-//     setObserver(newObserver); // Update the observer state with the new instance
-//   };
-
-//   // Call the function to initialize or update the observer
-//   initializeObserver();
-
-//   // Cleanup function to disconnect the observer when the component unmounts
-//   return () => {
-//     if (observer) {
-//       observer.disconnect();
-//     }
-//   };
-// }, [filter, isFetching]); // Depend on filter and isFetching to reinitialize the observer when needed
