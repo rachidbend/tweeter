@@ -1,16 +1,16 @@
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { searchTweets as searchQueryApi } from '../../services/apiSearch';
 
-export function useSearchTweets() {
+export function useSearchTweets({ executeSearch, filter, searchQuery }) {
   const {
-    mutate: searchTweets,
-    isPending,
+    data: tweetsData,
+    isLoading,
     error,
-    data,
-  } = useMutation({
-    mutationFn: ({ searchQuery, filter }) =>
-      searchQueryApi({ searchQuery, filter }),
+  } = useQuery({
+    queryKey: ['search-tweets', filter, searchQuery],
+    queryFn: () => searchQueryApi({ searchQuery, filter }),
+    enabled: executeSearch && (filter === 'top' || filter === 'latest'),
   });
 
-  return { searchTweets, isPending, error, data };
+  return { tweetsData, isLoading, error };
 }

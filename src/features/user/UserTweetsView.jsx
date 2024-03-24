@@ -26,6 +26,7 @@ const SpinnerContainer = styled.div`
 function UserTweetsView({ id, filter, isBookmark }) {
   const [observer, setObserver] = useState(null);
   const sentinalRef = useRef();
+
   const {
     userTweets,
     isLoading: isLoadingTweets,
@@ -33,7 +34,7 @@ function UserTweetsView({ id, filter, isBookmark }) {
     fetchNextPage,
     isFetching,
   } = useGetUserTweets({ userId: id, filter: filter, isBookmark: isBookmark });
-  // console.log(userTweets);
+
   useEffect(() => {
     // Function to initialize the observer
     const initializeObserver = () => {
@@ -41,7 +42,6 @@ function UserTweetsView({ id, filter, isBookmark }) {
         entries.forEach(entry => {
           if (isFetching) return;
           if (entry.isIntersecting) {
-            console.log('is fetching new page');
             fetchNextPage();
           }
         });
@@ -68,7 +68,7 @@ function UserTweetsView({ id, filter, isBookmark }) {
         observer.disconnect();
       }
     };
-  }, [filter, isFetching]); // Depend on filter and isFetching to reinitialize the observer when needed
+  }, [filter, isFetching]); // Depend on filter and isFetching to reinitialize the observer when needed, but not the observer, because it will cause re-rendering loop
 
   if (isLoadingTweets) return <Spinner />;
   if (tweetsError) toast.error(tweetsError.message);
@@ -76,9 +76,11 @@ function UserTweetsView({ id, filter, isBookmark }) {
   return (
     <TweetsContainer>
       {userTweets?.pages.map(page =>
-        page === null
-          ? ''
-          : page.map(tweet => <TweetView key={tweet.id} tweet={tweet} />)
+        page === null ? (
+          <></>
+        ) : (
+          page.map(tweet => <TweetView key={tweet.id} tweet={tweet} />)
+        )
       )}
       {isFetching && (
         <SpinnerContainer>

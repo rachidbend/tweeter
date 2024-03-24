@@ -1,10 +1,6 @@
 import styled from 'styled-components';
-import { useGetBookmarks } from '../hooks/useGetBokkmarks';
-import Spinner from '../ui/Spinner';
 import { useState } from 'react';
 import { useUser } from '../hooks/authHooks/useUser';
-import TweetView from '../features/tweetView/TweetView';
-import toast from 'react-hot-toast';
 import TweetsFilter from '../features/user/TweetsFilter';
 import UserTweetsView from '../features/user/UserTweetsView';
 
@@ -12,7 +8,7 @@ const StyledBookmarks = styled.div`
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
-  grid-template-columns: 30.4rem 1fr;
+  grid-template-columns: minmax(20rem, 30.4rem) minmax(25rem, 1fr);
 
   justify-content: center;
   align-items: start;
@@ -34,25 +30,15 @@ const StyledBookmarks = styled.div`
   }
 `;
 
-const TweetsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3.5rem;
-`;
-
 function Bookmarks() {
+  // get the id of the user
   const { user } = useUser();
+  // state to contain the filter to pass it into the UserTweetsView component
   const [filter, setFilter] = useState('tweets');
   return (
     <StyledBookmarks>
-      <TweetsFilter
-        handleFilterTweets={setFilter}
-        userId={user.id}
-        isBookmark={true}
-      />
-      <TweetsContainer>
-        <UserTweetsView isBookmark={true} filter={filter} id={user.id} />
-      </TweetsContainer>
+      <TweetsFilter handleFilterTweets={setFilter} isBookmark={true} />
+      <UserTweetsView isBookmark={true} filter={filter} id={user.id} />
     </StyledBookmarks>
   );
 }

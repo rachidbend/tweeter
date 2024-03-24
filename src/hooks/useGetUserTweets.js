@@ -18,9 +18,9 @@ export default function useGetUserTweets({ userId, filter, isBookmark }) {
     queryFn: ({ pageParam }) =>
       getUserTweets({
         userId: userId,
-        pageParam,
         filter: filter,
         isBookmark: isBookmark,
+        pageParam,
       }),
     initialPageParam: 0,
     getNextPageParam: lastPage => {

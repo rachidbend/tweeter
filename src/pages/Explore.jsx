@@ -115,65 +115,63 @@ function Explore() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFilter, setSearchFilter] = useState('top');
 
-  // custom hook to get the search data
-  const {
-    searchTweets,
-    isPending: isSearchingTweets,
-    error: tweetsError,
-    data: tweetsData,
-  } = useSearchTweets();
-  const {
-    searchAccounts,
-    isPending: isSearchingAccounts,
-    error: accountsError,
-    data: accountsData,
-  } = useSearchAccounts();
+  // the search custom hooks will only run when the executeSearch is set to true, and they will run depenign on the filter, so that only the appropriate data will be returned based on the filter
+  const [executeSearch, setExecuteSearch] = useState(false);
 
+  // custom hook to get the search the most popular or most recent tweets
   const {
-    searchMedia,
-    isPending: isSearchingMedia,
+    tweetsData,
+    isLoading: isSearchingTweets,
+    error: tweetsError,
+  } = useSearchTweets({ executeSearch, filter: searchFilter, searchQuery });
+
+  // custom hook to search for poeple that have the query in their username or description, ordered by users with the most followers to the least
+  const {
+    accountsData,
+    isLoading: isSearchingAccounts,
+    error: accountsError,
+  } = useSearchAccounts({ executeSearch, filter: searchFilter, searchQuery });
+
+  // same as search for most popular tweets that match the query but only returns tweets that include an image (or media)
+  const {
+    mediaData,
+    isLoading: isSearchingMedia,
     error: mediaError,
-    data: mediaData,
-  } = useSearchMedia();
+  } = useSearchMedia({ executeSearch, filter: searchFilter, searchQuery });
 
   // handler for search query change
   function handleSearchChange(e) {
     setSearchQuery(e.target.value);
   }
 
-  // handler to call the search function
+  // handler to trigger the functions to search when the user click 'search' button
   function handleSearch() {
-    if (searchTweets === '') return;
-    // there are 4 filters, 'top', 'recent', 'people', and 'media'
-    // the first two (top and recent) are handeled by the same function
-    if (searchFilter === 'top' || searchFilter === 'latest')
-      searchTweets({ searchQuery: searchQuery, filter: searchFilter });
-    // the peopel filter is handeled by a separate function
-    if (searchFilter === 'people') searchAccounts({ searchQuery: searchQuery });
-    // and the media filter is also handeled by a separate function
-    if (searchFilter === 'media') searchMedia({ searchQuery: searchQuery });
+    setExecuteSearch(true);
   }
 
+  // change the filter when ever the user changes the filter
   function handleFilterChange(filter) {
     setSearchFilter(filter);
   }
 
+  // when ever the search filter changes, search for the query
   useEffect(
     function () {
-      if (searchTweets === '') return;
-      if (searchFilter === 'top' || searchFilter === 'latest')
-        searchTweets({ searchQuery: searchQuery, filter: searchFilter });
-
-      if (searchFilter === 'people')
-        searchAccounts({ searchQuery: searchQuery });
-
-      if (searchFilter === 'media') searchMedia({ searchQuery: searchQuery });
+      if (searchQuery !== '') setExecuteSearch(true);
     },
-    [searchFilter, searchTweets]
+    [searchFilter]
   );
 
-  // if (!isSearchingTweets && tweetsData !== undefined) console.log(tweetsData);
-  if (!isSearchingMedia && mediaData !== undefined) console.log(mediaData);
+  // once the data is returned, stop the execute of all queries
+  useEffect(
+    function () {
+      if (executeSearch) {
+        setExecuteSearch(false);
+      }
+    },
+    [tweetsData, accountsData, mediaData]
+  );
+
   if (tweetsError) toast.error(tweetsError.message);
   if (accountsError) toast.error(accountsError.message);
   if (mediaError) toast.error(mediaError.message);

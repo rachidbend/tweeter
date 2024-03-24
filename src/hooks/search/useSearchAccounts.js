@@ -1,15 +1,16 @@
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { searchAccounts as searchAccountsApi } from '../../services/apiSearch';
 
-export function useSearchAccounts() {
+export function useSearchAccounts({ executeSearch, filter, searchQuery }) {
   const {
-    mutate: searchAccounts,
-    isPending,
+    isLoading,
     error,
-    data,
-  } = useMutation({
-    mutationFn: ({ searchQuery }) => searchAccountsApi({ searchQuery }),
+    data: accountsData,
+  } = useQuery({
+    queryKey: ['search-people', filter, searchQuery],
+    queryFn: () => searchAccountsApi({ executeSearch, filter, searchQuery }),
+    enabled: executeSearch && filter === 'people',
   });
 
-  return { searchAccounts, isPending, error, data };
+  return { accountsData, isLoading, error };
 }
