@@ -1,15 +1,16 @@
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { searchMedia as searchMediaApi } from '../../services/apiSearch';
 
-export function useSearchMedia() {
+export function useSearchMedia({ executeSearch, filter, searchQuery }) {
   const {
-    mutate: searchMedia,
-    isPending,
+    isLoading,
     error,
-    data,
-  } = useMutation({
-    mutationFn: ({ searchQuery }) => searchMediaApi({ searchQuery }),
+    data: mediaData,
+  } = useQuery({
+    queryKey: ['search-media', filter, searchQuery],
+    queryFn: () => searchMediaApi({ executeSearch, filter, searchQuery }),
+    enabled: executeSearch && filter === 'media',
   });
 
-  return { searchMedia, isPending, error, data };
+  return { mediaData, isLoading, error };
 }

@@ -45,7 +45,7 @@ const SideBorder = styled.span`
   transition: top var(--transition-100);
 `;
 
-function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
+function TweetsFilter({ handleFilterTweets, isBookmark = false }) {
   // there are 4 filters,
   // - all tweets, including retweets (but not replies)
   // - replies
@@ -55,9 +55,8 @@ function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
   // this is what ditermines which filter is active, because only one can be active at a time, the default filter is 'tweets'
   // names of the filters, 'tweets', 'replies', 'media', and 'likes'
   const [activeFilter, setActiveFilter] = useState('tweets');
-  const { likedTweets, isLoading, error } = useGetLikes(userId);
-  const { userProfile, isLoading: isLoadingUser } = useGetUserData(userId);
 
+  // refs to keep track of the positioning of each element, so that the side span would be in the right place
   const spanRef = useRef();
   const tweetsRef = useRef();
   const repliesRef = useRef();
@@ -66,6 +65,7 @@ function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
 
   useEffect(
     function () {
+      // make sure that all the elements have mounted first
       if (
         !tweetsRef.current ||
         !repliesRef.current ||
@@ -75,6 +75,7 @@ function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
         return;
       }
 
+      // when ever the filter changes, chnage the position of the span to be next to the current active filter
       if (activeFilter === 'tweets') {
         setPositionSpan(spanRef, tweetsRef, 'vertical');
       } else if (activeFilter === 'replies') {
@@ -87,44 +88,12 @@ function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
         setPositionSpan(spanRef, tweetsRef, 'vertical');
       }
 
-      // if the filter is set to tweets
-      if (activeFilter === 'tweets') {
-        // show only the tweets that are not replies
-
-        handleFilterTweets(activeFilter);
-      }
-      // if the filter is set to replies
-      else if (activeFilter === 'replies') {
-        // showo only the tweets that are replies
-
-        handleFilterTweets(activeFilter);
-      }
-      // if the filter is set to media
-      else if (activeFilter === 'media') {
-        // show only the tweets that include an image
-
-        handleFilterTweets(activeFilter);
-      } // if the filter is set to likes
-      else if (activeFilter === 'likes') {
-        handleFilterTweets(activeFilter);
-      }
+      // set the outer filter to the current active filter, which is changed by the user
+      handleFilterTweets(activeFilter);
     },
-    [
-      activeFilter,
-      handleFilterTweets,
-      likedTweets,
-      isBookmark,
-      userProfile?.likes,
-    ]
+    [activeFilter, handleFilterTweets, isBookmark]
   );
 
-  useEffect(function () {
-    setActiveFilter('tweets');
-  }, []);
-
-  if (isLoading || isLoadingUser) return <Spinner />;
-  if (error) toast.error(error.message);
-  // if (!tweets) return;
   return (
     <StyledTweetsFilter
       initial={{ opacity: 0 }}
@@ -135,7 +104,7 @@ function TweetsFilter({ handleFilterTweets, userId, isBookmark = false }) {
         Tweets
       </Filter>
       <Filter onClick={() => setActiveFilter('replies')} ref={repliesRef}>
-        Tweets & replies
+        Replies
       </Filter>
       <Filter onClick={() => setActiveFilter('media')} ref={mediaRef}>
         Media
