@@ -1,14 +1,13 @@
 import styled from 'styled-components';
 import SearchFilter from '../features/search/SearchFilter';
 import { IconSearchOutline } from '../styles/Icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchTweets } from '../hooks/search/useSearchTweets';
 import toast from 'react-hot-toast';
 import TweetView from '../features/tweetView/TweetView';
 import SmallSpinner from '../ui/SmallSpinner';
 import { useSearchAccounts } from '../hooks/search/useSearchAccounts';
 import UserView from '../ui/UserView';
-import { useSearchMedia } from '../hooks/search/useSearchMedia';
 
 const StyledExplore = styled.div`
   min-height: 100vh;
@@ -110,19 +109,26 @@ const ResultsContainer = styled.div`
   gap: 3.525rem;
 `;
 
+const Sentinal = styled.div`
+  background: none;
+  height: 0;
+  visibility: hidden;
+`;
 function Explore() {
   // state to get the value of the search input
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFilter, setSearchFilter] = useState('top');
-
+  const [observer, setObserver] = useState(null);
   // the search custom hooks will only run when the executeSearch is set to true, and they will run depenign on the filter, so that only the appropriate data will be returned based on the filter
   const [executeSearch, setExecuteSearch] = useState(false);
 
+  const sentinalRef = useRef();
   // custom hook to get the search the most popular or most recent tweets
   const {
     tweetsData,
     isLoading: isSearchingTweets,
     error: tweetsError,
+    fetchNextPage,
   } = useSearchTweets({ executeSearch, filter: searchFilter, searchQuery });
 
   // custom hook to search for poeple that have the query in their username or description, ordered by users with the most followers to the least
@@ -133,11 +139,6 @@ function Explore() {
   } = useSearchAccounts({ executeSearch, filter: searchFilter, searchQuery });
 
   // same as search for most popular tweets that match the query but only returns tweets that include an image (or media)
-  const {
-    mediaData,
-    isLoading: isSearchingMedia,
-    error: mediaError,
-  } = useSearchMedia({ executeSearch, filter: searchFilter, searchQuery });
 
   // handler for search query change
   function handleSearchChange(e) {
@@ -169,19 +170,52 @@ function Explore() {
         setExecuteSearch(false);
       }
     },
-    [tweetsData, accountsData, mediaData]
+    [tweetsData, accountsData]
+  );
+
+  useEffect(
+    function () {
+      const initailizeObserver = () => {
+        const newObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (isSearchingTweets) return;
+            if (entry.isIntersecting) {
+              fetchNextPage();
+            }
+          });
+        });
+
+        if (sentinalRef.current) {
+          newObserver.observe(sentinalRef.current);
+        }
+
+        if (observer) {
+          newObserver.disconnect;
+        }
+
+        setObserver(newObserver);
+      };
+
+      initailizeObserver();
+
+      return () => {
+        if (observer) {
+          observer.disconnect();
+        }
+      };
+    },
+    [searchFilter, sentinalRef.current]
   );
 
   if (tweetsError) toast.error(tweetsError.message);
   if (accountsError) toast.error(accountsError.message);
-  if (mediaError) toast.error(mediaError.message);
 
   return (
     <StyledExplore>
       <SearchFilter onFilterChange={handleFilterChange} />
       <Container>
         <SearchContainer>
-          {isSearchingTweets || isSearchingAccounts || isSearchingMedia ? (
+          {isSearchingTweets || isSearchingAccounts ? (
             <SmallSpinner width="2.4rem" height="2.4rem" />
           ) : (
             <SearchIcon />
@@ -195,10 +229,16 @@ function Explore() {
         </SearchContainer>
         <ResultsContainer>
           {/* if the filter is set to top or latest, show the resulting tweets */}
-          {(searchFilter === 'top' || searchFilter === 'latest') &&
-            tweetsData?.map(tweet => (
-              <TweetView tweet={tweet} key={`tweet-search-${tweet.id}`} />
-            ))}
+          {(searchFilter === 'top' ||
+            searchFilter === 'latest' ||
+            searchFilter === 'media') &&
+            tweetsData?.pages.map(page => {
+              return page === null
+                ? ''
+                : page.map(tweet => (
+                    <TweetView tweet={tweet} key={`tweet-search-${tweet.id}`} />
+                  ));
+            })}
 
           {/* if the filter is set to people, show account that include the query in their username or description */}
           {searchFilter === 'people' &&
@@ -209,14 +249,7 @@ function Explore() {
                 key={`user-search-account-${account.id}`}
               />
             ))}
-          {/* if the filter is set to media, show only the resulting tweets that have in image */}
-          {searchFilter === 'media' &&
-            mediaData?.map(tweet => (
-              <TweetView
-                tweet={tweet}
-                key={`user-search-account-${tweet.id}`}
-              />
-            ))}
+          <Sentinal ref={sentinalRef}></Sentinal>
         </ResultsContainer>
       </Container>
     </StyledExplore>
