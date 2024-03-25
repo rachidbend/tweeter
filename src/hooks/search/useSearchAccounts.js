@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchAccounts as searchAccountsApi } from '../../services/apiSearch';
 
 export function useSearchAccounts({ executeSearch, filter, searchQuery }) {
@@ -6,11 +6,19 @@ export function useSearchAccounts({ executeSearch, filter, searchQuery }) {
     isLoading,
     error,
     data: accountsData,
-  } = useQuery({
+    fetchNextPage,
+  } = useInfiniteQuery({
     queryKey: ['search-people', filter, searchQuery],
-    queryFn: () => searchAccountsApi({ executeSearch, filter, searchQuery }),
+    queryFn: ({ pageParam }) =>
+      searchAccountsApi({ executeSearch, filter, searchQuery, pageParam }),
     enabled: executeSearch && filter === 'people',
+    initialPageParam: 1,
+    getNextPageParam: (lastPages, lastPageparam, pages) => {
+      if (lastPages === null) return undefined;
+
+      return pages + 1;
+    },
   });
 
-  return { accountsData, isLoading, error };
+  return { accountsData, isLoading, error, fetchNextPage };
 }

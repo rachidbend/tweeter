@@ -8,6 +8,7 @@ import TweetView from '../features/tweetView/TweetView';
 import SmallSpinner from '../ui/SmallSpinner';
 import { useSearchAccounts } from '../hooks/search/useSearchAccounts';
 import UserView from '../ui/UserView';
+import Spinner from '../ui/Spinner';
 
 const StyledExplore = styled.div`
   min-height: 100vh;
@@ -114,6 +115,13 @@ const Sentinal = styled.div`
   height: 0;
   visibility: hidden;
 `;
+
+const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 function Explore() {
   // state to get the value of the search input
   const [searchQuery, setSearchQuery] = useState('');
@@ -128,7 +136,7 @@ function Explore() {
     tweetsData,
     isLoading: isSearchingTweets,
     error: tweetsError,
-    fetchNextPage,
+    fetchNextPage: fetchNextTweetsPage,
   } = useSearchTweets({ executeSearch, filter: searchFilter, searchQuery });
 
   // custom hook to search for poeple that have the query in their username or description, ordered by users with the most followers to the least
@@ -136,6 +144,7 @@ function Explore() {
     accountsData,
     isLoading: isSearchingAccounts,
     error: accountsError,
+    fetchNextPage: fetchNextAccountsPage,
   } = useSearchAccounts({ executeSearch, filter: searchFilter, searchQuery });
 
   // same as search for most popular tweets that match the query but only returns tweets that include an image (or media)
@@ -178,9 +187,21 @@ function Explore() {
       const initailizeObserver = () => {
         const newObserver = new IntersectionObserver(entries => {
           entries.forEach(entry => {
-            if (isSearchingTweets) return;
+            if (isSearchingTweets || isSearchingAccounts) return;
             if (entry.isIntersecting) {
-              fetchNextPage();
+              if (
+                searchFilter === 'top' ||
+                searchFilter === 'latest' ||
+                searchFilter === 'media'
+              ) {
+                console.log('called tweets');
+                fetchNextTweetsPage();
+              }
+
+              if (searchFilter === 'people') {
+                console.log('called account');
+                fetchNextAccountsPage();
+              }
             }
           });
         });
@@ -204,7 +225,7 @@ function Explore() {
         }
       };
     },
-    [searchFilter, sentinalRef.current]
+    [searchFilter, sentinalRef.current, isSearchingTweets, isSearchingAccounts]
   );
 
   if (tweetsError) toast.error(tweetsError.message);
@@ -242,13 +263,22 @@ function Explore() {
 
           {/* if the filter is set to people, show account that include the query in their username or description */}
           {searchFilter === 'people' &&
-            accountsData?.map(account => (
-              <UserView
-                variant="searchPage"
-                userId={account.id}
-                key={`user-search-account-${account.id}`}
-              />
-            ))}
+            accountsData?.pages.map(page => {
+              return page === null
+                ? ''
+                : page.map(account => (
+                    <UserView
+                      variant="searchPage"
+                      userId={account.id}
+                      key={`user-search-account-${account.id}`}
+                    />
+                  ));
+            })}
+          {(isSearchingTweets || isSearchingAccounts) && (
+            <SpinnerContainer>
+              <Spinner />
+            </SpinnerContainer>
+          )}
           <Sentinal ref={sentinalRef}></Sentinal>
         </ResultsContainer>
       </Container>
