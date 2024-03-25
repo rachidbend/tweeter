@@ -5,9 +5,14 @@ import { useSaveTweet } from '../../hooks/tweet/save/useSaveTweet';
 import { useNotifyUserOfSave } from '../../hooks/tweet/save/useNotifyUserOfSave';
 import { useRemoveTweetFromBookmarks } from '../../hooks/tweet/save/useRemoveTweetFromBookmarks';
 import { useNotifyUserOfUnsave } from '../../hooks/tweet/save/useNotifyUserOfUnsave';
-import { IconBookMarkOutline } from '../../styles/Icons';
+import { IconBookMark, IconBookMarkOutline } from '../../styles/Icons';
 
-const SaveIcon = styled(IconBookMarkOutline)`
+const SaveIconFull = styled(IconBookMark)`
+  height: 2rem;
+  width: 2rem;
+  color: inherit;
+`;
+const SaveIconOutline = styled(IconBookMarkOutline)`
   height: 2rem;
   width: 2rem;
   color: inherit;
@@ -49,7 +54,8 @@ function TweetSaveButton({ isSaved, tweet }) {
       onClick={isSaved ? handleRemoveSave : handleSave}
       $isSaved={isSaved}
     >
-      <SaveIcon />
+      {isSaved ? <SaveIconFull /> : <SaveIconOutline />}
+
       <ButtonText>{isSaved ? 'Saved' : 'Save'}</ButtonText>
     </Button>
   );

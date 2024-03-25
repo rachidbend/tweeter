@@ -7,9 +7,15 @@ import useNotifyUserOfRetweet from '../../hooks/tweet/retweet/useNotifyUserOfRet
 import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';
 import useRemoveTweetId from '../../hooks/tweet/useRemoveTweetId';
 import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/retweet/useNotifyUserOfRetweetRemove';
-import { IconSync } from '../../styles/Icons';
+import { IconSync, IconSyncDisabled } from '../../styles/Icons';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { v4 as uuidv4 } from 'uuid';
+
+const RemoveRetweetIcon = styled(IconSyncDisabled)`
+  height: 2rem;
+  width: 2rem;
+  color: inherit;
+`;
 
 const RetweetIcon = styled(IconSync)`
   height: 2rem;
@@ -86,7 +92,8 @@ function TweetRetweetButton({ isRetweeted, tweet }) {
       onClick={isRetweeted ? handleRemoveRetweet : handleRetweet}
       $isRetweeted={isRetweeted}
     >
-      <RetweetIcon />
+      {isRetweeted ? <RemoveRetweetIcon /> : <RetweetIcon />}
+
       <ButtonText>{isRetweeted ? 'Retweeted' : 'Retweet'}</ButtonText>
     </Button>
   );

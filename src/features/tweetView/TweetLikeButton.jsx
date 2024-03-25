@@ -1,13 +1,19 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { Button, ButtonText } from './TweetView';
-import { IconHeartOutline } from '../../styles/Icons';
+import { IconHeart, IconHeartOutline } from '../../styles/Icons';
 import { useLikeTweet } from '../../hooks/tweet/like/useLikeTweet';
 import { useNotifyUserOfLike } from '../../hooks/tweet/like/useNotifyUserOfLike';
 import { useRemoveTweetFromLikes } from '../../hooks/tweet/like/useRemoveTweetFromLikes';
 import { useNotifyUserOfUnlike } from '../../hooks/tweet/like/useNotifyUserOfUnlike';
 
-const LikeIcon = styled(IconHeartOutline)`
+const LikeIconFull = styled(IconHeart)`
+  height: 2rem;
+  width: 2rem;
+  color: inherit;
+`;
+
+const LikeIconOutline = styled(IconHeartOutline)`
   height: 2rem;
   width: 2rem;
   color: inherit;
@@ -32,7 +38,8 @@ function TweetLikeButton({ isLiked, tweet }) {
 
   return (
     <Button onClick={isLiked ? handleUnlike : handleLike} $isLiked={isLiked}>
-      <LikeIcon />
+      {isLiked ? <LikeIconFull /> : <LikeIconOutline />}
+
       <ButtonText>{isLiked ? 'Liked' : 'Like'}</ButtonText>
     </Button>
   );
