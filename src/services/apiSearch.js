@@ -14,11 +14,13 @@ export async function searchTweets({ searchQuery, filter, pageParam }) {
   return data;
 }
 
-export async function searchAccounts({ searchQuery }) {
+export async function searchAccounts({ searchQuery, pageParam }) {
   const query = searchQuery.split(' ').join(' & ');
 
   const { data, error } = await supabase.rpc('search_accounts', {
     query: query,
+    page_size: 10,
+    page: pageParam,
   });
 
   if (error) throw new Error(error.message);
