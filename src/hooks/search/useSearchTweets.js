@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchTweets as searchQueryApi } from '../../services/apiSearch';
 
 export function useSearchTweets({ executeSearch, filter, searchQuery }) {
@@ -6,11 +6,21 @@ export function useSearchTweets({ executeSearch, filter, searchQuery }) {
     data: tweetsData,
     isLoading,
     error,
-  } = useQuery({
+    fetchNextPage,
+  } = useInfiniteQuery({
     queryKey: ['search-tweets', filter, searchQuery],
-    queryFn: () => searchQueryApi({ searchQuery, filter }),
-    enabled: executeSearch && (filter === 'top' || filter === 'latest'),
+    queryFn: ({ pageParam }) =>
+      searchQueryApi({ searchQuery, filter, pageParam }),
+    enabled:
+      executeSearch &&
+      (filter === 'top' || filter === 'latest' || filter === 'media'),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, lastPageParam, pages) => {
+      if (lastPage === null) return undefined;
+      // return lastPageParam;
+      return pages + 1;
+    },
   });
 
-  return { tweetsData, isLoading, error };
+  return { tweetsData, isLoading, error, fetchNextPage };
 }
