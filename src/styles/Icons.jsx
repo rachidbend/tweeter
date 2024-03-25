@@ -13,6 +13,9 @@ import { IoClose } from 'react-icons/io5';
 import { LuSave } from 'react-icons/lu';
 import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import { BiSearchAlt2 } from 'react-icons/bi';
+import { FaBookmark } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa6';
+import { MdOutlineSyncDisabled } from 'react-icons/md';
 
 export const IconCommentOutline = styled(MdOutlineModeComment)``;
 export const IconSync = styled(IoMdSync)``;
@@ -30,3 +33,8 @@ export const IconSave = styled(LuSave)``;
 export const IconAddImage = styled(MdOutlineAddPhotoAlternate)``;
 
 export const IconSearchOutline = styled(BiSearchAlt2)``;
+
+// full icons
+export const IconBookMark = styled(FaBookmark)``;
+export const IconHeart = styled(FaHeart)``;
+export const IconSyncDisabled = styled(MdOutlineSyncDisabled)``;
