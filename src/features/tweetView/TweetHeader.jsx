@@ -19,6 +19,7 @@ import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import OutsideClick from '../../helpers/OutsideClick';
 import useDeleteImage from '../../hooks/useDeleteImage';
+import TweetViewHeaderSkelital from '../../ui/SkeletalUI/tweet/TweetViewHeaderSkelital';
 
 const StyledTweetHeader = styled.div`
   display: grid;
@@ -223,7 +224,7 @@ function TweetHeader({ tweet }) {
     }
   }
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <TweetViewHeaderSkelital />;
 
   return (
     <StyledTweetHeader ref={headerRef}>
