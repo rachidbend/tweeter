@@ -21,7 +21,8 @@ const StyledTweet = styled.div`
   padding: 1.1rem 2rem;
 
   font-family: var(--font-noto);
-  margin-bottom: 5rem;
+  /* margin-bottom: 5rem; */
+  margin-bottom: 2.4rem;
   @media screen and (max-width: 450px) {
     width: 100%;
   }

@@ -2,8 +2,9 @@
 import styled from 'styled-components';
 import SmallSpinner from '../../ui/SmallSpinner';
 import { IconSearchOutline } from '../../styles/Icons';
+import { motion } from 'framer-motion';
 
-const SearchContainer = styled.div`
+const SearchContainer = styled(motion.div)`
   display: flex;
   align-items: center;
   background-color: var(--color-white);
@@ -75,7 +76,10 @@ function SearchInput({ isFetching, handleSearchChange, handleSearch }) {
   }
 
   return (
-    <SearchContainer>
+    <SearchContainer
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { delay: 0.2 } }}
+    >
       {isFetching ? (
         <SmallSpinner width="2.4rem" height="2.4rem" />
       ) : (

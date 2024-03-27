@@ -7,6 +7,7 @@ export function useSearchAccounts({ executeSearch, filter, searchQuery }) {
     error,
     data: accountsData,
     fetchNextPage,
+    isFetching,
   } = useInfiniteQuery({
     queryKey: ['search-people', filter, searchQuery],
     queryFn: ({ pageParam }) =>
@@ -20,5 +21,5 @@ export function useSearchAccounts({ executeSearch, filter, searchQuery }) {
     },
   });
 
-  return { accountsData, isLoading, error, fetchNextPage };
+  return { accountsData, isLoading, error, fetchNextPage, isFetching };
 }

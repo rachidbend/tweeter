@@ -3,11 +3,12 @@
 import styled from 'styled-components';
 import TweetView from '../tweetView/TweetView';
 import { useEffect, useRef, useState } from 'react';
-import Spinner from '../../ui/Spinner';
 import UserView from '../../ui/UserView';
 import { useSearchTweets } from '../../hooks/search/useSearchTweets';
 import { useSearchAccounts } from '../../hooks/search/useSearchAccounts';
 import toast from 'react-hot-toast';
+import TweetViewSkeletal from '../../ui/SkeletalUI/tweet/TweetViewSkeletal';
+import UserViewSkeletal from '../../ui/SkeletalUI/home/UserViewSkeletal';
 
 const ResultsContainer = styled.div`
   display: flex;
@@ -20,12 +21,6 @@ const Sentinal = styled.div`
   background: none;
   height: 0;
   visibility: hidden;
-`;
-
-const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 function SearchResults({
@@ -44,6 +39,7 @@ function SearchResults({
     isLoading: isSearchingTweets,
     error: tweetsError,
     fetchNextPage: fetchNextTweetsPage,
+    isFetching: isFetchingTweets,
   } = useSearchTweets({ executeSearch, filter: searchFilter, searchQuery });
 
   // custom hook to search for poeple that have the query in their username or description, ordered by users with the most followers to the least
@@ -52,6 +48,7 @@ function SearchResults({
     isLoading: isSearchingAccounts,
     error: accountsError,
     fetchNextPage: fetchNextAccountsPage,
+    isFetching: isFetchingAccounts,
   } = useSearchAccounts({ executeSearch, filter: searchFilter, searchQuery });
 
   // Effect to stop executing the fetch functions once some data has returned
@@ -121,13 +118,24 @@ function SearchResults({
   // Effect to tell the parent that it is fetching data or not fetching data
   useEffect(
     function () {
-      if (isSearchingAccounts || isSearchingTweets) {
+      if (
+        isSearchingAccounts ||
+        isSearchingTweets ||
+        isFetchingTweets ||
+        isFetchingAccounts
+      ) {
         onIsFetching(true);
       } else {
         onIsFetching(false);
       }
     },
-    [isSearchingAccounts, isSearchingTweets, onIsFetching]
+    [
+      isSearchingAccounts,
+      isSearchingTweets,
+      onIsFetching,
+      isFetchingTweets,
+      isFetchingAccounts,
+    ]
   );
 
   // error notifications
@@ -161,11 +169,11 @@ function SearchResults({
                 />
               ));
         })}
-      {(isSearchingTweets || isSearchingAccounts) && (
-        <SpinnerContainer>
-          <Spinner />
-        </SpinnerContainer>
-      )}
+      {(isSearchingTweets || isFetchingTweets) && <TweetViewSkeletal />}
+      {searchFilter === 'people' &&
+        (isSearchingAccounts || isFetchingAccounts) && (
+          <UserViewSkeletal variant="searchPage" />
+        )}
       {/* Sentinal component  */}
       <Sentinal ref={sentinalRef}></Sentinal>
     </ResultsContainer>

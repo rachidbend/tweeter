@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import useGetTrendyHashtags from '../hooks/hashtags/useGetTrendyHashtags';
 import Spinner from './Spinner';
 import { formatNumber } from '../helpers/functions';
+import TrendsSkeletal from './SkeletalUI/home/TrendsSkeletal';
 
 const StyledHashtagTrends = styled.div`
   background-color: var(--color-white);
@@ -53,7 +54,7 @@ const Stat = styled.p`
 function HashtagTrends() {
   const { trends, isLoading, error } = useGetTrendyHashtags();
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <TrendsSkeletal />;
 
   return (
     <StyledHashtagTrends>

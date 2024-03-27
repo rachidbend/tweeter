@@ -10,17 +10,18 @@ const loading = keyframes`
   }
 `;
 
-const StyledTweetViewHeaderSkelital = styled.div`
+const StyledTweetViewHeaderSkeletal = styled.div`
   display: flex;
   gap: 1.7rem;
   /* background: var(--color-grey-600); */
 `;
 
-const ShimmerEffect = styled.div`
+export const ShimmerEffect = styled.div`
   background: linear-gradient(to right, #eee 8%, #ddd 18%, #eee 33%);
-  background-size: 800px 10.4rem;
+
+  background-size: 100rem 10.4rem;
   overflow: hidden;
-  animation: ${loading} 1.5s infinite linear;
+  animation: ${loading} 1.8s infinite linear;
 `;
 
 const Avatar = styled(ShimmerEffect)`
@@ -46,17 +47,16 @@ const PublishTime = styled(ShimmerEffect)`
   height: 1.8rem;
   border-radius: 0.8rem;
 `;
-function TweetViewHeaderSkelital() {
+function TweetViewHeaderSkeletal() {
   return (
-    <StyledTweetViewHeaderSkelital>
+    <StyledTweetViewHeaderSkeletal>
       <Avatar />
-
       <Container>
         <Username />
         <PublishTime />
       </Container>
-    </StyledTweetViewHeaderSkelital>
+    </StyledTweetViewHeaderSkeletal>
   );
 }
 
-export default TweetViewHeaderSkelital;
+export default TweetViewHeaderSkeletal;

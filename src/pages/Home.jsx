@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import TweetView from '../features/tweetView/TweetView';
 import WhoToFollow from '../ui/WhoToFollow';
 import { useEffect, useRef, useState } from 'react';
+import HomeSkeletal from '../ui/SkeletalUI/home/HomeSkeletal';
+import TweetViewSkeletal from '../ui/SkeletalUI/tweet/TweetViewSkeletal';
 
 const StyledHome = styled.div`
   min-height: 100vh;
@@ -63,6 +65,7 @@ const SpinnerContainer = styled.div`
 `;
 
 function Home() {
+  const [observer, setObserver] = useState(null);
   // a sentinal ref is used to provide the intersection observer with the element to observe
   const sentinalRef = useRef();
 
@@ -70,34 +73,52 @@ function Home() {
   const { timeline, isLoading, error, fetchNextPage, isFetching } =
     useGetTimeline();
 
-  // the intersection observer
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      // if the query if fetching the data, do not do anything
-      if (isFetching) return;
-      // if the Sentinal element is observed, fetch the next page
-      if (entry.isIntersecting) {
-        fetchNextPage();
-      }
-    });
-  });
-
-  // this effect is used to controll the intersection observer to avoid some issues
   useEffect(
     function () {
-      // the intersection observer is initialised after the Sentinal element is mounted, and after each rerender
-      if (sentinalRef.current) {
-        observer.observe(sentinalRef?.current);
-      }
+      // initianising the observer
+      const initailizeObserver = () => {
+        // creating an intersection observer
+        const newObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            // if a function is fetching data, do nothing
+            if (isLoading || isFetching) return;
+            // if there is no fetching happening, AND the Sentinal element is intersecting (visible), fetch the next appropriate page depending on the filter
+            if (entry.isIntersecting) {
+              fetchNextPage();
+            }
+          });
+        });
 
-      // when the Sentinal is observed, the Home page rerenders, abd the observer is disconnected to avoid stacking multiple observers on the same element
-      return () => observer.disconnect();
+        // make sure the sentinal element is mounted first, then observe it
+        if (sentinalRef.current) {
+          newObserver.observe(sentinalRef.current);
+        }
+
+        // if there already is an observer, disconnect it
+        if (observer) {
+          newObserver.disconnect;
+        }
+
+        // set the observer state to the new observer, to keep track of the observer and make sure there only is one, and is used even after a filter change
+        setObserver(newObserver);
+      };
+
+      initailizeObserver();
+
+      // if there is an observer, disconnect it when this component unmounts
+      return () => {
+        if (observer) {
+          observer.disconnect();
+        }
+      };
+      // the dependency array can not include the observer state, or it will cause infinite loop
     },
     [sentinalRef.current]
   );
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <HomeSkeletal />;
   if (error) toast.error(error.message);
+  // return <HomeSkeletal />;
   return (
     <StyledHome>
       <MainContent>
@@ -111,11 +132,7 @@ function Home() {
                 ))
           )}
 
-          {isFetching && (
-            <SpinnerContainer>
-              <Spinner />
-            </SpinnerContainer>
-          )}
+          {isFetching && <TweetViewSkeletal />}
           <Sentinal ref={sentinalRef}></Sentinal>
         </TweetsContainer>
       </MainContent>
@@ -172,33 +189,4 @@ steps to replicating the on scroll functionality
   - once there is some data, the Home component renders it, and when the user scrolls down to the end of the list and the sentinal element is observed, the next page is fetched, and while fetching is spinner is shown to the user, after the fetching is completed, if there is a new page, the tweets inside it are rendered, if there is nothing, or a null value, an empty  string is retured to avoid errors.
 
 
-*/
-
-/*
-1. Modify the Supabase Function:
-
-  -For the first function call, retrieve the most recent 3 tweets from the accounts that a user is following.
-  -For subsequent calls, provide the function with the ‘created_at’ timestamp of the last tweet received. The function should then return the next 3 older tweets.
-  -The comparison and cutting is done by this part of the code:
-  WHERE (tweets->>'created_at')::timestamp AT TIME ZONE 'UTC' < last_created_tweet::timestamp AT TIME ZONE 'UTC'
-
-  -The number of results is limited by this part of the code:
-  LIMIT tweets_limit
-
-  -To replicate the functionality, add a WHERE clause that compares a consistent value, like ‘created_at’ timestamp, and add a limit to it. The function should get that value from the last tweet to return the next tweets.
-2. Modify the Custom Hook to Use ‘useInfiniteQuery’:
-
-  -The custom hook fetches the data using ‘useInfiniteQuery’ to enable infinite scrolling. It returns ‘fetchNextPage’, which triggers the fetching of the next page, and ‘isFetching’, a boolean that allows rendering of a spinner to indicate loading.
-  -After the queryFn, add ‘getNextPageParam’, which determines the parameter to fetch the next page. It can pass a ‘pageParam’ to the queryFn, which will include the parameters to use to fetch the next page.
-  -If the last page is null, meaning there are no results, return undefined to indicate to ‘useInfiniteQuery’ that there are no more pages to fetch.
-3. Modify the API Function to Use the PageParams to Fetch the Next Page or Batch of Data:
-
-- The API function gets ‘pageParam’ from ‘useInfiniteQuery’, which contains the data returned in the last page. Use it to get the ‘created_at’ value from the last tweet and pass it to the Supabase function.
-  -If the function is called for the first time, indicate this to the Supabase function by sending an empty string in place of ‘last_created_tweet’.
-  -If there are no more tweets to fetch, the Supabase function returns null, and in turn, the API function returns null, indicating to ‘useInfiniteQuery’ that there are no more pages to fetch.
-4. Modify the Component that Displays the Data to Call the Next Page of Data and Display It:
-
-  -The Home component, which renders the results of the fetching, uses the Intersection Observer API to observe a hidden element that always comes at the end of the displayed tweets. Once that element is observed in the viewport, ‘fetchNextPage’ is triggered.
-  -To ensure this works well, the observer is created inside the home page, so that it would have access to the ‘fetchNextPage’ function, and is provided the hidden element.
-  -Additionally, use the useEffect hook to set up the observer by only initializing it after the element is Sentinal element is mounbted, and clean up the observer by returning a function from the useEffect that disconnects the observer. This ensures that the observer is properly initialized when the component mounts, and cleaned up when it unmounts to prevent memory leaks and errors.
 */
