@@ -8,6 +8,8 @@ const StyledTweetViewSkeletal = styled.div`
   padding: 2rem;
   border-radius: 0.8rem;
   box-shadow: var(--shadow-100);
+
+  max-width: 100%;
 `;
 
 const TextContent = styled.div`
@@ -43,18 +45,19 @@ const Stat = styled(ShimmerEffect)`
   height: 1.4rem;
   border-radius: 0.4rem;
   background-color: var(--color-grey-600);
+  flex-grow: 1;
 
   &:nth-child(1) {
-    width: 8.8rem;
+    max-width: 8.8rem;
   }
   &:nth-child(2) {
-    width: 8.8rem;
+    max-width: 8.8rem;
   }
   &:nth-child(3) {
-    width: 7.2rem;
+    max-width: 7.2rem;
   }
   &:nth-child(4) {
-    width: 5.5rem;
+    max-width: 5.5rem;
   }
 `;
 
