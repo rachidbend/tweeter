@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import useGetUserToFollow from '../hooks/user/useGetUserToFollow';
-import Spinner from './Spinner';
 import toast from 'react-hot-toast';
 import AvatarPlaceHolder from './AvatarPlaceHolder';
 import { formatNumber } from '../helpers/functions';
@@ -15,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { IconUserUnfollowOutline } from '../styles/Icons';
 import { useUnfollow } from '../hooks/follow/useUnfollow';
 import { useRemoveFollow } from '../hooks/follow/useRemoveFollow';
+import UserViewSkeletal from './SkeletalUI/home/UserViewSkeletal';
 
 const StyledUserToFollowDetails = styled.div`
   background-color: var(--color-white);
@@ -179,7 +179,7 @@ function UserView({ userId, variant }) {
     removeFollow({ targetId: userId, followerId: currentUser.id });
   }
 
-  if (isLoading || isLoadingCurrentUser) return <Spinner />;
+  if (isLoading || isLoadingCurrentUser) return <UserViewSkeletal />;
   if (error) toast.error(error.message);
 
   // destructuring the data needed from the user to follow data

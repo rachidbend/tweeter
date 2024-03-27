@@ -4,6 +4,7 @@ import { useGetUserData } from '../../hooks/user/useGetUserData';
 import { Link } from 'react-router-dom';
 import { useGetTweet } from '../../hooks/tweet/useGetTweet';
 import Spinner from '../../ui/Spinner';
+import TweetReplySkeletal from '../../ui/SkeletalUI/tweet/TweetReplySkeletal';
 
 const StyledTweetReply = styled.div`
   margin-left: 4rem;
@@ -53,8 +54,9 @@ function TweetReply({ originalTweeterId, originalTweetId }) {
     publisherId: originalTweeterId,
   });
 
-  if (isLoading) return <Spinner />;
-  if (!tweet) return;
+  if (isLoading) return <TweetReplySkeletal />;
+  if (!tweet) return <p>The original tweet does not exist</p>;
+
   return (
     <StyledTweetReply>
       <ReplyingTo>

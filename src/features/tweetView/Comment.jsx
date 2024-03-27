@@ -5,6 +5,7 @@ import Spinner from '../../ui/Spinner';
 import { useGetTweet } from '../../hooks/tweet/useGetTweet';
 import {
   IconDotsHorizontal,
+  IconHeart,
   IconHeartOutline,
   IconTrashOutline,
 } from '../../styles/Icons';
@@ -112,11 +113,19 @@ const LikeButton = styled.button`
   align-items: center;
   gap: 0.4rem;
 `;
-const LikeIcon = styled(IconHeartOutline)`
+
+const LikeIconFull = styled(IconHeart)`
   height: 1.6rem;
   width: 1.6rem;
   color: inherit;
 `;
+
+const LikeIconOutline = styled(IconHeartOutline)`
+  height: 1.6rem;
+  width: 1.6rem;
+  color: inherit;
+`;
+
 const LikeStat = styled.p`
   font-family: var(--font-noto);
   font-size: 1.2rem;
@@ -322,7 +331,8 @@ function Comment({ reply }) {
             $isLiked={isLiked}
             onClick={isLiked ? handleUnlike : handleLike}
           >
-            <LikeIcon />
+            {isLiked ? <LikeIconFull /> : <LikeIconOutline />}
+
             {isLiked ? 'Liked' : 'Like'}
           </LikeButton>
           ·<LikeStat>{formatNumber(tweet.likes.length)} Likes</LikeStat>

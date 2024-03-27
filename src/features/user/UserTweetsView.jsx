@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useEffect, useRef, useState } from 'react';
 import Spinner from '../../ui/Spinner';
 import TweetView from '../tweetView/TweetView';
+import TweetViewSkeletal from '../../ui/SkeletalUI/tweet/TweetViewSkeletal';
 
 const TweetsContainer = styled.div`
   display: flex;
@@ -71,7 +72,7 @@ function UserTweetsView({ id, filter, isBookmark }) {
     };
   }, [filter, isFetching]); // Depend on filter and isFetching to reinitialize the observer when needed, but not the observer, because it will cause re-rendering loop
 
-  if (isLoadingTweets) return <Spinner />;
+  if (isLoadingTweets) return <TweetViewSkeletal />;
   if (tweetsError) toast.error(tweetsError.message);
 
   return (
@@ -83,11 +84,7 @@ function UserTweetsView({ id, filter, isBookmark }) {
           page.map(tweet => <TweetView key={tweet.id} tweet={tweet} />)
         )
       )}
-      {isFetching && (
-        <SpinnerContainer>
-          <Spinner />
-        </SpinnerContainer>
-      )}
+      {isFetching && <TweetViewSkeletal />}
       <Sentinal ref={sentinalRef}></Sentinal>
     </TweetsContainer>
   );

@@ -7,6 +7,7 @@ export function useSearchTweets({ executeSearch, filter, searchQuery }) {
     isLoading,
     error,
     fetchNextPage,
+    isFetching,
   } = useInfiniteQuery({
     queryKey: ['search-tweets', filter, searchQuery],
     queryFn: ({ pageParam }) =>
@@ -22,5 +23,5 @@ export function useSearchTweets({ executeSearch, filter, searchQuery }) {
     },
   });
 
-  return { tweetsData, isLoading, error, fetchNextPage };
+  return { tweetsData, isLoading, error, fetchNextPage, isFetching };
 }
