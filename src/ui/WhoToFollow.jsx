@@ -4,6 +4,7 @@ import Spinner from './Spinner';
 import toast from 'react-hot-toast';
 import { useUser } from '../hooks/authHooks/useUser';
 import UserView from './UserView';
+import WhoToFollowSkeletal from './SkeletalUI/home/WhoToFollowSkeletal';
 
 const StyledWhoToFollow = styled.div`
   background-color: var(--color-white);
@@ -33,7 +34,7 @@ function WhoToFollow() {
   const { recommendations, isLoading, error } = useGetAccountRecommendations();
   let filteredRecommendations;
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <WhoToFollowSkeletal />;
 
   if (error) toast.error(error.message);
 

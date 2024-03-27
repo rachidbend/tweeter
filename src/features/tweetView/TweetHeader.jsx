@@ -16,10 +16,9 @@ import { useNotifyUserOfRetweetRemove } from '../../hooks/tweet/retweet/useNotif
 import useNotifyTweetOfReplyRemoval from '../../hooks/tweet/reply/useNotifyTweetOfReplyRemoval';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
-import Spinner from '../../ui/Spinner';
 import OutsideClick from '../../helpers/OutsideClick';
 import useDeleteImage from '../../hooks/useDeleteImage';
-import TweetViewHeaderSkelital from '../../ui/SkeletalUI/tweet/TweetViewHeaderSkelital';
+import TweetViewHeaderSkeletal from '../../ui/SkeletalUI/tweet/TweetViewHeaderSkeletal';
 
 const StyledTweetHeader = styled.div`
   display: grid;
@@ -224,7 +223,7 @@ function TweetHeader({ tweet }) {
     }
   }
 
-  if (isLoading) return <TweetViewHeaderSkelital />;
+  if (isLoading) return <TweetViewHeaderSkeletal />;
 
   return (
     <StyledTweetHeader ref={headerRef}>

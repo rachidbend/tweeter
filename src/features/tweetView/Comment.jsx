@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import OutsideClick from '../../helpers/OutsideClick';
 import useDeleteImage from '../../hooks/useDeleteImage';
+import CommetSkeletal from '../../ui/SkeletalUI/tweet/CommetSkeletal';
 
 const StyledComment = styled(motion.div)`
   display: grid;
@@ -243,7 +244,7 @@ function Comment({ reply }) {
     );
   }
 
-  if (isLoading || isLoadingTweet || isLoadingUser) return <Spinner />;
+  if (isLoading || isLoadingTweet || isLoadingUser) return <CommetSkeletal />;
 
   const isLiked =
     userProfile?.likes?.filter(like => like?.id === tweet?.id).length > 0;
