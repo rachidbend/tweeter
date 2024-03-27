@@ -6,7 +6,7 @@ const UserContainer = styled.div`
   margin-bottom: 2.4rem;
   padding-bottom: 2.2rem;
   background-color: var(--color-white);
-
+  max-width: 100%;
   padding: ${props => (props.$variant ? '2rem' : '0rem 0rem 2.2rem 0rem')};
   border-radius: ${props => (props.$variant ? '0.8rem' : '0rem')};
 

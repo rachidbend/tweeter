@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import PublishTweet from '../features/tweeting/PublishTweet';
 import HashtagTrends from '../ui/HashtagTrends';
 import { useGetTimeline } from '../hooks/useGetTimeline';
-import Spinner from '../ui/Spinner';
 import toast from 'react-hot-toast';
 import TweetView from '../features/tweetView/TweetView';
 import WhoToFollow from '../ui/WhoToFollow';
@@ -30,6 +29,7 @@ const StyledHome = styled.div`
     width: min(100% - var(--page-padding-small) * 2);
     margin-inline: auto;
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
     margin-top: 1.469rem;
   }
 `;
@@ -56,12 +56,6 @@ const TweetsContainer = styled.div`
 const Sentinal = styled.div`
   background-color: transparent;
   height: 0px;
-`;
-
-const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 function Home() {
