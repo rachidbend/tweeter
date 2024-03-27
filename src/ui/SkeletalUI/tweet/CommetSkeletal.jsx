@@ -51,6 +51,7 @@ const CreationDate = styled(ShimmerEffect)`
   border-radius: 0.4rem;
   background-color: var(--color-grey-600);
 `;
+
 const ContentContainer = styled.div``;
 const ContentText = styled(ShimmerEffect)`
   height: 1.6rem;

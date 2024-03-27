@@ -10,6 +10,7 @@ import { useUser } from '../hooks/authHooks/useUser';
 import ProfileOverlay from '../ui/ProfileOverlay';
 import ModalWrapper from '../ui/ModalWrapper';
 import UserTweetsView from '../features/user/UserTweetsView';
+import UserProfileSkeletal from '../ui/SkeletalUI/userProfile/UserProfileSkeletal';
 
 const StyledUserProfile = styled.div`
   min-height: 100vh;
@@ -51,17 +52,11 @@ const ContentContainer = styled.div`
   }
 `;
 
-const TweetsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3.524rem;
-`;
-
 // This is the main UserProfile component
 function Profile() {
   // this is the state that allows the filter component to work properly
   const [filter, setFilter] = useState('tweets');
-  // state to
+  // state to controll if the overlay is visible or hidden
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   // Fetch the current user and their loading state
@@ -84,7 +79,7 @@ function Profile() {
   }
 
   // If any of the data is still loading, display a loading spinner
-  if (isLoadingUser || isLoadingCurrentUser) return <Spinner />;
+  if (isLoadingUser || isLoadingCurrentUser) return <UserProfileSkeletal />;
 
   // If there was an error fetching the data, display an error message
   if (error) toast.error(error.message);
@@ -101,8 +96,7 @@ function Profile() {
       )}
       <PageContainer>
         <UserHeader
-          currentUser={currentUser}
-          userProfile={currentUser}
+          userId={user.id}
           isProfile={true}
           handleEdit={handleModalOpen}
         />

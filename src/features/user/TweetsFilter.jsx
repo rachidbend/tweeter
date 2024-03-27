@@ -2,10 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { setPositionSpan } from '../../helpers/functions';
-import { useGetLikes } from '../../hooks/useGetLikes';
-import Spinner from '../../ui/Spinner';
-import toast from 'react-hot-toast';
-import { useGetUserData } from '../../hooks/user/useGetUserData';
 import { motion } from 'framer-motion';
 
 const StyledTweetsFilter = styled(motion.ul)`

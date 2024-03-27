@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import useGetUserTweets from '../../hooks/useGetUserTweets';
 import toast from 'react-hot-toast';
 import { useEffect, useRef, useState } from 'react';
-import Spinner from '../../ui/Spinner';
 import TweetView from '../tweetView/TweetView';
 import TweetViewSkeletal from '../../ui/SkeletalUI/tweet/TweetViewSkeletal';
 
@@ -17,12 +16,6 @@ const TweetsContainer = styled.div`
 const Sentinal = styled.div`
   height: 0;
   background-color: transparent;
-`;
-
-const SpinnerContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 function UserTweetsView({ id, filter, isBookmark }) {

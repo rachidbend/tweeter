@@ -12,9 +12,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GlobalStyles } from './styles/globalStyles';
 import ProtectedRoutes from './ui/ProtectedRoutes';
-
 import { Toaster } from 'react-hot-toast';
-
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import UserProfile from './features/user/UserProfile';
