@@ -175,7 +175,6 @@ function SearchResults({
           <UserViewSkeletal variant="searchPage" />
         )}
       {/* Sentinal component  */}
-      <TweetViewSkeletal />
       <Sentinal ref={sentinalRef}></Sentinal>
     </ResultsContainer>
   );

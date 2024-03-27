@@ -1,18 +1,12 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
-import { useFollow } from '../../hooks/follow/useFollow';
-import { useAddFollow } from '../../hooks/follow/useAddFollow';
-import { useUnfollow } from '../../hooks/follow/useUnfollow';
-import { useRemoveFollow } from '../../hooks/follow/useRemoveFollow';
 import toast from 'react-hot-toast';
-import {
-  IconEdit,
-  IconUserOutline,
-  IconUserUnfollowOutline,
-} from '../../styles/Icons';
-import { IoMdPersonAdd } from 'react-icons/io';
+import { IconEdit, IconUserOutline } from '../../styles/Icons';
 import { formatNumber } from '../../helpers/functions';
-import SmallSpinner from '../../ui/SmallSpinner';
+import { useUser } from '../../hooks/authHooks/useUser';
+import { useGetUserData } from '../../hooks/user/useGetUserData';
+import UserFollowButton from './UserFollowButton';
+import UserHeaderSkeletal from '../../ui/SkeletalUI/userProfile/UserHeaderSkeletal';
 
 const StyledUserHeader = styled.div`
   position: relative;
@@ -106,51 +100,6 @@ const Description = styled.p`
   }
 `;
 
-const FollowButton = styled.button`
-  font-family: var(--font-noto);
-  font-size: 1.2rem;
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  align-self: flex-start;
-  border: 0.2rem solid var(--color-blue-100);
-  border-radius: 0.4rem;
-  cursor: pointer;
-  padding: 0.8rem 2.4rem;
-  color: var(--color-white);
-  background-color: var(--color-blue-100);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.4rem;
-  margin-left: auto;
-  transition: background var(--transition-200), color var(--transition-200);
-
-  &:hover {
-    color: var(--color-blue-100);
-    background-color: var(--color-white);
-  }
-
-  @media screen and (max-width: 450px) {
-    margin: 0 auto;
-  }
-
-  &:disabled {
-    cursor: no-drop;
-  }
-`;
-
-const FollowIcon = styled(IoMdPersonAdd)`
-  height: 1.4rem;
-  width: 1.4rem;
-  color: inherit;
-`;
-
-const UnfollowIcon = styled(IconUserUnfollowOutline)`
-  height: 1.4rem;
-  width: 1.4rem;
-  color: inherit;
-`;
-
 const InfoContainer = styled.div`
   /* width: 100%; */
 `;
@@ -225,48 +174,38 @@ const EditIcon = styled(IconEdit)`
 `;
 
 // This component displays the user's profile header
-function UserHeader({
-  currentUser,
-  userProfile,
-  isProfile = false,
-  handleEdit,
-}) {
-  // Hooks for following and unfollowing users
-  //  hooks that effect the current user
-  const { follow, isPending: isFollowing, error: followError } = useFollow();
-  const { unfollow, isPending: isUnfollowing } = useUnfollow();
-  // hooks that effect the user being displayed
-  const { addFollow, isPending: isAddingFollow } = useAddFollow();
-  const { removeFollow, isPending: isRemovingFollow } = useRemoveFollow();
+function UserHeader({ userId, isProfile = false, handleEdit }) {
+  // user data
+  // Fetch the current user and their loading state
+  const { user, isLoadingUser } = useUser();
 
-  // Function to handle following a user
-  function handleFollow() {
-    // Prevent the current user from following themselves
-    if (currentUser.id === userProfile.id) {
-      toast(`you can't follow yourself!`);
-      return;
-    }
-    // Add the user to the current user's following list
-    follow({ newFollowing: userProfile.id });
-    // Notify the followed user that they have a new follower
-    addFollow({ targetId: userProfile.id, followerId: currentUser.id });
-  }
+  // Fetch the current user's profile and its loading state
+  const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
+    useGetUserData(user.id);
 
-  // Function to handle unfollowing a user
-  function handleUnfollow() {
-    // Remove the user from the current user's following list
-    unfollow({ unfollowId: userProfile.id });
-    // Notify the unfollowed user that they have lost a follower
-    removeFollow({ targetId: userProfile.id, followerId: currentUser.id });
-  }
-  // Check if the current user is following the user
-  const isFollowingUser = currentUser.following.includes(userProfile?.id);
+  // Fetch the profile of the user specified in the URL parameters, along with its loading state and any error that occurred
+  const { userProfile, isLoading, error } = useGetUserData(userId);
+
+  // If any of the data is still loading, display a loading spinner
+  if (isLoading || isLoadingUser || isLoadingCurrentUser)
+    return <UserHeaderSkeletal />;
+
+  // If there was an error fetching the data, display an error message
+  if (error) toast.error(error.message);
+
+  const {
+    avatar_image,
+    user_name,
+    following_count,
+    followers_count,
+    user_description,
+  } = userProfile;
 
   return (
     <StyledUserHeader>
       {/* Display the user's avatar or a placeholder */}
-      {userProfile.avatar_image ? (
-        <UserAvatar src={userProfile.avatar_image} />
+      {avatar_image ? (
+        <UserAvatar src={avatar_image} />
       ) : (
         <UserAvatarPlaceHolder />
       )}
@@ -274,49 +213,33 @@ function UserHeader({
       <InfoContainer>
         <UserAndStatContainer>
           {/* Display the user's name */}
-          <UserName>{userProfile.user_name}</UserName>
+          <UserName>{user_name}</UserName>
           <StatContainer>
             {/* Display the number of people the user is following */}
             <Stat>
-              {formatNumber(userProfile.following_count)}
+              {formatNumber(following_count)}
               <StatSpan>Following</StatSpan>
             </Stat>
             {/* Display the number of followers the user has */}
             <Stat>
-              {formatNumber(userProfile.followers_count)}
+              {formatNumber(followers_count)}
               <StatSpan>Followers</StatSpan>
             </Stat>
           </StatContainer>
         </UserAndStatContainer>
         {/* Display the user's description or a default message */}
         <Description>
-          {userProfile.user_description
-            ? userProfile.user_description
+          {user_description
+            ? user_description
             : 'This user has not added a description yet!'}
         </Description>
       </InfoContainer>
       {/* Display a button to follow/unfollow the user */}
       {!isProfile && (
-        <FollowButton
-          disabled={
-            isUnfollowing || isFollowing || isRemovingFollow || isAddingFollow
-          }
-          onClick={isFollowingUser ? handleUnfollow : handleFollow}
-        >
-          {/* Display an icon based on whether the user is followed */}
-          {isUnfollowing ||
-          isFollowing ||
-          isRemovingFollow ||
-          isAddingFollow ? (
-            <SmallSpinner />
-          ) : isFollowingUser ? (
-            <UnfollowIcon />
-          ) : (
-            <FollowIcon />
-          )}
-          {/* Display text based on whether the user is followed */}
-          {isFollowingUser ? 'Unfollow' : 'Follow'}
-        </FollowButton>
+        <UserFollowButton
+          currentUserId={currentUser.id}
+          userId={userProfile.id}
+        />
       )}
 
       {isProfile && (

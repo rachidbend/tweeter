@@ -3,13 +3,12 @@ import styled from 'styled-components';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import Spinner from '../../ui/Spinner';
 import toast from 'react-hot-toast';
-import { useUser } from '../../hooks/authHooks/useUser';
 import UserHeader from '../user/UserHeader';
-import TweetView from '../tweetView/TweetView';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import TweetsFilter from './TweetsFilter';
-import useGetUserTweets from '../../hooks/useGetUserTweets';
+
 import UserTweetsView from './UserTweetsView';
+import UserProfileSkeletal from '../../ui/SkeletalUI/userProfile/UserProfileSkeletal';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -59,18 +58,11 @@ function UserProfile() {
   // Get the user ID from the URL parameters
   const { id } = useParams();
 
-  // Fetch the current user and their loading state
-  const { user, isLoadingUser } = useUser();
-
-  // Fetch the current user's profile and its loading state
-  const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
-    useGetUserData(user.id);
-
   // Fetch the profile of the user specified in the URL parameters, along with its loading state and any error that occurred
   const { userProfile, isLoading, error } = useGetUserData(id);
 
   // If any of the data is still loading, display a loading spinner
-  if (isLoading || isLoadingUser || isLoadingCurrentUser) return <Spinner />;
+  if (isLoading) return <UserProfileSkeletal />;
 
   // If there was an error fetching the data, display an error message
   if (error) toast.error(error.message);
@@ -86,7 +78,7 @@ function UserProfile() {
         <BackgroundImagePlaceHolder></BackgroundImagePlaceHolder>
       )}
       <PageContainer>
-        <UserHeader currentUser={currentUser} userProfile={userProfile} />
+        <UserHeader userId={id} />
         <ContentContainer>
           <TweetsFilter handleFilterTweets={setFilter} userId={id} />
           <UserTweetsView filter={filter} id={id} />
