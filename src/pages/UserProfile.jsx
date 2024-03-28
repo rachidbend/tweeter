@@ -1,15 +1,13 @@
 import { useParams } from 'react-router';
 import styled from 'styled-components';
-import { useGetUserData } from '../../hooks/user/useGetUserData';
-import Spinner from '../../ui/Spinner';
-import toast from 'react-hot-toast';
-import UserHeader from '../user/UserHeader';
-import { useState } from 'react';
-import TweetsFilter from './TweetsFilter';
 
-import UserTweetsView from './UserTweetsView';
-import UserProfileSkeletal from '../../ui/SkeletalUI/userProfile/UserProfileSkeletal';
-import UserBackground from './UserBackground';
+import UserHeader from '../features/user/UserHeader';
+import { useState } from 'react';
+import TweetsFilter from '../features/user/TweetsFilter';
+
+import UserTweetsView from '../features/user/UserTweetsView';
+
+import UserBackground from '../features/user/UserBackground';
 
 const StyledUserProfile = styled.div`
   width: 100%;

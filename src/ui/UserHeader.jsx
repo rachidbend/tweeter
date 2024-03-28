@@ -71,16 +71,17 @@ function UserHeader() {
   // ref used to close the drop down if there was a click outside of it
   const userHeaderRef = useRef();
 
+  function handleClose() {
+    setIsOpen(false);
+  }
+
   if (isLoadingCurrentUser || isLoadingUser) return <UserHeaderSkeletal />;
 
   const { avatar_image, user_name } = currentUser;
 
   return (
     <StyledUserHeader ref={userHeaderRef}>
-      <OutsideClick
-        componentRef={userHeaderRef}
-        onClose={() => setIsOpen(false)}
-      />
+      <OutsideClick componentRef={userHeaderRef} onClose={handleClose} />
       <Container onClick={() => setIsOpen(isOpen => !isOpen)}>
         {avatar_image ? (
           <Avatar src={avatar_image} alt="user avatar" />
@@ -91,7 +92,9 @@ function UserHeader() {
         <Username>{user_name}</Username>
         <ArrowDown />
       </Container>
-      <AnimatePresence>{isOpen && <UserDropDown />}</AnimatePresence>
+      <AnimatePresence>
+        {isOpen && <UserDropDown onClose={handleClose} />}
+      </AnimatePresence>
     </StyledUserHeader>
   );
 }
