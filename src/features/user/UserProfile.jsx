@@ -9,23 +9,12 @@ import TweetsFilter from './TweetsFilter';
 
 import UserTweetsView from './UserTweetsView';
 import UserProfileSkeletal from '../../ui/SkeletalUI/userProfile/UserProfileSkeletal';
+import UserBackground from './UserBackground';
 
 const StyledUserProfile = styled.div`
   width: 100%;
   min-height: 100vh;
   min-height: 100svh;
-`;
-
-const BackgroundImage = styled.img`
-  width: 100%;
-  height: 29.751rem;
-  object-fit: cover;
-  object-position: center;
-`;
-const BackgroundImagePlaceHolder = styled.div`
-  width: 100%;
-  height: 29.751rem;
-  background-color: var(--color-grey-400);
 `;
 
 const PageContainer = styled.div`
@@ -58,25 +47,9 @@ function UserProfile() {
   // Get the user ID from the URL parameters
   const { id } = useParams();
 
-  // Fetch the profile of the user specified in the URL parameters, along with its loading state and any error that occurred
-  const { userProfile, isLoading, error } = useGetUserData(id);
-
-  // If any of the data is still loading, display a loading spinner
-  if (isLoading) return <UserProfileSkeletal />;
-
-  // If there was an error fetching the data, display an error message
-  if (error) toast.error(error.message);
-
-  // Extract the necessary data from the userProfile object
-  const { background_image } = userProfile;
-
   return (
     <StyledUserProfile>
-      {background_image ? (
-        <BackgroundImage src={background_image} />
-      ) : (
-        <BackgroundImagePlaceHolder></BackgroundImagePlaceHolder>
-      )}
+      <UserBackground userId={id} />
       <PageContainer>
         <UserHeader userId={id} />
         <ContentContainer>

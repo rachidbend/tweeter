@@ -8,6 +8,7 @@ import { useGetUserData } from '../hooks/user/useGetUserData';
 import Spinner from './Spinner';
 import AvatarPlaceHolder from './AvatarPlaceHolder';
 import OutsideClick from '../helpers/OutsideClick';
+import UserHeaderSkeletal from './../ui/SkeletalUI/header/UserHeaderSkeletal';
 
 const StyledUserHeader = styled.div`
   position: relative;
@@ -70,7 +71,10 @@ function UserHeader() {
   // ref used to close the drop down if there was a click outside of it
   const userHeaderRef = useRef();
 
-  if (isLoadingCurrentUser || isLoadingUser) return <Spinner />;
+  if (isLoadingCurrentUser || isLoadingUser) return <UserHeaderSkeletal />;
+
+  const { avatar_image, user_name } = currentUser;
+
   return (
     <StyledUserHeader ref={userHeaderRef}>
       <OutsideClick
@@ -78,13 +82,13 @@ function UserHeader() {
         onClose={() => setIsOpen(false)}
       />
       <Container onClick={() => setIsOpen(isOpen => !isOpen)}>
-        {currentUser.avatar_image ? (
-          <Avatar src={currentUser.avatar_image} alt="user avatar" />
+        {avatar_image ? (
+          <Avatar src={avatar_image} alt="user avatar" />
         ) : (
           <AvatarPlaceHolder width={'3.2rem'} />
         )}
 
-        <Username>{currentUser.user_name}</Username>
+        <Username>{user_name}</Username>
         <ArrowDown />
       </Container>
       <AnimatePresence>{isOpen && <UserDropDown />}</AnimatePresence>

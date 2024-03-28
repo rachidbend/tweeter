@@ -1,32 +1,19 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { useGetUserData } from '../hooks/user/useGetUserData';
-import Spinner from '../ui/Spinner';
 import toast from 'react-hot-toast';
+import { useUser } from '../hooks/authHooks/useUser';
+import { useGetUserData } from '../hooks/user/useGetUserData';
 import UserHeader from '../features/user/UserHeader';
 import TweetsFilter from '../features/user/TweetsFilter';
-import TweetView from '../features/tweetView/TweetView';
-import { useUser } from '../hooks/authHooks/useUser';
 import ProfileOverlay from '../ui/ProfileOverlay';
 import ModalWrapper from '../ui/ModalWrapper';
 import UserTweetsView from '../features/user/UserTweetsView';
 import UserProfileSkeletal from '../ui/SkeletalUI/userProfile/UserProfileSkeletal';
+import UserBackground from '../features/user/UserBackground';
 
 const StyledUserProfile = styled.div`
   min-height: 100vh;
   min-height: 100svh;
-`;
-
-const BackgroundImage = styled.img`
-  width: 100%;
-  height: 29.751rem;
-  object-fit: cover;
-  object-position: center;
-`;
-const BackgroundImagePlaceHolder = styled.div`
-  width: 100%;
-  height: 29.751rem;
-  background-color: var(--color-grey-400);
 `;
 
 const PageContainer = styled.div`
@@ -69,7 +56,7 @@ function Profile() {
     error,
   } = useGetUserData(user.id);
 
-  // handle open overlay
+  // handle open or close overlay
   function handleModalClose() {
     setIsOverlayOpen(false);
   }
@@ -84,16 +71,9 @@ function Profile() {
   // If there was an error fetching the data, display an error message
   if (error) toast.error(error.message);
 
-  // Extract the necessary data from the userProfile object
-  const { background_image } = currentUser;
-
   return (
     <StyledUserProfile>
-      {background_image ? (
-        <BackgroundImage src={background_image} />
-      ) : (
-        <BackgroundImagePlaceHolder></BackgroundImagePlaceHolder>
-      )}
+      <UserBackground userId={user.id} />
       <PageContainer>
         <UserHeader
           userId={user.id}

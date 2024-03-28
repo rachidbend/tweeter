@@ -5,6 +5,7 @@ import Spinner from './Spinner';
 import { useGetUserData } from '../hooks/user/useGetUserData';
 import { formatDate } from '../helpers/functions';
 import RetweetViewSkeletal from './SkeletalUI/tweet/RetweetViewSkeletal';
+import toast from 'react-hot-toast';
 
 const StyledRetweetView = styled.div``;
 const Username = styled.p`
@@ -62,7 +63,7 @@ function RetweetView({ tweetId, publisherId }) {
   });
   const { userProfile, isLoading: isLoadingUser } = useGetUserData(publisherId);
   if (isLoading || isLoadingUser) return <RetweetViewSkeletal />;
-  if (error) return <p>{error.message}</p>;
+  if (error) toast.error(error.message);
 
   const publishingText = formatDate(tweet.created_at);
 
