@@ -10,6 +10,7 @@ import UserHeaderSkeletal from '../../ui/SkeletalUI/userProfile/UserHeaderSkelet
 import { useState } from 'react';
 import ModalWrapper from '../../ui/ModalWrapper';
 import UserModal from './UserModal';
+import { AnimatePresence } from 'framer-motion';
 
 const StyledUserHeader = styled.div`
   position: relative;
@@ -151,8 +152,8 @@ const EditButton = styled.button`
   border-radius: 0.4rem;
   cursor: pointer;
   padding: 0.8rem 2.4rem;
-  color: var(--color-blue-100);
-  background-color: var(--color-white);
+  color: var(--color-white);
+  background-color: var(--color-blue-100);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -162,8 +163,9 @@ const EditButton = styled.button`
     border var(--transition-200);
 
   &:hover {
-    color: var(--color-grey-400);
-    border: 0.2rem solid var(--color-grey-400);
+    color: var(--color-blue-100);
+    background-color: var(--color-white);
+    border: 0.2rem solid var(--color-blue-100);
   }
 
   @media screen and (max-width: 450px) {
@@ -183,8 +185,8 @@ function UserHeader({ userId, isProfile = false, handleEdit }) {
   // Fetch the current user and their loading state
   const { user, isLoadingUser } = useUser();
 
-  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(true);
-  const [userMode, setUserMode] = useState('following');
+  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
+  const [userMode, setUserMode] = useState('');
 
   // Fetch the current user's profile and its loading state
   const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
@@ -259,13 +261,15 @@ function UserHeader({ userId, isProfile = false, handleEdit }) {
           <EditIcon /> Edit Profile
         </EditButton>
       )}
-      <ModalWrapper isShowing={isFollowingModalOpen}>
-        <UserModal
-          userId={userId}
-          mode={userMode}
-          onClose={() => setIsFollowingModalOpen(false)}
-        />
-      </ModalWrapper>
+      <AnimatePresence>
+        <ModalWrapper isShowing={isFollowingModalOpen}>
+          <UserModal
+            userId={userId}
+            mode={userMode}
+            onClose={() => setIsFollowingModalOpen(false)}
+          />
+        </ModalWrapper>
+      </AnimatePresence>
     </StyledUserHeader>
   );
 }

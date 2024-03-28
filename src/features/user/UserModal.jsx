@@ -1,13 +1,17 @@
+/* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { IconClose } from '../../styles/Icons';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
-import Spinner from '../../ui/Spinner';
 import toast from 'react-hot-toast';
 import useGetFollowing from '../../hooks/user/useGetFollowing';
 import UserView from '../../ui/UserView';
 import useGetFollowers from '../../hooks/user/useGetFollowers';
+import { useRef } from 'react';
+import OutsideClick from '../../helpers/OutsideClick';
+import { motion } from 'framer-motion';
+import UserModalSkeletal from '../../ui/SkeletalUI/userProfile/UserModalSkeletal';
 
-const Overlay = styled.div`
+const Overlay = styled(motion.div)`
   overflow: hidden;
   width: 100%;
   background-color: var(--color-background-overlay);
@@ -77,6 +81,7 @@ function UserModal({ userId, mode, onClose }) {
   // fetch the user data to display the name
   const { userProfile, isLoading, error } = useGetUserData(userId);
 
+  const modalRef = useRef(null);
   // fetch the following or followers of the user
   const {
     data: followingData,
@@ -93,18 +98,29 @@ function UserModal({ userId, mode, onClose }) {
   if (isLoading || isLoadingFollowing || isLoadingFollowers)
     return (
       <Overlay>
-        <Spinner />
+        <UserModalSkeletal />
       </Overlay>
     );
   if (error) toast.error(error.message);
   if (followingError) toast.error(followingError.message);
   if (followersError) toast.error(followersError.message);
-  // if (followingError) console.log(followingError);
 
   const { user_name } = userProfile;
+
   return (
-    <Overlay>
-      <StyledUserModal>
+    <Overlay
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+      }}
+    >
+      <OutsideClick componentRef={modalRef} onClose={onClose} />
+      <StyledUserModal ref={modalRef}>
         <Header>
           <Title>
             {user_name}{' '}
