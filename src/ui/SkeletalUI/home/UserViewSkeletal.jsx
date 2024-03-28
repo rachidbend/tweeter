@@ -92,7 +92,9 @@ function UserViewSkeletal({ variant }) {
         <DescriptionText></DescriptionText>
         <DescriptionText></DescriptionText>
       </DescriptionContainer>
-      <BackgroundImage></BackgroundImage>
+      {variant !== 'searchPage' && variant !== 'userPage' && (
+        <BackgroundImage></BackgroundImage>
+      )}
     </UserContainer>
   );
 }
