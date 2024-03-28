@@ -143,3 +143,23 @@ export async function getUserToFollow({ userId }) {
 
   return profiles[0];
 }
+
+export async function getUserFollowing(userId) {
+  const { data, error } = await supabase.rpc('get_following', {
+    user_id: userId,
+  });
+
+  if (error) throw new Error(error);
+
+  return data;
+}
+
+export async function getUserFollowers(userId) {
+  const { data, error } = await supabase.rpc('get_followers', {
+    user_id: userId,
+  });
+
+  if (error) throw new Error(error);
+
+  return data;
+}

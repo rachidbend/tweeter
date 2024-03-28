@@ -95,7 +95,7 @@ const LogoutIcon = styled(MdExitToApp)`
   height: auto;
 `;
 
-function UserDropDown() {
+function UserDropDown({ onClose }) {
   const { logout, logoutError } = useLogout();
 
   if (logoutError) return <p>{logoutError.message} </p>;
@@ -123,14 +123,14 @@ function UserDropDown() {
       }}
     >
       <List>
-        <Item to="/profile">
+        <Item to="/profile" onClick={onClose}>
           <ProfileIcon /> my profile
         </Item>
 
-        <Item>
+        <Item onClick={onClose}>
           <ChatIcon /> group chat
         </Item>
-        <Item>
+        <Item onClick={onClose}>
           <SettingsIcon /> settings
         </Item>
       </List>

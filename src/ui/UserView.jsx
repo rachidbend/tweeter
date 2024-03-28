@@ -201,7 +201,8 @@ function UserView({ userId, variant }) {
     }
   );
 
-  if (isFollowingUser && variant !== 'searchPage') return null;
+  if (isFollowingUser && variant !== 'searchPage' && variant !== 'userPage')
+    return null;
 
   return (
     <StyledUserToFollowDetails $variant={variant}>
@@ -233,9 +234,9 @@ function UserView({ userId, variant }) {
           ? user_description
           : 'This user did not add a description'}
       </Description>
-      {background_image && variant !== 'searchPage' && (
-        <Background src={background_image} />
-      )}
+      {background_image &&
+        variant !== 'searchPage' &&
+        variant !== 'userPage' && <Background src={background_image} />}
     </StyledUserToFollowDetails>
   );
 }

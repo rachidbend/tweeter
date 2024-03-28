@@ -7,6 +7,9 @@ import { useUser } from '../../hooks/authHooks/useUser';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import UserFollowButton from './UserFollowButton';
 import UserHeaderSkeletal from '../../ui/SkeletalUI/userProfile/UserHeaderSkeletal';
+import { useState } from 'react';
+import ModalWrapper from '../../ui/ModalWrapper';
+import UserModal from './UserModal';
 
 const StyledUserHeader = styled.div`
   position: relative;
@@ -127,6 +130,7 @@ const Stat = styled.p`
   font-weight: 600;
   color: var(--color-grey-100);
   letter-spacing: -0.035em;
+  cursor: pointer;
 `;
 const StatSpan = styled.span`
   margin-left: 0.4rem;
@@ -179,12 +183,20 @@ function UserHeader({ userId, isProfile = false, handleEdit }) {
   // Fetch the current user and their loading state
   const { user, isLoadingUser } = useUser();
 
+  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(true);
+  const [userMode, setUserMode] = useState('following');
+
   // Fetch the current user's profile and its loading state
   const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
     useGetUserData(user.id);
 
   // Fetch the profile of the user specified in the URL parameters, along with its loading state and any error that occurred
   const { userProfile, isLoading, error } = useGetUserData(userId);
+
+  function handleOpen(mode) {
+    setUserMode(() => mode);
+    setIsFollowingModalOpen(true);
+  }
 
   // If any of the data is still loading, display a loading spinner
   if (isLoading || isLoadingUser || isLoadingCurrentUser)
@@ -216,12 +228,12 @@ function UserHeader({ userId, isProfile = false, handleEdit }) {
           <UserName>{user_name}</UserName>
           <StatContainer>
             {/* Display the number of people the user is following */}
-            <Stat>
+            <Stat onClick={() => handleOpen('following')}>
               {formatNumber(following_count)}
               <StatSpan>Following</StatSpan>
             </Stat>
             {/* Display the number of followers the user has */}
-            <Stat>
+            <Stat onClick={() => handleOpen('followers')}>
               {formatNumber(followers_count)}
               <StatSpan>Followers</StatSpan>
             </Stat>
@@ -247,8 +259,24 @@ function UserHeader({ userId, isProfile = false, handleEdit }) {
           <EditIcon /> Edit Profile
         </EditButton>
       )}
+      <ModalWrapper isShowing={isFollowingModalOpen}>
+        <UserModal
+          userId={userId}
+          mode={userMode}
+          onClose={() => setIsFollowingModalOpen(false)}
+        />
+      </ModalWrapper>
     </StyledUserHeader>
   );
 }
 
 export default UserHeader;
+
+// 1- click buttons to trigger the modal
+// 2- each modal uses a different API or hook to get the data it needs
+// - one for following: the accounts that the user is following
+// - one for followers: the accounts following the user
+// - both are ranked based on
+
+// 3- each modals shows only up to 4 accounts
+// 4- the api only returns 4 results
