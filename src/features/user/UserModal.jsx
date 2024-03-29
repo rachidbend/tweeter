@@ -36,6 +36,20 @@ const StyledUserModal = styled.div`
   background-color: var(--color-white);
   border-radius: 0.8rem;
   padding: 1.2rem 2.5rem;
+
+  overflow-y: scroll;
+  max-height: 90svh;
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  & {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 `;
 
 const Header = styled.div`

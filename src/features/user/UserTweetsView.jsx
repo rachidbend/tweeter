@@ -71,11 +71,11 @@ function UserTweetsView({ id, filter, isBookmark }) {
   return (
     <TweetsContainer>
       {userTweets?.pages.map(page =>
-        page === null ? (
-          <></>
-        ) : (
-          page.map(tweet => <TweetView key={tweet.id} tweet={tweet} />)
-        )
+        page === null
+          ? ''
+          : page.map(tweet => (
+              <TweetView key={`tweet-${id}-${tweet.id}`} tweet={tweet} />
+            ))
       )}
       {isFetching && <TweetViewSkeletal />}
       <Sentinal ref={sentinalRef}></Sentinal>
