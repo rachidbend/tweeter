@@ -69,7 +69,7 @@ const SearchButton = styled.button`
   }
 `;
 
-function SearchInput({ isFetching, handleSearchChange, handleSearch }) {
+function SearchInput({ isFetching, handleSearchChange, handleSearch, query }) {
   // Handler to update the search query
   function handleQueryChange(e) {
     handleSearchChange(e.target.value);
@@ -86,6 +86,7 @@ function SearchInput({ isFetching, handleSearchChange, handleSearch }) {
         <SearchIcon />
       )}
       <StyledSearchInput
+        defaultValue={query}
         type="text"
         placeholder="search"
         onChange={handleQueryChange}

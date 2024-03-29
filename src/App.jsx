@@ -42,6 +42,10 @@ const router = createBrowserRouter([
         element: <Explore key={'explore-page'} />,
       },
       {
+        path: 'explore/:query',
+        element: <Explore key={'explore-page'} />,
+      },
+      {
         path: 'bookmarks',
         element: <Bookmarks key={'bookmarks-page'} />,
       },

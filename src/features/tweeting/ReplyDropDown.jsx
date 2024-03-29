@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 import { motion } from 'framer-motion';
+import { useRef } from 'react';
 import { FaUserGroup } from 'react-icons/fa6';
 import { PiGlobeHemisphereWestFill } from 'react-icons/pi';
 import styled from 'styled-components';
+import OutsideClick from '../../helpers/OutsideClick';
 
 const StyledReplyDropDown = styled(motion.div)`
   border: 1px solid var(--color-grey-500);
@@ -70,9 +72,19 @@ const VisibilityPeopleIcon = styled(FaUserGroup)`
   transition: color var(--transition-200);
 `;
 
-function ReplyDropDown({ onChooseReply }) {
+function ReplyDropDown({ onChooseReply, onClose }) {
+  const compRef = useRef(null);
+
+  function handleKeyDown(e, choose) {
+    if (e.keyCode === 13 || e.keyCode === 32) {
+      e.preventDefault();
+      onChooseReply(choose);
+    }
+  }
+
   return (
     <StyledReplyDropDown
+      ref={compRef}
       initial={{
         opacity: 0,
         y: -15,
@@ -90,12 +102,21 @@ function ReplyDropDown({ onChooseReply }) {
         },
       }}
     >
+      <OutsideClick componentRef={compRef} onClose={onClose} />
       <VisibilityHeading>Who can reply?</VisibilityHeading>
       <VisibilityText>choose who can reply to this Tweet.</VisibilityText>
-      <VisibilityChoice onClick={() => onChooseReply('everyone')}>
+      <VisibilityChoice
+        tabIndex="0"
+        onClick={() => onChooseReply('everyone')}
+        onKeyDown={e => handleKeyDown(e, 'everyone')}
+      >
         <VisibilityGlobeIcon /> Everyone
       </VisibilityChoice>
-      <VisibilityChoice onClick={() => onChooseReply('following')}>
+      <VisibilityChoice
+        tabIndex="0"
+        onClick={() => onChooseReply('following')}
+        onKeyDown={e => handleKeyDown(e, 'following')}
+      >
         <VisibilityPeopleIcon /> People you follow
       </VisibilityChoice>
     </StyledReplyDropDown>

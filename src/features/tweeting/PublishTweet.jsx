@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-import { PiGlobeHemisphereWestFill } from 'react-icons/pi';
 import { useAddTweet } from '../../hooks/tweet/useAddTweet';
-import { AnimatePresence } from 'framer-motion';
-import ReplyDropDown from './ReplyDropDown';
 import { useForm } from 'react-hook-form';
-import { IconImageOutline } from '../../styles/Icons';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
-import AvatarPlaceHolder from '../../ui/AvatarPlaceHolder';
 import Spinner from '../../ui/Spinner';
 import SmallSpinner from '../../ui/SmallSpinner';
+import AvatarDisplay from './AvatarDisplay';
+import UploadTweetImage from './UploadTweetImage';
+import TweetReplyVisibility from './TweetReplyVisibility';
+import PublishTweetInput from './PublishTweetInput';
+import useCreateHashtag from '../../hooks/hashtags/useCreateHashtag';
+import toast from 'react-hot-toast';
+import useUpdateOrCreateHashtag from '../../hooks/hashtags/useUpdateOrCreateHashtag';
+import { v4 as uuidv4 } from 'uuid';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -38,31 +41,6 @@ const Heading = styled.h3`
   margin-bottom: 0.8rem;
   border-bottom: 0.1rem solid var(--color-grey-500);
 `;
-const Avatar = styled.img`
-  height: 4rem;
-  width: 4rem;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 0.8rem;
-`;
-const Input = styled.textarea`
-  width: 100%;
-  resize: none;
-  height: 6rem;
-  font-family: var(--font-noto);
-  font-size: 1.6rem;
-  font-weight: 500;
-  line-height: 2.2rem;
-  letter-spacing: -0.035em;
-  color: var(--color-grey-100);
-  background: none;
-  border: none;
-  outline: none;
-  margin-top: 0.9rem;
-  &::placeholder {
-    color: var(--color-grey-400);
-  }
-`;
 
 const ContainerForm = styled.form`
   display: grid;
@@ -86,51 +64,6 @@ const ButtonsContainer = styled.div`
 const ImageAndVisibilityContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const Image = styled.label`
-  display: flex;
-  align-items: center;
-
-  margin-right: 0.967rem;
-`;
-const ImageIcon = styled(IconImageOutline)`
-  height: 2rem;
-  width: 2rem;
-  color: var(--color-grey-400);
-  cursor: pointer;
-
-  transition: color var(--transition-200);
-  &:hover {
-    color: var(--color-blue-100);
-  }
-`;
-const UploadImage = styled.input`
-  height: 1px;
-  width: 1px;
-  visibility: hidden;
-`;
-
-const VisibilityButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-  color: var(--color-grey-400);
-  font-size: 1.2rem;
-  font-weight: 500;
-  letter-spacing: -0.035em;
-  position: relative;
-  transition: color var(--transition-200);
-  &:hover {
-    color: var(--color-blue-100);
-  }
-`;
-
-const GlobeIcon = styled(PiGlobeHemisphereWestFill)`
-  height: 2rem;
-  width: 2rem;
-  color: inherit;
-  cursor: pointer;
-  margin-right: 0.55rem;
 `;
 
 const TweetButton = styled.button`
@@ -173,18 +106,20 @@ Add hashtag features
 ********************/
 
 function PublishTweet() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [replyChoice, setReplyChoice] = useState('everyone');
   const [image, setImage] = useState(null);
-
+  const [replyChoice, setReplyChoice] = useState('everyone');
   const { addTweet, isPending: isTweeting } = useAddTweet();
   const { register, handleSubmit, reset } = useForm();
 
   const { user } = useUser();
   const { userProfile, isLoading } = useGetUserData(user.id);
 
+  const { updateOrCreateHashtag, isPending, error, data } =
+    useUpdateOrCreateHashtag();
+
   function onSubmit(data) {
     const newTweet = {
+      id: uuidv4(),
       reply: replyChoice,
       content: data.content,
       image: data.image,
@@ -192,64 +127,45 @@ function PublishTweet() {
     };
     addTweet(newTweet, { onSuccess: () => reset() });
     setImage(null);
-  }
 
-  function handleReplyClick() {
-    setIsOpen(isOpen => !isOpen);
-  }
+    // if there is a
+    const value = data.content;
 
-  function handleChooseReply(choice) {
-    setReplyChoice(choice);
-  }
-
-  function handleImageChange(e) {
-    if (e.target.files && e.target.files[0]) {
-      let img = URL.createObjectURL(e.target.files[0]);
-      setImage(img);
-    }
+    // Regular expression to match hashtags: starts with # followed by one or more word characters (alphanumeric and underscore)
+    const hashtagRegex = /#[\w]+/g;
+    const hashtagsArray = value.match(hashtagRegex) || [];
+    // console.log(hashtagsArray);
+    hashtagsArray?.forEach(tag => {
+      updateOrCreateHashtag({
+        hashtag: tag,
+        tweetId: newTweet.id,
+        publisherId: user.id,
+      });
+    });
   }
 
   if (isLoading) return <Spinner />;
-
+  if (error) toast.error(error.message);
+  console.log(data);
   return (
     <StyledTweet>
       <Heading>Tweet something</Heading>
       <ContainerForm onSubmit={handleSubmit(onSubmit)}>
-        {userProfile?.avatar_image ? (
-          <Avatar src={userProfile?.avatar_image} />
-        ) : (
-          <AvatarPlaceHolder />
-        )}
-
+        <AvatarDisplay avatarImage={userProfile.avatar_image} />
         <div>
-          <Input
-            type="text"
-            placeholder={`What’s happening?`}
-            {...register('content', { required: true })}
-          />
-
+          <PublishTweetInput register={register} />
           {image && <PreviewImage src={image} />}
         </div>
         <ButtonsContainer>
           <ImageAndVisibilityContainer>
-            <Image htmlFor="tweet-image-upload">
-              <ImageIcon />
-            </Image>
-            <UploadImage
-              id="tweet-image-upload"
-              type="file"
-              {...register('image', { onChange: handleImageChange })}
+            <UploadTweetImage register={register} onImageChange={setImage} />
+            <TweetReplyVisibility
+              replyChoice={replyChoice}
+              onChoiceChange={setReplyChoice}
             />
-            <VisibilityButtonContainer onClick={handleReplyClick}>
-              <GlobeIcon /> {replyChoice === 'everyone' && 'Everyone can reply'}
-              {replyChoice === 'following' && 'People you follow can reply'}
-              <AnimatePresence>
-                {isOpen && <ReplyDropDown onChooseReply={handleChooseReply} />}
-              </AnimatePresence>
-            </VisibilityButtonContainer>
           </ImageAndVisibilityContainer>
           <TweetButton disabled={isTweeting}>
-            {isTweeting ? <SmallSpinner /> : 'tweet'}
+            {isTweeting || isPending ? <SmallSpinner /> : 'tweet'}
           </TweetButton>
         </ButtonsContainer>
       </ContainerForm>
@@ -258,3 +174,5 @@ function PublishTweet() {
 }
 
 export default PublishTweet;
+
+// this is awsome, #fun, this should be so cool #100DaysOfCode

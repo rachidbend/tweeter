@@ -21,7 +21,7 @@ export async function addTweet({ newTweet, userId }) {
   const date = new Date();
 
   const tweet = {
-    id: uuidv4(),
+    id: newTweet.id,
     publisher_id: userId,
     created_at: date,
     visibility: newTweet.visibility,

@@ -11,3 +11,26 @@ export async function getTrendyHashtags() {
 
   return hashtags;
 }
+
+export async function createHashtag(hashtagName) {
+  const { data, error } = await supabase
+    .from('hashtags')
+    .insert([{ name: hashtagName, number_of_tweets: 0, tweets: [] }])
+    .select();
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function updateOrCreateHashtag({ hashtag, tweetId, publisherId }) {
+  let { data, error } = await supabase.rpc('update_or_create_hashtag', {
+    hashtag: hashtag,
+    tweet_id: tweetId,
+    publisher_id: publisherId,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
