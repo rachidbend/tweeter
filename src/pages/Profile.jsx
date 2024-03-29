@@ -10,7 +10,6 @@ import ModalWrapper from '../ui/ModalWrapper';
 import UserTweetsView from '../features/user/UserTweetsView';
 import UserProfileSkeletal from '../ui/SkeletalUI/userProfile/UserProfileSkeletal';
 import UserBackground from '../features/user/UserBackground';
-import UserModal from '../features/user/UserModal';
 
 const StyledUserProfile = styled.div`
   min-height: 100vh;

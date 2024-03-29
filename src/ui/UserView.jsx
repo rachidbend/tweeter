@@ -115,6 +115,10 @@ const FollowButton = styled.button`
     background-color: var(--color-white);
     color: var(--color-blue-100);
   }
+
+  &:disabled {
+    cursor: no-drop;
+  }
 `;
 
 const FollowIcon = styled(IoMdPersonAdd)`
@@ -165,6 +169,10 @@ function UserView({ userId, variant }) {
 
   // Function to handle following a user
   function handleFollow() {
+    if (user.id === userId) {
+      toast(`You can't follow yourself!`);
+      return;
+    }
     // Add the user to the current user's following list
     follow({ newFollowing: userId });
     // Notify the followed user that they have a new follower
@@ -217,7 +225,10 @@ function UserView({ userId, variant }) {
             followers
           </FollowersStat>
         </div>
-        <FollowButton onClick={isFollowingUser ? handleUnfollow : handleFollow}>
+        <FollowButton
+          onClick={isFollowingUser ? handleUnfollow : handleFollow}
+          disabled={user.id === userId}
+        >
           {isFollowing ||
           isAddingFollow ||
           isUnfollowing ||
