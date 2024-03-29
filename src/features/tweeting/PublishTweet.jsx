@@ -11,6 +11,10 @@ import AvatarDisplay from './AvatarDisplay';
 import UploadTweetImage from './UploadTweetImage';
 import TweetReplyVisibility from './TweetReplyVisibility';
 import PublishTweetInput from './PublishTweetInput';
+import useCreateHashtag from '../../hooks/hashtags/useCreateHashtag';
+import toast from 'react-hot-toast';
+import useUpdateOrCreateHashtag from '../../hooks/hashtags/useUpdateOrCreateHashtag';
+import { v4 as uuidv4 } from 'uuid';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -110,8 +114,12 @@ function PublishTweet() {
   const { user } = useUser();
   const { userProfile, isLoading } = useGetUserData(user.id);
 
+  const { updateOrCreateHashtag, isPending, error, data } =
+    useUpdateOrCreateHashtag();
+
   function onSubmit(data) {
     const newTweet = {
+      id: uuidv4(),
       reply: replyChoice,
       content: data.content,
       image: data.image,
@@ -119,10 +127,26 @@ function PublishTweet() {
     };
     addTweet(newTweet, { onSuccess: () => reset() });
     setImage(null);
+
+    // if there is a
+    const value = data.content;
+
+    // Regular expression to match hashtags: starts with # followed by one or more word characters (alphanumeric and underscore)
+    const hashtagRegex = /#[\w]+/g;
+    const hashtagsArray = value.match(hashtagRegex) || [];
+    // console.log(hashtagsArray);
+    hashtagsArray?.forEach(tag => {
+      updateOrCreateHashtag({
+        hashtag: tag,
+        tweetId: newTweet.id,
+        publisherId: user.id,
+      });
+    });
   }
 
   if (isLoading) return <Spinner />;
-
+  if (error) toast.error(error.message);
+  console.log(data);
   return (
     <StyledTweet>
       <Heading>Tweet something</Heading>
@@ -141,7 +165,7 @@ function PublishTweet() {
             />
           </ImageAndVisibilityContainer>
           <TweetButton disabled={isTweeting}>
-            {isTweeting ? <SmallSpinner /> : 'tweet'}
+            {isTweeting || isPending ? <SmallSpinner /> : 'tweet'}
           </TweetButton>
         </ButtonsContainer>
       </ContainerForm>
@@ -150,3 +174,5 @@ function PublishTweet() {
 }
 
 export default PublishTweet;
+
+// this is awsome, #fun, this should be so cool #100DaysOfCode

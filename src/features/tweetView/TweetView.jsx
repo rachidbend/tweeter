@@ -10,6 +10,7 @@ import TweetReply from './TweetReply';
 import TweetReplyInput from './TweetReplyInput';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo } from 'react';
+import { Link } from 'react-router-dom';
 
 const StyledTweet = styled(motion.article)`
   background-color: var(--color-white);
@@ -91,6 +92,12 @@ const RepliesContainer = styled.div`
   gap: 2rem;
 `;
 
+const Hashtag = styled(Link)`
+  font-weight: 600;
+  color: var(--color-blue-100);
+  text-decoration: none;
+`;
+
 // tweet structure
 /*
   1) tweet header
@@ -123,6 +130,19 @@ const RepliesContainer = styled.div`
 const TweetView = memo(function TweetView({ tweet }) {
   if (!tweet) return;
 
+  const hashtagRegex = /#[\w]+/g;
+  // const hashtagsArray = value.match(hashtagRegex) || [];
+
+  const tweetContent = tweet.content.split(' ');
+  const tweetElement = tweetContent.map(word => {
+    const hashtagsArray = word.match(hashtagRegex) || [];
+    // console.log(hashtagsArray);
+    if (hashtagsArray.length === 0) return word;
+    // if (hashtagsArray.length !== 0) return <strong>{word }</strong>;
+    if (hashtagsArray.length !== 0) console.log(word.replace('#', '%23'));
+  });
+  // console.log(tweetElement);
+
   return (
     <StyledTweet
       initial={{
@@ -149,7 +169,25 @@ const TweetView = memo(function TweetView({ tweet }) {
         )}
 
         {/* Main content of the tweet */}
-        {tweet?.content && <TextContent>{tweet.content}</TextContent>}
+        {tweet?.content && (
+          <TextContent>
+            {/* chech if there are any hashtags, if there are, render them inside a button */}
+            {tweetContent.map(word => {
+              const hashtagsArray = word.match(hashtagRegex) || [];
+              // console.log(hashtagsArray);
+              if (hashtagsArray.length === 0) return ' ' + word;
+              if (hashtagsArray.length !== 0)
+                return (
+                  <>
+                    <span> </span>
+                    <Hashtag to={`/explore/${word.replace('#', '%23')}`}>
+                      {word}
+                    </Hashtag>
+                  </>
+                );
+            })}
+          </TextContent>
+        )}
         {tweet?.image !== '' && <ImageContent src={tweet?.image} />}
       </Content>
 

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import SearchFilter from '../features/search/SearchFilter';
 import SearchInput from '../features/search/SearchInput';
 import SearchResults from '../features/search/SearchResults';
+import { useParams } from 'react-router-dom';
 
 // Styled components for layout and styling
 const StyledExplore = styled.div`
@@ -38,8 +39,11 @@ const Container = styled.div``;
 
 // Main explore page component that orchestrates the search functionality
 function Explore() {
+  const { query } = useParams();
+
+  const queried = query.includes('#') ? query.replace('%23', '#') : query;
   // State to keep track of the search query and filter
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(queried || '');
   const [searchFilter, setSearchFilter] = useState('top');
 
   // State to manage when and if search functions are fetching
@@ -77,6 +81,7 @@ function Explore() {
       <SearchFilter onFilterChange={handleFilterChange} />
       <Container>
         <SearchInput
+          query={queried}
           isFetching={isFetching}
           handleSearch={handleSearch}
           handleSearchChange={handleSearchChange}

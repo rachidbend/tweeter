@@ -64,7 +64,7 @@ function HashtagTrends() {
       <Container>
         {trends.map(trend => (
           <TrendContainer key={`trend-${trend.id}`}>
-            <Title>#{trend.name}</Title>
+            <Title>{trend.name}</Title>
             <Stat>{formatNumber(trend.number_of_tweets)} Tweets</Stat>
           </TrendContainer>
         ))}
