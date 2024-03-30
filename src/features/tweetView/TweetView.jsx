@@ -10,7 +10,7 @@ import TweetReply from './TweetReply';
 import TweetReplyInput from './TweetReplyInput';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo } from 'react';
-import { Link } from 'react-router-dom';
+import TweetContent from './TweetContent';
 
 const StyledTweet = styled(motion.article)`
   background-color: var(--color-white);
@@ -21,23 +21,13 @@ const StyledTweet = styled(motion.article)`
 
 // Main content
 const Content = styled.div``;
-const TextContent = styled.p`
-  font-family: var(--font-noto);
-  font-size: 1.6rem;
-  font-weight: 400;
-  line-height: 2.2rem;
-  letter-spacing: -0.035em;
-  margin-bottom: 2rem;
-  color: var(--color-grey-200);
-  margin-top: 1.5rem;
-`;
+
 const ImageContent = styled.img`
   width: 100%;
   height: auto;
   border-radius: 0.8rem;
   margin-bottom: 1.2rem;
 `;
-// the stats of the tweet (number of comment, retweets, and saves)
 
 // commonly used components
 export const Button = styled.button`
@@ -92,12 +82,6 @@ const RepliesContainer = styled.div`
   gap: 2rem;
 `;
 
-const Hashtag = styled(Link)`
-  font-weight: 600;
-  color: var(--color-blue-100);
-  text-decoration: none;
-`;
-
 // tweet structure
 /*
   1) tweet header
@@ -108,7 +92,8 @@ const Hashtag = styled(Link)`
 
   2) tweet content
     - if is reply, show original tweet above
-    - tweet content
+    - tweet content, with hashtag highlighting 
+    - and turning them into a clickable link to search for them
     - if retweet, show origial tweet contetn bellow 
 
   3) tweet stats
@@ -129,19 +114,6 @@ const Hashtag = styled(Link)`
 
 const TweetView = memo(function TweetView({ tweet }) {
   if (!tweet) return;
-
-  const hashtagRegex = /#[\w]+/g;
-  // const hashtagsArray = value.match(hashtagRegex) || [];
-
-  const tweetContent = tweet.content.split(' ');
-  const tweetElement = tweetContent.map(word => {
-    const hashtagsArray = word.match(hashtagRegex) || [];
-    // console.log(hashtagsArray);
-    if (hashtagsArray.length === 0) return word;
-    // if (hashtagsArray.length !== 0) return <strong>{word }</strong>;
-    if (hashtagsArray.length !== 0) console.log(word.replace('#', '%23'));
-  });
-  // console.log(tweetElement);
 
   return (
     <StyledTweet
@@ -169,25 +141,7 @@ const TweetView = memo(function TweetView({ tweet }) {
         )}
 
         {/* Main content of the tweet */}
-        {tweet?.content && (
-          <TextContent>
-            {/* chech if there are any hashtags, if there are, render them inside a button */}
-            {tweetContent.map(word => {
-              const hashtagsArray = word.match(hashtagRegex) || [];
-              // console.log(hashtagsArray);
-              if (hashtagsArray.length === 0) return ' ' + word;
-              if (hashtagsArray.length !== 0)
-                return (
-                  <>
-                    <span> </span>
-                    <Hashtag to={`/explore/${word.replace('#', '%23')}`}>
-                      {word}
-                    </Hashtag>
-                  </>
-                );
-            })}
-          </TextContent>
-        )}
+        {tweet?.content && <TweetContent tweet={tweet} />}
         {tweet?.image !== '' && <ImageContent src={tweet?.image} />}
       </Content>
 

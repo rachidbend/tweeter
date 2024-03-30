@@ -41,7 +41,7 @@ const Container = styled.div``;
 function Explore() {
   const { query } = useParams();
 
-  const queried = query.includes('#') ? query.replace('%23', '#') : query;
+  const queried = query?.includes('#') ? query?.replace('%23', '#') : query;
   // State to keep track of the search query and filter
   const [searchQuery, setSearchQuery] = useState(queried || '');
   const [searchFilter, setSearchFilter] = useState('top');
@@ -99,3 +99,5 @@ function Explore() {
 }
 
 export default Explore;
+
+// remove_tweet_from_hashtag

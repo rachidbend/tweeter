@@ -50,24 +50,25 @@ function PublishTweetInput({ register }) {
   //   }
   // }
 
-  function handleChange(e) {
-    const value = e.target.value;
-    setContent(value);
+  // function handleChange(e) {
+  //   const value = e.target.value;
+  //   setContent(value);
 
-    // Regular expression to match hashtags: starts with # followed by one or more word characters (alphanumeric and underscore)
-    const hashtagRegex = /#[\w]+/g;
-    const hashtagsArray = value.match(hashtagRegex) || [];
+  //   // Regular expression to match hashtags: starts with # followed by one or more word characters (alphanumeric and underscore)
+  //   const hashtagRegex = /#[\w]+/g;
+  //   const hashtagsArray = value.match(hashtagRegex) || [];
 
-    console.log('Extracted Hashtags:', hashtagsArray);
-  }
+  //   console.log('Extracted Hashtags:', hashtagsArray);
+  // }
 
+  // onChange: handleChange
   return (
     <StyledPublishTweetInput>
       <Input
         type="text"
-        value={content}
+        // value={content}
         placeholder={`What's happening?`}
-        {...register('content', { required: true, onChange: handleChange })}
+        {...register('content', { required: true })}
       />
     </StyledPublishTweetInput>
   );

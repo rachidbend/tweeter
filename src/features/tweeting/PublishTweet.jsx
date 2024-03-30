@@ -146,7 +146,7 @@ function PublishTweet() {
 
   if (isLoading) return <Spinner />;
   if (error) toast.error(error.message);
-  console.log(data);
+  // console.log(data);
   return (
     <StyledTweet>
       <Heading>Tweet something</Heading>

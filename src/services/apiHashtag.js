@@ -34,3 +34,19 @@ export async function updateOrCreateHashtag({ hashtag, tweetId, publisherId }) {
 
   return data;
 }
+
+export async function removeTweetFromHashtag({
+  hashtag,
+  tweetId,
+  publisherId,
+}) {
+  let { data, error } = await supabase.rpc('remove_tweet_from_hashtag', {
+    hashtag: hashtag,
+    tweet_id: tweetId,
+    publisher_id: publisherId,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}

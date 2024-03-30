@@ -9,6 +9,7 @@ export default function useGetAccountRecommendations() {
   } = useQuery({
     queryKey: ['account_recomendations'],
     queryFn: getAccountRecommendations,
+    staleTime: 1000 * 60 * 60,
   });
 
   return { recommendations, isLoading, error };

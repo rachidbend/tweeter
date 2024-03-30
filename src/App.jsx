@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import UserProfile from './pages/UserProfile';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 
 const queryClient = new QueryClient();
 
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
       // user pages
       {
         path: 'settings',
-        element: <div>settings page</div>,
+        element: <Settings />,
       },
       {
         path: 'profile',
