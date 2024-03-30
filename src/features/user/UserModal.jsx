@@ -149,7 +149,7 @@ function UserModal({ userId, mode, onClose }) {
           </CloseButton>
         </Header>
         {mode === 'following' &&
-          followingData.map(id => (
+          followingData?.map(id => (
             <UserView
               userId={id}
               key={`user_account-following-${id}`}
@@ -157,7 +157,7 @@ function UserModal({ userId, mode, onClose }) {
             />
           ))}
         {mode === 'followers' &&
-          followersData.map(id => (
+          followersData?.map(id => (
             <UserView
               userId={id}
               key={`user_account-followers-${id}`}

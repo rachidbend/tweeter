@@ -112,7 +112,7 @@ function Home() {
 
   if (isLoading) return <HomeSkeletal />;
   if (error) toast.error(error.message);
-  // return <HomeSkeletal />;
+
   return (
     <StyledHome>
       <MainContent>

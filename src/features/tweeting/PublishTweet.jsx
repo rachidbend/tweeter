@@ -110,11 +110,11 @@ function PublishTweet() {
   const [replyChoice, setReplyChoice] = useState('everyone');
   const { addTweet, isPending: isTweeting } = useAddTweet();
   const { register, handleSubmit, reset } = useForm();
-
+  const [content, setContent] = useState('');
   const { user } = useUser();
   const { userProfile, isLoading } = useGetUserData(user.id);
 
-  const { updateOrCreateHashtag, isPending, error, data } =
+  const { updateOrCreateHashtag, isPending, error } =
     useUpdateOrCreateHashtag();
 
   function onSubmit(data) {
@@ -125,7 +125,12 @@ function PublishTweet() {
       image: data.image,
       hashtags: [],
     };
-    addTweet(newTweet, { onSuccess: () => reset() });
+    addTweet(newTweet, {
+      onSuccess: () => {
+        reset();
+        setContent('');
+      },
+    });
     setImage(null);
 
     // if there is a
@@ -134,7 +139,6 @@ function PublishTweet() {
     // Regular expression to match hashtags: starts with # followed by one or more word characters (alphanumeric and underscore)
     const hashtagRegex = /#[\w]+/g;
     const hashtagsArray = value.match(hashtagRegex) || [];
-    // console.log(hashtagsArray);
     hashtagsArray?.forEach(tag => {
       updateOrCreateHashtag({
         hashtag: tag,
@@ -146,14 +150,18 @@ function PublishTweet() {
 
   if (isLoading) return <Spinner />;
   if (error) toast.error(error.message);
-  console.log(data);
+
   return (
     <StyledTweet>
       <Heading>Tweet something</Heading>
       <ContainerForm onSubmit={handleSubmit(onSubmit)}>
         <AvatarDisplay avatarImage={userProfile.avatar_image} />
         <div>
-          <PublishTweetInput register={register} />
+          <PublishTweetInput
+            register={register}
+            content={content}
+            setContent={setContent}
+          />
           {image && <PreviewImage src={image} />}
         </div>
         <ButtonsContainer>

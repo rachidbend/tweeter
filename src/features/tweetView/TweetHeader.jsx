@@ -19,6 +19,7 @@ import { useGetUserData } from '../../hooks/user/useGetUserData';
 import OutsideClick from '../../helpers/OutsideClick';
 import useDeleteImage from '../../hooks/useDeleteImage';
 import TweetViewHeaderSkeletal from '../../ui/SkeletalUI/tweet/TweetViewHeaderSkeletal';
+import useRemoveTweetFromHashtag from '../../hooks/hashtags/useRemoveTweetFromHashtag';
 
 const StyledTweetHeader = styled.div`
   display: grid;
@@ -164,6 +165,8 @@ function TweetHeader({ tweet }) {
   const { notifyOriginalTweetOfReplyRemoval } = useNotifyTweetOfReplyRemoval();
   const { deleteImage } = useDeleteImage();
 
+  const { removeTweetFromHashtag } = useRemoveTweetFromHashtag();
+
   // Function to handle tweet deletion
   function handleDelete() {
     // NORMAL tweet
@@ -221,6 +224,21 @@ function TweetHeader({ tweet }) {
         }
       );
     }
+
+    // if there are any hashtags, the hashtag row in the hashtags table gets notified that this tweet was deleted
+    const value = tweet.content;
+
+    // Regular expression to match hashtags: starts with # followed by one or more word characters (alphanumeric and underscore)
+    const hashtagRegex = /#[\w]+/g;
+    const hashtagsArray = value.match(hashtagRegex) || [];
+
+    hashtagsArray?.forEach(tag => {
+      removeTweetFromHashtag({
+        hashtag: tag,
+        tweetId: tweet.id,
+        publisherId: tweet.publisher_id,
+      });
+    });
   }
 
   if (isLoading) return <TweetViewHeaderSkeletal />;

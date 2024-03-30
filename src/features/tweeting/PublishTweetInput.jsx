@@ -1,10 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import useCreateHashtag from '../../hooks/hashtags/useCreateHashtag';
-import toast from 'react-hot-toast';
 
-const StyledPublishTweetInput = styled.div``;
+import toast from 'react-hot-toast';
+import useMatchHashtag from '../../hooks/hashtags/useMatchHashtag';
+import Spinner from '../../ui/Spinner';
+
+const StyledPublishTweetInput = styled.div`
+  position: relative;
+`;
 const Input = styled.textarea`
   width: 100%;
   resize: none;
@@ -25,50 +29,107 @@ const Input = styled.textarea`
   }
 `;
 
-function PublishTweetInput({ register }) {
-  const [content, setContent] = useState('');
+const Container = styled.div`
+  position: absolute;
+  /* height: 5rem; */
+  display: flex;
 
-  // function handleChange(e) {
-  //   const value = e.target.value;
+  flex-direction: column;
+  gap: 0.4rem;
+  top: 7rem;
+  min-width: 100%;
+  max-width: 100vw;
+  background-color: var(--color-white);
+  border: 0.1rem solid var(--color-grey-500);
+  border-radius: 1.2rem;
+  padding: 1.2rem 1.2rem;
 
-  //   const includesHash = value.includes('#');
+  z-index: 999;
+`;
 
-  //   setContent(value);
+const Suggestion = styled.p`
+  font-family: var(--font-poppings);
+  font-size: 1.4rem;
+  color: var(--color-grey-100);
+  font-weight: 500;
+  cursor: pointer;
+`;
 
-  //   if (includesHash) {
-  //     const wordsArray = value.split(' ');
-  //     const indexArray = [];
-  //     const hashtagsArray = [];
-  //     console.log(wordsArray);
-  //     wordsArray.forEach((word, index) => {
-  //       if (word.includes('#')) {
-  //         indexArray.push(index);
-  //         hashtagsArray.push(word);
-  //       }
-  //     });
-  //     console.log(hashtagsArray);
-  //   }
-  // }
+function PublishTweetInput({ register, content, setContent }) {
+  const [hashtags, setHashtags] = useState([]);
 
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+
+  const { matchingHashtags, isLoading, error } = useMatchHashtag(
+    hashtags[hashtags.length - 1]?.split('#')[1] || ''
+  );
   function handleChange(e) {
     const value = e.target.value;
     setContent(value);
-
-    // Regular expression to match hashtags: starts with # followed by one or more word characters (alphanumeric and underscore)
-    const hashtagRegex = /#[\w]+/g;
-    const hashtagsArray = value.match(hashtagRegex) || [];
-
-    console.log('Extracted Hashtags:', hashtagsArray);
   }
+
+  function handleSeggestionClick(value) {
+    const lastHashtag = hashtags[hashtags.length - 1];
+    const newContent = content.replace(lastHashtag, value);
+    setContent(newContent);
+    inputRef.current.focus();
+  }
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const hashtagRegex = /#[\w]+/g;
+    const hashtagsArray = content.match(hashtagRegex) || [];
+    setHashtags(hashtagsArray);
+  }, [content]);
+
+  // used to show hashtag suggestions for the last word that is a hashtag
+  useEffect(() => {
+    const allContentWords = content.split(' ');
+    const isContained = allContentWords[allContentWords.length - 1]?.includes(
+      hashtags[hashtags.length - 1]
+    );
+
+    if (isContained) {
+      setIsSuggestionsOpen(true);
+    } else {
+      setIsSuggestionsOpen(false);
+    }
+  }, [content, hashtags]);
+
+  // used to get the ref of the input while using react hook form
+  const { ref, ...rest } = register('content', {
+    required: true,
+    onChange: handleChange,
+  });
+
+  if (error) toast.error(error.message);
 
   return (
     <StyledPublishTweetInput>
       <Input
+        ref={e => {
+          ref(e);
+          inputRef.current = e;
+        }}
         type="text"
         value={content}
         placeholder={`What's happening?`}
-        {...register('content', { required: true, onChange: handleChange })}
+        {...rest}
       />
+      {hashtags.length > 0 && isSuggestionsOpen && (
+        <Container>
+          {isSuggestionsOpen &&
+            matchingHashtags?.map(hashtag => (
+              <Suggestion
+                onClick={() => handleSeggestionClick(hashtag.name)}
+                key={hashtag.name}
+              >
+                {hashtag.name}
+              </Suggestion>
+            ))}
+        </Container>
+      )}
     </StyledPublishTweetInput>
   );
 }
