@@ -50,3 +50,19 @@ export async function removeTweetFromHashtag({
 
   return data;
 }
+
+export async function getMatchingHashtags(query) {
+  // console.log(query);
+  // const { data, error } = supabase
+  //   .from('hashtags')
+  //   .select('name')
+  //   .ilike('name', query);
+
+  let { data, error } = await supabase.rpc('get_matching_hastags', {
+    query: query,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
