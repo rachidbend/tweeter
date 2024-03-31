@@ -26,8 +26,12 @@ const Input = styled.input`
   /* width: 100%; */
 
   @media screen and (max-width: 450px) {
-    min-width: 10rem;
-    /* margin-bottom: 2.6rem; */
+    min-width: 0rem;
+    width: 100%;
+
+    &.email-input {
+      margin-bottom: 2.6rem;
+    }
   }
 `;
 
@@ -67,7 +71,9 @@ const Header = styled.div`
     /* flex-direction: column;
     justify-content: start;
     align-items: start; */
-    /* margin-bottom: 2.8rem; */
+
+    margin-bottom: 2.8rem;
+    margin-top: 1.4rem;
   }
 `;
 const Title = styled.h3`
@@ -77,17 +83,18 @@ const Title = styled.h3`
   letter-spacing: -0.035em;
   text-transform: capitalize;
   color: var(--color-grey-200);
-  /* margin-bottom: 4.6rem; */
+
   @media screen and (max-width: 450px) {
-    font-size: 1.4rem;
-    /* display: none; */
   }
 `;
 
 const InputContainer = styled.div`
   position: relative;
   width: min-content;
-  /* width: auto; */
+
+  @media screen and (max-width: 450px) {
+    width: 100%;
+  }
 `;
 
 function AccountSettings() {
@@ -134,15 +141,12 @@ function AccountSettings() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Header>
           <Title>Account settings</Title>
-          <SaveButton type="submit">
-            {!isChangingPassword && !isChangingEmail && <SaveIcon />}
-            {(isChangingPassword || isChangingEmail) && <SmallSpinner />} save
-          </SaveButton>
         </Header>
         {/* change email */}
         <Wrapper>
           <Label htmlFor="change_email_input">Email:</Label>
           <Input
+            className="email-input"
             id="change_email_input"
             type="email"
             placeholder=""
@@ -166,6 +170,11 @@ function AccountSettings() {
             )}
           </InputContainer>
         </Wrapper>
+        <SaveButton type="submit">
+          {!isChangingPassword && !isChangingEmail && <SaveIcon />}
+          {(isChangingPassword || isChangingEmail) && <SmallSpinner />} update
+          profile
+        </SaveButton>
         {/* delete account */}
       </form>
     </StyledAccountSettings>
