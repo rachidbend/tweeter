@@ -130,7 +130,7 @@ function UserDropDown({ onClose }) {
         <Item onClick={onClose}>
           <ChatIcon /> group chat
         </Item>
-        <Item onClick={onClose}>
+        <Item to="/settings" onClick={onClose}>
           <SettingsIcon /> settings
         </Item>
       </List>
