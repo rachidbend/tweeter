@@ -18,6 +18,8 @@ import Signup from './pages/Signup';
 import UserProfile from './pages/UserProfile';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import AccountSettings from './features/settings/AccountSettings';
+import PreferencesSettings from './features/settings/PreferencesSettings';
 
 const queryClient = new QueryClient();
 
@@ -60,6 +62,16 @@ const router = createBrowserRouter([
       {
         path: 'settings',
         element: <Settings />,
+        children: [
+          {
+            path: 'account',
+            element: <AccountSettings />,
+          },
+          {
+            path: 'preferences',
+            element: <PreferencesSettings />,
+          },
+        ],
       },
       {
         path: 'profile',

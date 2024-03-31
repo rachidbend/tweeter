@@ -206,7 +206,7 @@ function UserHeader({ userId, isProfile = false, handleEdit }) {
 
   // If there was an error fetching the data, display an error message
   if (error) toast.error(error.message);
-
+  if (!userProfile) return;
   const {
     avatar_image,
     user_name,

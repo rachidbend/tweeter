@@ -10,6 +10,7 @@ import { supabase } from './supabase';
 //   return user;
 // }
 
+// this function throws an error when not being in the page for some time then returning to it
 export async function getCurrentUser() {
   const { data: session, error: sessionError } =
     await supabase.auth.getSession();
@@ -49,6 +50,26 @@ export async function signup({ email, password }) {
   let { data, error } = await supabase.auth.signUp({
     email: email,
     password: password,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function changePassword({ newPassword }) {
+  const { data, error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function changeEmail({ newEmail }) {
+  const { data, error } = await supabase.auth.updateUser({
+    email: newEmail,
   });
 
   if (error) throw new Error(error.message);
