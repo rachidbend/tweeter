@@ -1,21 +1,14 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { useUser } from '../hooks/authHooks/useUser';
-import { useGetUserData } from '../hooks/user/useGetUserData';
-import Spinner from '../ui/Spinner';
 import { IconSave } from '../styles/Icons';
 
 const StyledSettings = styled.div`
-  /* min-height: 100vh; */
-  /* min-height: 100svh; */
   margin-top: 2.5rem;
   width: min(var(--content-max-width), 100% - var(--page-padding-large) * 2);
   margin-inline: auto;
 
   display: grid;
   grid-template-columns: auto 1fr;
-
-  /* gap: 2.4rem; */
 
   background-color: var(--color-white);
   box-shadow: var(--shadow-100);
@@ -59,7 +52,9 @@ const SideNavList = styled.ul`
 
   @media screen and (max-width: 450px) {
     flex-direction: row;
-    justify-content: center;
+    gap: 0rem;
+
+    justify-content: space-around;
     align-items: center;
   }
 `;
@@ -80,14 +75,6 @@ const SideNavItems = styled(NavLink)`
   &.active {
     background-color: var(--color-grey-500);
   }
-`;
-
-const Avatar = styled.img`
-  height: 12rem;
-  width: 12rem;
-  border-radius: 0.8rem;
-  object-fit: cover;
-  object-position: center;
 `;
 
 export const SaveButton = styled.button`
@@ -146,20 +133,14 @@ const Title = styled.h2`
 `;
 
 function Settings() {
-  const { user, isLoadingUser } = useUser();
-  const { userProfile, isLoading, error } = useGetUserData(user.id);
-
-  // const { avatar_image } = userProfile;
-
-  if (isLoading) return <Spinner />;
-
   return (
     <StyledSettings>
       <Title>Settings</Title>
       <SideNav>
         <SideNavList>
           <SideNavItems to="/settings/account">Account</SideNavItems>
-          <SideNavItems to="/settings/preferences">preferences</SideNavItems>
+          {/* <SideNavItems to="/settings/profile">Profile</SideNavItems> */}
+          <SideNavItems to="/settings/preferences">Preferences</SideNavItems>
         </SideNavList>
       </SideNav>
       <Container>
