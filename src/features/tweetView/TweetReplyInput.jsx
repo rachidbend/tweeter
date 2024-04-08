@@ -17,6 +17,7 @@ const CommentInput = styled.input`
   border: 0.1rem solid var(--color-grey-600);
   border-radius: 0.8rem;
   padding: 0 1.2rem;
+  padding-right: 4rem;
   background-color: var(--color-grey-700);
 
   font-family: var(--font-noto);
