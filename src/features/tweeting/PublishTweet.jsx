@@ -15,6 +15,7 @@ import useCreateHashtag from '../../hooks/hashtags/useCreateHashtag';
 import toast from 'react-hot-toast';
 import useUpdateOrCreateHashtag from '../../hooks/hashtags/useUpdateOrCreateHashtag';
 import { v4 as uuidv4 } from 'uuid';
+import PublishTweetSkeletal from '../../ui/SkeletalUI/home/PublishTweetSkeletal';
 
 const StyledTweet = styled.div`
   background-color: var(--color-white);
@@ -148,7 +149,7 @@ function PublishTweet() {
     });
   }
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PublishTweetSkeletal />;
   if (error) toast.error(error.message);
 
   return (
