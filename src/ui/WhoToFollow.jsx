@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import useGetAccountRecommendations from '../hooks/useGetAccountRecommendations';
-import Spinner from './Spinner';
 import toast from 'react-hot-toast';
 import { useUser } from '../hooks/authHooks/useUser';
 import UserView from './UserView';

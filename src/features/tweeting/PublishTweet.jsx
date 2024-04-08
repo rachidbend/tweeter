@@ -5,13 +5,11 @@ import { useAddTweet } from '../../hooks/tweet/useAddTweet';
 import { useForm } from 'react-hook-form';
 import { useUser } from '../../hooks/authHooks/useUser';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
-import Spinner from '../../ui/Spinner';
 import SmallSpinner from '../../ui/SmallSpinner';
 import AvatarDisplay from './AvatarDisplay';
 import UploadTweetImage from './UploadTweetImage';
 import TweetReplyVisibility from './TweetReplyVisibility';
 import PublishTweetInput from './PublishTweetInput';
-import useCreateHashtag from '../../hooks/hashtags/useCreateHashtag';
 import toast from 'react-hot-toast';
 import useUpdateOrCreateHashtag from '../../hooks/hashtags/useUpdateOrCreateHashtag';
 import { v4 as uuidv4 } from 'uuid';
@@ -25,7 +23,7 @@ const StyledTweet = styled.div`
   padding: 1.1rem 2rem;
 
   font-family: var(--font-noto);
-  /* margin-bottom: 5rem; */
+
   margin-bottom: 2.4rem;
   @media screen and (max-width: 450px) {
     width: 100%;
@@ -109,6 +107,7 @@ Add hashtag features
 function PublishTweet() {
   const [image, setImage] = useState(null);
   const [replyChoice, setReplyChoice] = useState('everyone');
+
   const { addTweet, isPending: isTweeting } = useAddTweet();
   const { register, handleSubmit, reset } = useForm();
   const [content, setContent] = useState('');
@@ -183,5 +182,3 @@ function PublishTweet() {
 }
 
 export default PublishTweet;
-
-// this is awsome, #fun, this should be so cool #100DaysOfCode

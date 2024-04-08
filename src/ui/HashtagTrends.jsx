@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import useGetTrendyHashtags from '../hooks/hashtags/useGetTrendyHashtags';
-import Spinner from './Spinner';
 import { formatNumber } from '../helpers/functions';
 import TrendsSkeletal from './SkeletalUI/home/TrendsSkeletal';
 import toast from 'react-hot-toast';
