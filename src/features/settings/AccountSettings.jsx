@@ -182,6 +182,14 @@ function AccountSettings() {
   function handleDelete(e) {
     e.preventDefault();
     // how to delete the account
+    // - delete all tweets
+    // - delete all bookmarks
+    // - unfollow all users
+    // - notify all users that account was deleted (remove account from following list of all followers)
+    // - remove all like
+    //
+
+    // when removing a tweet, notify all likes, retweets, saves, and replies
   }
 
   if (isLoadingUser) return <Spinner />;
