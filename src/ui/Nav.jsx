@@ -9,6 +9,7 @@ const StyledNav = styled.ul`
   justify-content: center;
   align-items: center;
   gap: 7.2rem;
+
   position: relative;
   height: 100%;
 
@@ -82,8 +83,14 @@ function Nav() {
 
       // If an active link is found, update the span position
       if (activeRef) {
+        // show the span if one of the links in the nav is active
+        spanRef.current.style.opacity = '1';
+        // set the position of the span to the correct position
         setPositionSpan(spanRef, activeRef, 'horizontal');
       } else {
+        // hide the span if none of the links are active
+        spanRef.current.style.opacity = '0';
+        // reset the position of the span
         setPositionSpan(spanRef, homeRef, 'horizontal');
       }
     },
@@ -93,6 +100,7 @@ function Nav() {
   return (
     <StyledNav>
       <StyledSpan ref={spanRef}></StyledSpan>
+
       <Item>
         <ItemLink ref={homeRef} to={'/home'}>
           home
