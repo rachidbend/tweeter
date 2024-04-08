@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 
 const StyledAppLayout = styled(motion.div)`
   min-height: 100vh;
-  min-height: 100svh;
   background-color: var(--color-grey-600);
 
   /* to make sure content is visible betwen the header and bottom nav */

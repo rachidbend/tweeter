@@ -59,7 +59,7 @@ function Nav() {
   const exploreRef = useRef(null);
   const bookmarksRef = useRef(null);
 
-  // using the location to trigger a rerendre to change the position of the span
+  // Using the location to trigger a rerendre to change the position of the span
   const location = useLocation();
 
   useEffect(

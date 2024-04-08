@@ -20,6 +20,7 @@ const SearchContainer = styled(motion.div)`
 `;
 
 const StyledSearchInput = styled.input`
+  width: 100%;
   font-family: var(--font-noto);
   font-size: 1.6rem;
   font-weight: 500;
