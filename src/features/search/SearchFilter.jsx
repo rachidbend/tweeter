@@ -45,7 +45,7 @@ const SideBorder = styled.span`
   transition: top var(--transition-100);
 `;
 
-function SearchFilter({ onFilterChange }) {
+function SearchFilter({ searchFilter, onFilterChange }) {
   // there are 4 filters,
   // - top tweets (most ingaged with tweets)
   // - latest (latest tweets by order of most recent)
@@ -54,7 +54,6 @@ function SearchFilter({ onFilterChange }) {
 
   // this is what ditermines which filter is active, because only one can be active at a time, the default filter is 'tweets'
   // names of the filters, 'top', 'latest', 'people', and 'media'
-  const [activeFilter, setActiveFilter] = useState('tweets');
 
   const spanRef = useRef();
   const topRef = useRef();
@@ -73,39 +72,22 @@ function SearchFilter({ onFilterChange }) {
         return;
       }
 
-      if (activeFilter === 'top') {
+      if (searchFilter === 'top') {
         setPositionSpan(spanRef, topRef, 'vertical');
-      } else if (activeFilter === 'latest') {
+      } else if (searchFilter === 'latest') {
         setPositionSpan(spanRef, latestRef, 'vertical');
-      } else if (activeFilter === 'people') {
+      } else if (searchFilter === 'people') {
         setPositionSpan(spanRef, peopleRef, 'vertical');
-      } else if (activeFilter === 'media') {
+      } else if (searchFilter === 'media') {
         setPositionSpan(spanRef, mediaRef, 'vertical');
       } else {
         setPositionSpan(spanRef, topRef, 'vertical');
       }
-
-      /*
-      if (activeFilter === 'top') {
-      } else if (activeFilter === 'replies') {
-      } else if (activeFilter === 'people') {
-      } else if (activeFilter === 'media') {
-      }
-    
-    */
     },
-    [activeFilter]
+    [searchFilter]
   );
 
-  useEffect(function () {
-    setActiveFilter('top');
-  }, []);
-
-  // if (isLoading || isLoadingUser) return <Spinner />;
-  // if (error) toast.error(error.message);
-
   function handleFilter(filterName) {
-    setActiveFilter(filterName);
     onFilterChange(filterName);
   }
 

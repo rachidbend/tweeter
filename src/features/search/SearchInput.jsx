@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import SmallSpinner from '../../ui/SmallSpinner';
 import { IconSearchOutline } from '../../styles/Icons';
 import { motion } from 'framer-motion';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRef, useState } from 'react';
 
 const SearchContainer = styled(motion.div)`
   display: flex;
@@ -70,11 +72,13 @@ const SearchButton = styled.button`
   }
 `;
 
-function SearchInput({ isFetching, handleSearchChange, handleSearch, query }) {
-  // Handler to update the search query
-  function handleQueryChange(e) {
-    handleSearchChange(e.target.value);
-  }
+function SearchInput({ isFetching, query }) {
+  const navigate = useNavigate();
+  const inputRef = useRef();
+
+  const handleClick = () => {
+    navigate(`/explore/${inputRef.current.value}`);
+  };
 
   return (
     <SearchContainer
@@ -87,12 +91,12 @@ function SearchInput({ isFetching, handleSearchChange, handleSearch, query }) {
         <SearchIcon />
       )}
       <StyledSearchInput
+        ref={inputRef}
         defaultValue={query}
         type="text"
         placeholder="search"
-        onChange={handleQueryChange}
       />
-      <SearchButton onClick={handleSearch}>Search</SearchButton>
+      <SearchButton onClick={handleClick}>Search</SearchButton>
     </SearchContainer>
   );
 }
