@@ -4,17 +4,22 @@ import UserHeader from './UserHeader';
 import { Link } from 'react-router-dom';
 
 const StyledHeader = styled.div`
+  position: fixed;
+  height: 6.831rem;
+  top: 0;
+  width: 100%;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  top: 0;
-  height: 6.831rem;
-  width: 100%;
+  gap: 2.4rem;
+
+  z-index: 999;
+
   padding: 0rem 8rem 0rem 7.2rem;
   background-color: var(--color-white);
-  z-index: 999;
   box-shadow: var(--shadow-200);
+
   @media screen and (max-width: 450px) {
     padding: 0rem 1.664rem 0rem 1.606rem;
     box-shadow: var(--shadow-200);

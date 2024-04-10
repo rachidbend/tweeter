@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { FaCircleUser } from 'react-icons/fa6';
 import { IoMdSettings } from 'react-icons/io';
@@ -6,6 +7,7 @@ import { MdExitToApp } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import { useLogout } from '../hooks/authHooks/useLogout';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const StyledUserDropDown = styled(motion.div)`
   position: absolute;
@@ -48,8 +50,6 @@ const Item = styled(Link)`
     color: var(--color-grey-100);
   }
 `;
-
-const StyledLink = styled(Link)``;
 
 const Logout = styled.button`
   display: flex;
@@ -98,7 +98,7 @@ const LogoutIcon = styled(MdExitToApp)`
 function UserDropDown({ onClose }) {
   const { logout, logoutError } = useLogout();
 
-  if (logoutError) return <p>{logoutError.message} </p>;
+  if (logoutError) toast.error(logoutError);
 
   return (
     <StyledUserDropDown

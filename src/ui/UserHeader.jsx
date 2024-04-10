@@ -5,7 +5,6 @@ import UserDropDown from './UserDropDown';
 import { AnimatePresence } from 'framer-motion';
 import { useUser } from '../hooks/authHooks/useUser';
 import { useGetUserData } from '../hooks/user/useGetUserData';
-import Spinner from './Spinner';
 import AvatarPlaceHolder from './AvatarPlaceHolder';
 import OutsideClick from '../helpers/OutsideClick';
 import UserHeaderSkeletal from './../ui/SkeletalUI/header/UserHeaderSkeletal';
@@ -33,7 +32,7 @@ const Avatar = styled.img`
   width: 3.2rem;
   border-radius: 0.8rem;
   overflow: hidden;
-
+  flex-shrink: 0;
   object-fit: cover;
   object-position: center;
 
@@ -64,6 +63,7 @@ const ArrowDown = styled(TiArrowSortedDown)`
 
 function UserHeader() {
   const [isOpen, setIsOpen] = useState(false);
+
   const { user, isLoadingUser } = useUser();
   const { userProfile: currentUser, isLoading: isLoadingCurrentUser } =
     useGetUserData(user.id);

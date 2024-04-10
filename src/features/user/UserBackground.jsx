@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
 import { ShimmerEffect } from '../../ui/SkeletalUI/tweet/TweetViewHeaderSkeletal';

@@ -41,9 +41,14 @@ const Container = styled.div``;
 function Explore() {
   const { query } = useParams();
 
-  const queried = query?.includes('#') ? query?.replace('%23', '#') : query;
+  const queried = query
+    ? query?.includes('#')
+      ? query?.replace('%23', '#')
+      : query
+    : '';
+
   // State to keep track of the search query and filter
-  const [searchQuery, setSearchQuery] = useState(queried || '');
+  const [searchQuery, setSearchQuery] = useState(queried);
   const [searchFilter, setSearchFilter] = useState('top');
 
   // State to manage when and if search functions are fetching
@@ -53,14 +58,6 @@ function Explore() {
   const [isFetching, setIsFetching] = useState(false);
 
   // Handler to set the search query based on what the user types
-  function handleSearchChange(query) {
-    setSearchQuery(query);
-  }
-
-  // Handler to initiate fetching
-  function handleSearch() {
-    setExecuteSearch(true);
-  }
 
   // Handler to change the filter
   function handleFilterChange(filter) {
@@ -70,22 +67,22 @@ function Explore() {
   // Effect to initiate fetching when ever the filter changes
   useEffect(
     function () {
+      setSearchQuery(queried);
       // only start fetching when there is a query to search for
-      if (searchQuery !== '') setExecuteSearch(true);
+      if (searchQuery !== '' && searchQuery !== undefined)
+        setExecuteSearch(true);
     },
-    [searchFilter]
+    [searchFilter, query]
   );
 
   return (
     <StyledExplore>
-      <SearchFilter onFilterChange={handleFilterChange} />
+      <SearchFilter
+        searchFilter={searchFilter}
+        onFilterChange={handleFilterChange}
+      />
       <Container>
-        <SearchInput
-          query={queried}
-          isFetching={isFetching}
-          handleSearch={handleSearch}
-          handleSearchChange={handleSearchChange}
-        />
+        <SearchInput query={queried} isFetching={isFetching} />
         <SearchResults
           searchFilter={searchFilter}
           searchQuery={searchQuery}
@@ -99,5 +96,3 @@ function Explore() {
 }
 
 export default Explore;
-
-// remove_tweet_from_hashtag
