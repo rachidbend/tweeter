@@ -90,6 +90,15 @@ const CloseIcon = styled(IconClose)`
   color: inherit;
 `;
 
+const EmptyMessage = styled.p`
+  font-family: var(--font-poppings);
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  /* text-transform: capitalize; */
+  color: var(--color-grey-200);
+`;
+
 function UserModal({ userId, mode, onClose }) {
   // there are only two modes, 'following' and 'followers'
   // fetch the user data to display the name
@@ -148,22 +157,32 @@ function UserModal({ userId, mode, onClose }) {
             <CloseIcon />
           </CloseButton>
         </Header>
-        {mode === 'following' &&
-          followingData?.map(id => (
-            <UserView
-              userId={id}
-              key={`user_account-following-${id}`}
-              variant={'userPage'}
-            />
-          ))}
-        {mode === 'followers' &&
-          followersData?.map(id => (
-            <UserView
-              userId={id}
-              key={`user_account-followers-${id}`}
-              variant={'userPage'}
-            />
-          ))}
+        {mode === 'following' && followingData
+          ? followingData?.map(id => (
+              <UserView
+                userId={id}
+                key={`user_account-following-${id}`}
+                variant={'userPage'}
+              />
+            ))
+          : mode === 'following' && (
+              <EmptyMessage>
+                This user is not following any accounts!
+              </EmptyMessage>
+            )}
+        {mode === 'followers' && followersData
+          ? followersData?.map(id => (
+              <UserView
+                userId={id}
+                key={`user_account-followers-${id}`}
+                variant={'userPage'}
+              />
+            ))
+          : mode === 'followers' && (
+              <EmptyMessage>
+                This user is not being followed bu any accounts!
+              </EmptyMessage>
+            )}
       </StyledUserModal>
     </Overlay>
   );

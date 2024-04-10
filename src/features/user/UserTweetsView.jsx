@@ -77,8 +77,8 @@ function UserTweetsView({ id, filter, isBookmark }) {
               <TweetView key={`tweet-${id}-${tweet.id}`} tweet={tweet} />
             ))
       )}
-      {isFetching && <TweetViewSkeletal />}
       <Sentinal ref={sentinalRef}></Sentinal>
+      {isFetching && <TweetViewSkeletal />}
     </TweetsContainer>
   );
 }

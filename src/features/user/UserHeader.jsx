@@ -275,12 +275,3 @@ function UserHeader({ userId, isProfile = false, handleEdit }) {
 }
 
 export default UserHeader;
-
-// 1- click buttons to trigger the modal
-// 2- each modal uses a different API or hook to get the data it needs
-// - one for following: the accounts that the user is following
-// - one for followers: the accounts following the user
-// - both are ranked based on
-
-// 3- each modals shows only up to 4 accounts
-// 4- the api only returns 4 results
