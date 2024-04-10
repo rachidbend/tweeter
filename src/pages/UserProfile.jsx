@@ -8,6 +8,7 @@ import TweetsFilter from '../features/user/TweetsFilter';
 import UserTweetsView from '../features/user/UserTweetsView';
 
 import UserBackground from '../features/user/UserBackground';
+import FilterAndTweetsContainer from '../ui/FilterAndTweetsContainer';
 
 const StyledUserProfile = styled.div`
   width: 100%;
@@ -41,7 +42,6 @@ const ContentContainer = styled.div`
 
 // This is the main UserProfile component
 function UserProfile() {
-  const [filter, setFilter] = useState('tweets');
   // Get the user ID from the URL parameters
   const { id } = useParams();
 
@@ -50,10 +50,7 @@ function UserProfile() {
       <UserBackground userId={id} />
       <PageContainer>
         <UserHeader userId={id} />
-        <ContentContainer>
-          <TweetsFilter handleFilterTweets={setFilter} userId={id} />
-          <UserTweetsView filter={filter} id={id} />
-        </ContentContainer>
+        <FilterAndTweetsContainer id={id} />
       </PageContainer>
     </StyledUserProfile>
   );

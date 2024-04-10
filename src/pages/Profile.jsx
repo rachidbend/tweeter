@@ -10,6 +10,7 @@ import ModalWrapper from '../ui/ModalWrapper';
 import UserTweetsView from '../features/user/UserTweetsView';
 import UserProfileSkeletal from '../ui/SkeletalUI/userProfile/UserProfileSkeletal';
 import UserBackground from '../features/user/UserBackground';
+import FilterAndTweetsContainer from '../ui/FilterAndTweetsContainer';
 
 const StyledUserProfile = styled.div`
   min-height: 100vh;
@@ -41,8 +42,6 @@ const ContentContainer = styled.div`
 
 // This is the main UserProfile component
 function Profile() {
-  // this is the state that allows the filter component to work properly
-  const [filter, setFilter] = useState('tweets');
   // state to controll if the overlay is visible or hidden
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
@@ -80,10 +79,7 @@ function Profile() {
           isProfile={true}
           handleEdit={handleModalOpen}
         />
-        <ContentContainer>
-          <TweetsFilter handleFilterTweets={setFilter} userId={user.id} />
-          <UserTweetsView filter={filter} id={user.id} />
-        </ContentContainer>
+        <FilterAndTweetsContainer id={user.id} />
       </PageContainer>
 
       {/* using ModalWrapper to allow for exit animation using 'AnimatePresence' */}
