@@ -41,7 +41,6 @@ const StyledProfileOverlay = styled.div`
   @media screen and (max-width: 450px) {
     width: 100%;
     min-height: 100vh;
-    min-height: 100svh;
     border-radius: 0;
   }
 `;

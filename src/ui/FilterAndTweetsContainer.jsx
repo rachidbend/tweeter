@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import TweetsFilter from '../features/user/TweetsFilter';
 import UserTweetsView from '../features/user/UserTweetsView';
