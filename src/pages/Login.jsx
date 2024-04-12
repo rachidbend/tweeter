@@ -1,7 +1,5 @@
 import {
   Container,
-  EyeOffIcon,
-  EyeOnIcon,
   ForgotPassword,
   Google,
   GoogleIcon,
@@ -9,7 +7,6 @@ import {
   Illustration,
   IllustrationContainer,
   Input,
-  InputContainer,
   SubmitButton,
   Logo,
   OrContainer,
@@ -19,12 +16,11 @@ import {
   StyledLogin,
 } from '../features/auth/AuthStyles';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 import { useLogin } from '../hooks/authHooks/useLogin';
+import PasswordInput from '../ui/PasswordInput';
 
 function Login() {
   // State to manage password visibility
-  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
 
   // Form handling using useForm hook from react-hook-form
   const { register, handleSubmit, reset } = useForm({
@@ -43,9 +39,6 @@ function Login() {
   }
 
   // Function to toggle password visibility
-  function handlePasswordVisibility() {
-    setIsVisiblePassword(isVisiblePassword => !isVisiblePassword);
-  }
 
   return (
     <StyledLogin>
@@ -78,19 +71,7 @@ function Login() {
           />
 
           {/* Password input */}
-          <InputContainer>
-            <Input
-              type={`${isVisiblePassword ? 'text' : 'password'}`}
-              placeholder="Password"
-              {...register('password', { required: true, minLength: 6 })}
-            />
-            {/* Toggle password visibility */}
-            {isVisiblePassword ? (
-              <EyeOffIcon onClick={handlePasswordVisibility} />
-            ) : (
-              <EyeOnIcon onClick={handlePasswordVisibility} />
-            )}
-          </InputContainer>
+          <PasswordInput register={register} />
           {/* Forgot password link */}
           <ForgotPassword>Forgot password?</ForgotPassword>
 
