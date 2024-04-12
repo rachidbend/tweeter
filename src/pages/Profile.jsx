@@ -4,10 +4,8 @@ import toast from 'react-hot-toast';
 import { useUser } from '../hooks/authHooks/useUser';
 import { useGetUserData } from '../hooks/user/useGetUserData';
 import UserHeader from '../features/user/UserHeader';
-import TweetsFilter from '../features/user/TweetsFilter';
 import ProfileOverlay from '../ui/ProfileOverlay';
 import ModalWrapper from '../ui/ModalWrapper';
-import UserTweetsView from '../features/user/UserTweetsView';
 import UserProfileSkeletal from '../ui/SkeletalUI/userProfile/UserProfileSkeletal';
 import UserBackground from '../features/user/UserBackground';
 import FilterAndTweetsContainer from '../ui/FilterAndTweetsContainer';
@@ -24,19 +22,6 @@ const PageContainer = styled.div`
   @media screen and (max-width: 450px) {
     max-width: 100%;
     width: min(100% - var(--page-padding-small) * 2);
-  }
-`;
-
-// MainContainer
-
-const ContentContainer = styled.div`
-  display: grid;
-  grid-template-columns: 30.4rem 1fr;
-  gap: 2.4rem;
-  align-items: start;
-
-  @media screen and (max-width: 450px) {
-    grid-template-columns: 1fr;
   }
 `;
 
