@@ -18,6 +18,9 @@ import {
 import { useForm } from 'react-hook-form';
 import { useLogin } from '../hooks/authHooks/useLogin';
 import PasswordInput from '../ui/PasswordInput';
+import OrComponent from '../ui/OrComponent';
+import GoogleButton from '../ui/GoogleButton';
+import EmailInput from '../ui/EmailInput';
 
 function Login() {
   // State to manage password visibility
@@ -61,15 +64,7 @@ function Login() {
         {/* Login form */}
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Email input */}
-          <Input
-            type="email"
-            placeholder="Email"
-            {...register('email', {
-              required: true,
-              pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            })}
-          />
-
+          <EmailInput register={register} />
           {/* Password input */}
           <PasswordInput register={register} />
           {/* Forgot password link */}
@@ -80,15 +75,9 @@ function Login() {
         </form>
 
         {/* Or sepirator container */}
-        <OrContainer>
-          <OrText>or</OrText>
-        </OrContainer>
-
+        <OrComponent />
         {/* Google login */}
-        <Google>
-          <GoogleIcon /> Login with Google
-        </Google>
-
+        <GoogleButton />
         {/* Signup link */}
         <CtaText>
           Don&apos;t have an account yet?

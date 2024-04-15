@@ -1,26 +1,22 @@
 import {
   Container,
-  EyeOffIcon,
-  EyeOnIcon,
-  Google,
-  GoogleIcon,
   Heading,
   Illustration,
   IllustrationContainer,
   Input,
-  InputContainer,
   SubmitButton,
   Logo,
-  OrContainer,
-  OrText,
   CtaText,
   CtaButton,
   StyledLogin,
 } from '../features/auth/AuthStyles';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+
 import { useSignup } from '../hooks/authHooks/useSignup';
 import PasswordInput from '../ui/PasswordInput';
+import OrComponent from '../ui/OrComponent';
+import GoogleButton from '../ui/GoogleButton';
+import EmailInput from '../ui/EmailInput';
 
 function Signup() {
   // State to manage password visibility
@@ -58,7 +54,7 @@ function Signup() {
         {/* Signup form */}
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Email input */}
-          <Input type="email" placeholder="Email" {...register('email')} />
+          <EmailInput register={register} />
 
           {/* Password input */}
           <PasswordInput register={register} />
@@ -71,14 +67,10 @@ function Signup() {
         </form>
 
         {/* Or sepirator container */}
-        <OrContainer>
-          <OrText>or</OrText>
-        </OrContainer>
+        <OrComponent />
 
         {/* Google signup */}
-        <Google>
-          <GoogleIcon /> Signup with Google
-        </Google>
+        <GoogleButton />
 
         {/* Login link */}
         <CtaText>
