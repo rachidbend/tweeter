@@ -1,7 +1,8 @@
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import { supabase } from './supabase';
-
-// add a tweet ///////////////////////////////////////////////
+// /////////////
+// ADD TWEET //
+// ///////////
 export async function addTweet({ newTweet, userId }) {
   let imageUrl = '';
   if (newTweet.image.length > 0) {
@@ -11,7 +12,7 @@ export async function addTweet({ newTweet, userId }) {
 
     imageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/tweet_images/${imageName}`;
 
-    const image = await uploadImage({
+    await uploadImage({
       image: newTweet.image[0],
       bucketName: 'tweet_images',
       imageName: imageName,
@@ -36,12 +37,6 @@ export async function addTweet({ newTweet, userId }) {
     isReply: false,
   };
 
-  // const { data, error } = await supabase
-  //   .from('profiles')
-  //   .update({ tweets: [tweet, ...oldTweets] })
-  //   .eq('id', userId)
-  //   .select();
-
   const { data, error } = await supabase.rpc('add_new_tweet', {
     tweet: tweet,
     user_id: userId,
@@ -62,7 +57,9 @@ export async function deleteTweet({ tweetId, tweeterId }) {
   return data;
 }
 
-// upload an image
+// ////////////////
+// UPLOAD IMAGE //
+// //////////////
 export async function uploadImage({ image, imageName, bucketName }) {
   const { data, error } = await supabase.storage
     .from(bucketName)
@@ -75,18 +72,9 @@ export async function uploadImage({ image, imageName, bucketName }) {
   return data;
 }
 
-// get the tweets of a user the tweets
-export async function getTweets(userId) {
-  let { data: tweets, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId);
-
-  if (error) throw new Error(error.message);
-  return tweets;
-}
-
-// BOOKMARK ///////////////////////////////////////////////
+// ////////////
+// BOOKMARK //
+// //////////
 export async function bookmarkTweet({ oldBookmarks, newBookmark, userId }) {
   // add a check to make sure
   const bookmark = {
@@ -146,7 +134,9 @@ export async function notifyUserOfUnsave({ targetId, tweetId, userId }) {
   return data;
 }
 
-// LIKE ///////////////////////////////////////////////
+// ////////
+// LIKE //
+// //////
 
 export async function likeTweet({ oldLikes, newLike, userId }) {
   // add a check to make sure
@@ -202,7 +192,9 @@ export async function notifyUserOfUnlike({ targetId, tweetId, userId }) {
   return data;
 }
 
-// RETWEET ///////////////////////////////////////////////
+// ///////////
+// RETWEET //
+// /////////
 export async function retweet({ newTweet, userId, tweet }) {
   // the retweet should be able to be a normal retweet, or a quote
 
@@ -300,7 +292,9 @@ export async function notifyUserOfRetweetRemove({ targetId, tweetId, userId }) {
   return data;
 }
 
-// ///////////////////////////////////////////////
+// /////////
+// REPLY //
+// ///////
 // when adding a reply
 // 1) tweet the reply, and link it to the original tweet
 export async function addReply({
@@ -317,7 +311,7 @@ export async function addReply({
     let imageName = `tweet_${Date.now()}_${replyImage.name}.${fileType}`;
     imageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/tweet_images/${imageName}`;
 
-    const image = await uploadImage({
+    await uploadImage({
       image: replyImage,
       bucketName: 'tweet_images',
       imageName: imageName,
@@ -434,8 +428,9 @@ export async function getSavedTweets({ userId }) {
   return data[0];
 }
 
-// ////////////////////////////////////////////////////////////////////////////
-
+// ////////////
+// TIMELINE //
+// //////////
 export async function getUserTimeline({ userId, pageParam }) {
   const lastTweetEl = pageParam !== 0 ? pageParam.slice(-1)[0].created_at : '';
   const { data, error } = await supabase.rpc('get_recent_tweets', {
