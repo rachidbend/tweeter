@@ -10,7 +10,7 @@ export default function useChangePassword() {
   } = useMutation({
     mutationFn: ({ newPassword }) => changePassword({ newPassword }),
     onSuccess: () => {
-      toast.success('Check your email for password confirmation!');
+      toast('Check your email for password confirmation!');
     },
     onError: error => {
       toast.error(error.message);

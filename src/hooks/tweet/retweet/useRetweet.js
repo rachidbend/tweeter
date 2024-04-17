@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { retweet as retweetApi } from '../../services/apiTweet';
-import { useUser } from '../authHooks/useUser';
+import { retweet as retweetApi } from '../../../services/apiTweet';
+import { useUser } from '../../authHooks/useUser';
 import toast from 'react-hot-toast';
 
 export function useRetweet() {
@@ -21,9 +21,7 @@ export function useRetweet() {
     onSettled: () => {
       queryClient.invalidateQueries(['profile']);
     },
-    onSuccess: () => {
-      toast.success('retweeted successfully!');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

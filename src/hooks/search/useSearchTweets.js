@@ -18,7 +18,6 @@ export function useSearchTweets({ executeSearch, filter, searchQuery }) {
     initialPageParam: 1,
     getNextPageParam: (lastPage, lastPageParam, pages) => {
       if (lastPage === null) return undefined;
-      // return lastPageParam;
       return pages + 1;
     },
   });

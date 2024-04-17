@@ -18,9 +18,6 @@ import { FaHeart } from 'react-icons/fa6';
 import { MdOutlineSyncDisabled } from 'react-icons/md';
 
 export const IconCommentOutline = styled(MdOutlineModeComment)``;
-export const IconSync = styled(IoMdSync)``;
-export const IconHeartOutline = styled(FaRegHeart)``;
-export const IconBookMarkOutline = styled(FaRegBookmark)``;
 
 export const IconImageOutline = styled(MdOutlineImage)``;
 export const IconUserOutline = styled(CiUser)``;
@@ -34,7 +31,11 @@ export const IconAddImage = styled(MdOutlineAddPhotoAlternate)``;
 
 export const IconSearchOutline = styled(BiSearchAlt2)``;
 
-// full icons
+// outline icons
+export const IconBookMarkOutline = styled(FaRegBookmark)``;
+export const IconHeartOutline = styled(FaRegHeart)``;
+export const IconSync = styled(IoMdSync)``;
+// thier full counterparts
 export const IconBookMark = styled(FaBookmark)``;
 export const IconHeart = styled(FaHeart)``;
 export const IconSyncDisabled = styled(MdOutlineSyncDisabled)``;

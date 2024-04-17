@@ -18,7 +18,7 @@ export default function useNotifyTweetOfReplyRemoval() {
         replyerId,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries(['profile']);
     },
     onError: error => {
       toast.error(error.message);

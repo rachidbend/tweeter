@@ -14,11 +14,9 @@ export function useNotifyUserOfUnsave() {
     mutationFn: ({ targetId, tweetId }) =>
       notifyUserOfUnsaveApi({ targetId, tweetId, userId: user.id }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile']);
     },
-    onSuccess: () => {
-      toast.success('notifyed the publisher of the tweet UNSAVE to the tweet');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

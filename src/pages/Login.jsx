@@ -1,7 +1,5 @@
 import {
   Container,
-  EyeOffIcon,
-  EyeOnIcon,
   ForgotPassword,
   Google,
   GoogleIcon,
@@ -9,7 +7,6 @@ import {
   Illustration,
   IllustrationContainer,
   Input,
-  InputContainer,
   SubmitButton,
   Logo,
   OrContainer,
@@ -19,12 +16,14 @@ import {
   StyledLogin,
 } from '../features/auth/AuthStyles';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 import { useLogin } from '../hooks/authHooks/useLogin';
+import PasswordInput from '../ui/PasswordInput';
+import OrComponent from '../ui/OrComponent';
+import GoogleButton from '../ui/GoogleButton';
+import EmailInput from '../ui/EmailInput';
 
 function Login() {
   // State to manage password visibility
-  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
 
   // Form handling using useForm hook from react-hook-form
   const { register, handleSubmit, reset } = useForm({
@@ -43,9 +42,6 @@ function Login() {
   }
 
   // Function to toggle password visibility
-  function handlePasswordVisibility() {
-    setIsVisiblePassword(isVisiblePassword => !isVisiblePassword);
-  }
 
   return (
     <StyledLogin>
@@ -68,29 +64,9 @@ function Login() {
         {/* Login form */}
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Email input */}
-          <Input
-            type="email"
-            placeholder="Email"
-            {...register('email', {
-              required: true,
-              pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            })}
-          />
-
+          <EmailInput register={register} />
           {/* Password input */}
-          <InputContainer>
-            <Input
-              type={`${isVisiblePassword ? 'text' : 'password'}`}
-              placeholder="Password"
-              {...register('password', { required: true, minLength: 6 })}
-            />
-            {/* Toggle password visibility */}
-            {isVisiblePassword ? (
-              <EyeOffIcon onClick={handlePasswordVisibility} />
-            ) : (
-              <EyeOnIcon onClick={handlePasswordVisibility} />
-            )}
-          </InputContainer>
+          <PasswordInput register={register} />
           {/* Forgot password link */}
           <ForgotPassword>Forgot password?</ForgotPassword>
 
@@ -99,15 +75,9 @@ function Login() {
         </form>
 
         {/* Or sepirator container */}
-        <OrContainer>
-          <OrText>or</OrText>
-        </OrContainer>
-
+        <OrComponent />
         {/* Google login */}
-        <Google>
-          <GoogleIcon /> Login with Google
-        </Google>
-
+        <GoogleButton />
         {/* Signup link */}
         <CtaText>
           Don&apos;t have an account yet?

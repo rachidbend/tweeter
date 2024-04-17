@@ -14,7 +14,7 @@ export default function useNotifyTweetOfReply() {
     mutationFn: (tweet_id, tweeter_id, reply_id, replyer_id) =>
       notifyOriginalTweetOfReplyApi(tweet_id, tweeter_id, reply_id, replyer_id),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile']);
     },
     onError: error => {
       toast.error(error.message);

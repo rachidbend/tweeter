@@ -15,6 +15,7 @@ export function useUser() {
     queryKey: ['user'],
     // Function to fetch user data
     queryFn: getCurrentUser,
+    staleTime: 1000 * 60 * 60,
   });
 
   // Determine if the user is authenticated based on user's role

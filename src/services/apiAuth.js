@@ -1,29 +1,20 @@
 import { supabase } from './supabase';
 
-// export async function getUser() {
-//   const {
-//     data: { user },
-//   } = await supabase.auth.getUser();
-
-//   if (!user) throw new Error('there is no loged in user!');
-
-//   return user;
-// }
-
-// this function throws an error when not being in the page for some time then returning to it
+// when you have not visited the page in some time and you revisit it, this function throws an error (bug)
 export async function getCurrentUser() {
   const { data: session, error: sessionError } =
     await supabase.auth.getSession();
 
   if (sessionError) throw new Error(sessionError);
   if (!session.session) return null;
+
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
 
   if (error) throw new Error(error);
-
+  if (!user) return null;
   return user;
 }
 

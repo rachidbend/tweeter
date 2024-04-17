@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { Button, ButtonText } from './TweetView';
-import { useRetweet } from '../../hooks/tweet/useRetweet';
+import { useRetweet } from '../../hooks/tweet/retweet/useRetweet';
 import { useAddRetweetId } from '../../hooks/tweet/retweet/useAddRetweetId';
 import useNotifyUserOfRetweet from '../../hooks/tweet/retweet/useNotifyUserOfRetweet';
 import { useRemoveTweet } from '../../hooks/tweet/useRemovetweet';

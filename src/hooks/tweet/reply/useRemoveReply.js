@@ -15,7 +15,7 @@ export function useRemoveReply() {
     mutationFn: ({ replyId }) =>
       removeReplyApi({ replyId: replyId, userID: user.id }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile', user.id]);
     },
     onError: error => {
       toast.error(error.message);

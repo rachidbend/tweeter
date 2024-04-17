@@ -17,11 +17,8 @@ export function useAddTweet() {
         newTweet,
         userId: user.id,
       }),
-    onSuccess: () => {
-      // toast.success('tweeted successfuly!');
-    },
     onSettled: () => {
-      queryClient.invalidateQueries(['my_tweets']);
+      queryClient.invalidateQueries(['profile', user.id]);
     },
     onError: error => {
       toast.error(error.message);

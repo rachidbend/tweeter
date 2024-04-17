@@ -52,6 +52,7 @@ export const GlobalStyles = styled.createGlobalStyle`
 
   body {
     font-size: 1.6rem;
+    min-height: 100vh;
     min-height: 100svh;
   }
 `;
@@ -63,38 +64,10 @@ all media queries
 
   }
 
-    @media screen and (min-width: 1600px) {
+
+- large desktop
+  @media screen and (min-width: 1600px) {
 
   }
 
-
-  CREATE OR REPLACE FUNCTION add_follower(target_id INT, new_follower JSON)
-RETURNS VOID AS $$
-DECLARE
-    json_column_name TEXT;
-    new_array JSON
-BEGIN
-    -- Assuming the table name is "your_table_name" and the JSON column name is "json_column"
-    json_column_name := 'followers';
-new_array := jsonb_build_array(new_follower) || json_column_name 
-    -- Update the JSON column by appending the new item to the existing JSON array
-    UPDATE profiles
-    SET json_column_name = new_array
-    WHERE id = target_id;
-END;
-$$ LANGUAGE plpgsql;
-*/
-
-/*
-  CREATE OR REPLACE FUNCTION add_follower(target_id uuid, new_follower JSON)
-RETURNS VOID AS $$
-
-BEGIN
- 
-    -- Update the JSON column by appending the new item to the existing JSON array
-    UPDATE profiles
-    SET followers = json_build_array(new_follower) || followers
-    WHERE id = target_id;
-END;
-$$ LANGUAGE plpgsql;
 */

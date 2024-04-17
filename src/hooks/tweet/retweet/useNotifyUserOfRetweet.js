@@ -19,11 +19,9 @@ export default function useNotifyUserOfRetweet() {
         retweetId,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile']);
     },
-    onSuccess: () => {
-      toast.success('notifyed the publisher of the tweet of the retweet');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

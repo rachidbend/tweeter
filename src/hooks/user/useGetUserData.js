@@ -8,7 +8,7 @@ export function useGetUserData(userId) {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['profile-data', userId],
+    queryKey: ['profile', userId],
     queryFn: () => getUserData(userId),
   });
 

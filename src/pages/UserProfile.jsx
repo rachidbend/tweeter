@@ -1,12 +1,6 @@
 import { useParams } from 'react-router';
 import styled from 'styled-components';
-
 import UserHeader from '../features/user/UserHeader';
-import { useState } from 'react';
-import TweetsFilter from '../features/user/TweetsFilter';
-
-import UserTweetsView from '../features/user/UserTweetsView';
-
 import UserBackground from '../features/user/UserBackground';
 import FilterAndTweetsContainer from '../ui/FilterAndTweetsContainer';
 
@@ -24,19 +18,6 @@ const PageContainer = styled.div`
   @media screen and (max-width: 450px) {
     max-width: 100%;
     padding: 0 1.66rem;
-  }
-`;
-
-// MainContianer
-
-const ContentContainer = styled.div`
-  display: grid;
-  grid-template-columns: 30.4rem 1fr;
-  gap: 2.4rem;
-  align-items: start;
-
-  @media screen and (max-width: 450px) {
-    grid-template-columns: 1fr;
   }
 `;
 

@@ -9,7 +9,7 @@ export default function useGetUserToFollow(userId) {
   } = useQuery({
     queryKey: ['userToFollow', userId],
     queryFn: () => getUserToFollow({ userId: userId }),
-    enabled: !!userId,
+    enabled: userId ? true : false,
     staleTime: Infinity,
   });
 

@@ -12,17 +12,6 @@ export async function getTrendyHashtags() {
   return hashtags;
 }
 
-export async function createHashtag(hashtagName) {
-  const { data, error } = await supabase
-    .from('hashtags')
-    .insert([{ name: hashtagName, number_of_tweets: 0, tweets: [] }])
-    .select();
-
-  if (error) throw new Error(error.message);
-
-  return data;
-}
-
 export async function updateOrCreateHashtag({ hashtag, tweetId, publisherId }) {
   let { data, error } = await supabase.rpc('update_or_create_hashtag', {
     hashtag: hashtag,
@@ -52,12 +41,6 @@ export async function removeTweetFromHashtag({
 }
 
 export async function getMatchingHashtags(query) {
-  // console.log(query);
-  // const { data, error } = supabase
-  //   .from('hashtags')
-  //   .select('name')
-  //   .ilike('name', query);
-
   let { data, error } = await supabase.rpc('get_matching_hastags', {
     query: query,
   });

@@ -18,11 +18,9 @@ export function useNotifyUserOfRetweetRemove() {
         userId: user.id,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile']);
     },
-    onSuccess: () => {
-      toast.success('notifyed the publisher of the retweet removal');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

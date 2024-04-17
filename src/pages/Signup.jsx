@@ -1,31 +1,25 @@
 import {
   Container,
-  EyeOffIcon,
-  EyeOnIcon,
-  Google,
-  GoogleIcon,
   Heading,
   Illustration,
   IllustrationContainer,
   Input,
-  InputContainer,
   SubmitButton,
   Logo,
-  OrContainer,
-  OrText,
   CtaText,
   CtaButton,
   StyledLogin,
 } from '../features/auth/AuthStyles';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+
 import { useSignup } from '../hooks/authHooks/useSignup';
+import PasswordInput from '../ui/PasswordInput';
+import OrComponent from '../ui/OrComponent';
+import GoogleButton from '../ui/GoogleButton';
+import EmailInput from '../ui/EmailInput';
 
 function Signup() {
   // State to manage password visibility
-  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
-  const [isVisibleConfirmPassword, setIsVisibleConfirmPassword] =
-    useState(false);
 
   // Form handling using useForm hook from react-hook-form
   const { register, handleSubmit, reset } = useForm();
@@ -35,22 +29,10 @@ function Signup() {
 
   // Form submission handler
   function onSubmit(data) {
-    const { email, password, confirmPassword } = data;
-    if (confirmPassword === password)
-      signup({ email: email, password: password });
+    const { email, password, confirm } = data;
+
+    if (confirm === password) signup({ email: email, password: password });
     reset();
-  }
-
-  // Function to toggle password visibility
-  function handlePasswordVisibility() {
-    setIsVisiblePassword(isVisiblePassword => !isVisiblePassword);
-  }
-
-  // Function to toggle confirm password visibility
-  function handleConfirmPasswordVisibility() {
-    setIsVisibleConfirmPassword(
-      isVisibleConfirmPassword => !isVisibleConfirmPassword
-    );
   }
 
   return (
@@ -72,36 +54,12 @@ function Signup() {
         {/* Signup form */}
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Email input */}
-          <Input type="email" placeholder="Email" {...register('email')} />
+          <EmailInput register={register} />
 
           {/* Password input */}
-          <InputContainer>
-            <Input
-              type={`${isVisiblePassword ? 'text' : 'password'}`}
-              placeholder="Password"
-              {...register('password')}
-            />
-            {/* Toggle password visibility */}
-            {isVisiblePassword ? (
-              <EyeOffIcon onClick={handlePasswordVisibility} />
-            ) : (
-              <EyeOnIcon onClick={handlePasswordVisibility} />
-            )}
-          </InputContainer>
+          <PasswordInput register={register} />
           {/* Confirm password input */}
-          <InputContainer>
-            <Input
-              type={`${isVisibleConfirmPassword ? 'text' : 'password'}`}
-              placeholder="Confirm Password"
-              {...register('confirmPassword')}
-            />
-            {/* Toggle confirm password visibility */}
-            {isVisibleConfirmPassword ? (
-              <EyeOffIcon onClick={handleConfirmPasswordVisibility} />
-            ) : (
-              <EyeOnIcon onClick={handleConfirmPasswordVisibility} />
-            )}
-          </InputContainer>
+          <PasswordInput register={register} variant="confirm" />
 
           {/* Submit button */}
 
@@ -109,14 +67,10 @@ function Signup() {
         </form>
 
         {/* Or sepirator container */}
-        <OrContainer>
-          <OrText>or</OrText>
-        </OrContainer>
+        <OrComponent />
 
         {/* Google signup */}
-        <Google>
-          <GoogleIcon /> Signup with Google
-        </Google>
+        <GoogleButton />
 
         {/* Login link */}
         <CtaText>

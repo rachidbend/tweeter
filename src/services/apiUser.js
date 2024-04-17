@@ -14,7 +14,6 @@ export async function getUserData(userID) {
   return profiles.at(0);
 }
 
-// UPDATE user data (avatar and background images, username, and user description)
 export async function getAccountRecommendations() {
   const { data, error } = await supabase.rpc('get_user_recommendations', {});
 
@@ -23,6 +22,7 @@ export async function getAccountRecommendations() {
   return data;
 }
 
+// UPDATE user data (avatar and background images, username, and user description)
 export async function updateUser({
   username,
   description,
@@ -42,7 +42,7 @@ export async function updateUser({
 
     avatarImgUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/user_images/${avatarImageName}`;
 
-    const image = await uploadImage({
+    await uploadImage({
       image: avatarImage[0],
       bucketName: 'user_images',
       imageName: avatarImageName,
@@ -58,7 +58,7 @@ export async function updateUser({
 
     backgroundImageUrl = `https://yaaogiaydxorcvfwehkh.supabase.co/storage/v1/object/public/user_images/${BackgroundImageName}`;
 
-    const image = await uploadImage({
+    await uploadImage({
       image: backgroundImage[0],
       bucketName: 'user_images',
       imageName: BackgroundImageName,

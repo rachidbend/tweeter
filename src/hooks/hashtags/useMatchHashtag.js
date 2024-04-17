@@ -7,7 +7,7 @@ export default function useMatchHashtag(query) {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['hashtagQuery', query],
+    queryKey: ['hashtag_query', query],
     queryFn: () => getMatchingHashtags(query),
     enabled: query !== '' || query !== undefined || query !== null,
   });

@@ -11,9 +11,7 @@ export default function useRemoveTweetFromHashtag() {
   } = useMutation({
     mutationFn: ({ hashtag, tweetId, publisherId }) =>
       removeTweetFromHashtagApi({ hashtag, tweetId, publisherId }),
-    onSuccess: () => {
-      toast.success('removed tweet from hashtag successfully');
-    },
+
     onError: error => {
       toast.error(error.message);
     },
