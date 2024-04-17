@@ -14,11 +14,9 @@ export function useNotifyUserOfSave() {
     mutationFn: ({ targetId, tweetId }) =>
       notifyUserOfSaveApi({ targetId, tweetId, userId: user.id }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile']);
     },
-    onSuccess: () => {
-      toast.success('notifyed the publisher of the tweet save to the tweet!');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

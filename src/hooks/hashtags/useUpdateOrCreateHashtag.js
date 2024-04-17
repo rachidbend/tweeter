@@ -11,9 +11,7 @@ export default function useUpdateOrCreateHashtag() {
   } = useMutation({
     mutationFn: ({ hashtag, tweetId, publisherId }) =>
       updateOrCreateHashtagApi({ hashtag, tweetId, publisherId }),
-    onSuccess: () => {
-      toast.success('created or updated hashtag successfully');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

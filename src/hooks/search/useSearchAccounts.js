@@ -16,7 +16,6 @@ export function useSearchAccounts({ executeSearch, filter, searchQuery }) {
     initialPageParam: 1,
     getNextPageParam: (lastPages, lastPageparam, pages) => {
       if (lastPages === null) return undefined;
-
       return pages + 1;
     },
   });

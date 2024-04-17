@@ -17,10 +17,7 @@ export function useRemoveTweet() {
         tweeterId: user.id,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
-    },
-    onSuccess: () => {
-      toast.success('removed retweet');
+      queryClient.invalidateQueries(['profile']);
     },
     onError: error => {
       toast.error(error.message);

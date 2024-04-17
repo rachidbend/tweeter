@@ -20,11 +20,9 @@ export function useRemoveTweetFromBookmarks() {
         userId: user.id,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile', user.id]);
     },
-    onSuccess: () => {
-      toast.success('removed from bookmarks!');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

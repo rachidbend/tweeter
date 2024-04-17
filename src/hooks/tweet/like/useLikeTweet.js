@@ -21,10 +21,7 @@ export function useLikeTweet() {
         userId: user.id,
       }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profile', user.id]);
-    },
-    onSuccess: () => {
-      toast.success('liked the tweet!');
+      queryClient.invalidateQueries(['profile']);
     },
     onError: error => {
       toast.error(error.message);

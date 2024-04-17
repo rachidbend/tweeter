@@ -16,7 +16,6 @@ export function useLogin() {
     onSuccess: () => {
       navigate('/home');
       queryClient.invalidateQueries(['user']);
-      toast.success('Login successful!');
     },
     onError: error => {
       toast.error(error.message);

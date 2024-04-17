@@ -22,9 +22,7 @@ export function useAddRetweetId() {
     onSettled: () => {
       queryClient.invalidateQueries(['profile']);
     },
-    onSuccess: () => {
-      toast.success('retweeted added successfully!');
-    },
+
     onError: error => {
       toast.error(error.message);
     },

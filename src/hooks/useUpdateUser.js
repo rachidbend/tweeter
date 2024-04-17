@@ -20,9 +20,7 @@ export default function useUpdateUser() {
         backgroundImage,
         userID: user.id,
       }),
-    onSuccess: () => {
-      toast.success('updated user info.');
-    },
+
     onSettled: () => {
       queryClient.invalidateQueries(['profile', user.id]);
     },

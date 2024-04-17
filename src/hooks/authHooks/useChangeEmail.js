@@ -10,7 +10,7 @@ export default function useChangeEmail() {
   } = useMutation({
     mutationFn: ({ newEmail }) => changeEmail({ newEmail }),
     onSuccess: () => {
-      toast.success('Check your email for email confirmation!');
+      toast('Check your email for email confirmation!');
     },
     onError: error => {
       toast.error(error.message);

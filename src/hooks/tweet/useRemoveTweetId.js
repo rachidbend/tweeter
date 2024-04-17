@@ -22,9 +22,6 @@ export default function useRemoveTweetId() {
     onSettled: () => {
       queryClient.invalidateQueries(['profile']);
     },
-    onSuccess: () => {
-      toast.success('removed the tweet from the retweets list');
-    },
   });
 
   return {

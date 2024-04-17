@@ -15,7 +15,7 @@ export function useAddReply() {
     mutationFn: ({ originalTweet, content, replyImage, id }) =>
       addReplyApi({ originalTweet, content, replyImage, userId: user.id, id }),
     onSettled: () => {
-      queryClient.invalidateQueries(['profiles']);
+      queryClient.invalidateQueries(['profile', user.id]);
     },
     onError: error => {
       toast.error(error.message);

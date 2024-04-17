@@ -23,9 +23,7 @@ export function useRemoveTweetFromLikes() {
     onSettled: () => {
       queryClient.invalidateQueries(['profile', user.id]);
     },
-    onSuccess: () => {
-      toast.success('saved the tweet!');
-    },
+
     onError: error => {
       toast.error(error.message);
     },
