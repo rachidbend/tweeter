@@ -112,7 +112,7 @@ function PublishTweet() {
   const { register, handleSubmit, reset } = useForm();
   const [content, setContent] = useState('');
   const { user } = useUser();
-  const { userProfile, isLoading } = useGetUserData(user.id);
+  const { userProfile, isLoading } = useGetUserData(user?.id);
 
   const { updateOrCreateHashtag, isPending, error } =
     useUpdateOrCreateHashtag();

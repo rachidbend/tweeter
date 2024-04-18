@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import toast from 'react-hot-toast';
 import useMatchHashtag from '../../hooks/hashtags/useMatchHashtag';
 import Spinner from '../../ui/Spinner';
+import SmallSpinner from '../../ui/SmallSpinner';
 
 const StyledPublishTweetInput = styled.div`
   position: relative;
@@ -103,6 +104,7 @@ function PublishTweetInput({ register, content, setContent }) {
     onChange: handleChange,
   });
 
+  if (isLoading) return <SmallSpinner />;
   if (error) toast.error(error.message);
 
   return (

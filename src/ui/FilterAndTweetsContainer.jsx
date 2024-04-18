@@ -26,6 +26,8 @@ const StyledFilterAndTweetsContainer = styled.div`
 function FilterAndTweetsContainer({ id, isBookmark = false }) {
   // state to contain the filter to pass it into the UserTweetsView component
   const [filter, setFilter] = useState('tweets');
+
+  if (!id) return;
   return (
     <StyledFilterAndTweetsContainer>
       <TweetsFilter handleFilterTweets={setFilter} isBookmark={isBookmark} />
