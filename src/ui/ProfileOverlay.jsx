@@ -34,7 +34,7 @@ const StyledProfileOverlay = styled.div`
   border-radius: 1.2rem;
   padding: 2rem 2.2rem;
   box-shadow: var(--shadow-100);
-  border: 0.1rem solid var(--color-grey-400);
+  border: 0.1rem solid var(--color-grey-500);
   width: 60rem;
 
   @media screen and (max-width: 450px) {

@@ -27,6 +27,15 @@ export const GlobalStyles = styled.createGlobalStyle`
       --color-grey-500: hsla(0, 0%, 88%, 1); /* borders */
       --color-grey-600: hsla(0, 0%, 95%, 1); /* page background */
       --color-grey-700: hsla(0, 0%, 98%, 1); /* comment input background */
+
+      --shadow-100: 0px 2px 4px 0px hsla(0, 0%, 0%, 0.05);
+      --shadow-200: 0px 2px 2px 0px hsla(0, 0%, 0%, 0.05);
+
+      /* profile overlay background */
+      --color-background-overlay: hsla(0, 0%, 0%, 0.2);
+
+      /* profile image input label background  */
+      --color-black-transparent: rgba(0, 0, 0, 0.5);
     }
     /* DARK theme */
     &.dark {
@@ -43,18 +52,16 @@ export const GlobalStyles = styled.createGlobalStyle`
 
       --shadow-100: 0px 2px 4px 0px hsla(0, 0%, 80%, 0.05);
       --shadow-200: 0px 2px 2px 0px hsla(0, 0%, 80%, 0.05);
-    }
-    /* profile overlay background */
-    --color-background-overlay: hsla(0, 0%, 0%, 0.2);
 
-    /* profile image input label background  */
-    --color-black-transparent: rgba(0, 0, 0, 0.5);
+      /* profile overlay background */
+      --color-background-overlay: hsla(0, 0%, 0%, 0.5);
+
+      /* profile image input label background  */
+      --color-black-transparent: rgba(0, 0, 0, 0.5);
+    }
 
     --font-poppings: 'Poppins', sans-serif; /*  600, 500 */
     --font-noto: 'Noto Sans', sans-serif; /*  700, 600, 500, 400 */
-
-    --shadow-100: 0px 2px 4px 0px hsla(0, 0%, 0%, 0.05);
-    --shadow-200: 0px 2px 2px 0px hsla(0, 0%, 0%, 0.05);
 
     --transition-100: 0.3s ease;
     --transition-200: 0.2s ease;
