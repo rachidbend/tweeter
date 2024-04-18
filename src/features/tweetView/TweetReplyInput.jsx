@@ -111,7 +111,6 @@ function TweetReplyInput({ tweet }) {
     if (!data.commentText) return;
 
     // creating the id of the reply
-    const date = new Date();
     const id = uuidv4();
 
     // adds the reply as a tweet

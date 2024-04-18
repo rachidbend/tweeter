@@ -18,7 +18,7 @@ const AvatarIcon = styled(IconUserOutline)`
   background-color: var(--color-grey-600);
 `;
 
-function AvatarPlaceHolder({ width, height, borderRadius }) {
+function AvatarPlaceHolder({ width, height }) {
   return (
     <StyledAvatarPlaceHolder width={width} height={height}>
       <AvatarIcon />
