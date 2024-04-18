@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import styled from 'styled-components';
 import { useGetUserData } from '../../hooks/user/useGetUserData';
-import Spinner from '../../ui/Spinner';
 import { useGetTweet } from '../../hooks/tweet/useGetTweet';
 import {
   IconDotsHorizontal,
@@ -83,8 +82,6 @@ const CommentContainer = styled.div`
   border-radius: 0.8rem;
   padding: 0.9rem 1.5rem 2.2rem 1.5rem;
   margin-bottom: 0.4rem;
-
-  /* box-shadow: var(--shadow-100); */
 `;
 const Header = styled.div`
   display: flex;

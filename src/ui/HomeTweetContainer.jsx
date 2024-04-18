@@ -67,7 +67,7 @@ export default function HomeTweetContainer() {
       };
       // the dependency array can not include the observer state, or it will cause infinite loop
     },
-    [sentinalRef.current]
+    [sentinalRef.current, isFetching]
   );
 
   if (isLoading) return <HomeSkeletal />;
