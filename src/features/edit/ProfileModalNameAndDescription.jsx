@@ -15,7 +15,7 @@ const TextLabels = styled.label`
 const UserNameInput = styled.input`
   width: 100%;
   display: block;
-  border: 0.2rem solid var(--color-grey-400);
+  border: 0.2rem solid var(--color-grey-500);
   background-color: var(--color-grey-700);
   border-radius: 0.8rem;
   padding: 1.05rem 1.2rem;
@@ -43,7 +43,7 @@ const DescriptionInput = styled.textarea`
   max-width: 38.5rem;
 
   height: 7rem;
-  border: 0.2rem solid var(--color-grey-400);
+  border: 0.2rem solid var(--color-grey-500);
   background-color: var(--color-grey-700);
   border-radius: 0.8rem;
   padding: 1.05rem 1.2rem;
