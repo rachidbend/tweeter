@@ -20,6 +20,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import AccountSettings from './features/settings/AccountSettings';
 import PreferencesSettings from './features/settings/PreferencesSettings';
+import { DarkModeProvider } from './contexts/DarkModeContext';
 
 const queryClient = new QueryClient();
 
@@ -93,18 +94,20 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster
-        toastOptions={{
-          style: {
-            fontFamily: 'var(--font-noto)',
-            fontSize: '1.4rem',
-            zIndex: '999999',
-          },
-        }}
-      />
-      <ReactQueryDevtools position="bottom" />
-      <RouterProvider router={router} />
-      <GlobalStyles />
+      <DarkModeProvider>
+        <Toaster
+          toastOptions={{
+            style: {
+              fontFamily: 'var(--font-noto)',
+              fontSize: '1.4rem',
+              zIndex: '999999',
+            },
+          }}
+        />
+        <ReactQueryDevtools position="bottom" />
+        <RouterProvider router={router} />
+        <GlobalStyles />
+      </DarkModeProvider>
     </QueryClientProvider>
   );
 }
