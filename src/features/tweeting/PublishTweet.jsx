@@ -155,7 +155,7 @@ function PublishTweet() {
     <StyledTweet>
       <Heading>Tweet something</Heading>
       <ContainerForm onSubmit={handleSubmit(onSubmit)}>
-        <AvatarDisplay avatarImage={userProfile.avatar_image} />
+        <AvatarDisplay avatarImage={userProfile?.avatar_image} />
         <div>
           <PublishTweetInput
             register={register}
