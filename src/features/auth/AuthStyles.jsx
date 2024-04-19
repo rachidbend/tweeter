@@ -46,6 +46,7 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-color: var(--color-white);
 
   @media screen and (max-width: 450px) {
     justify-content: start;
@@ -81,7 +82,7 @@ export const Input = styled.input`
   margin-bottom: 1.6rem;
   border: 0.2rem solid var(--color-grey-400);
   border-radius: 0.8rem;
-  background-color: none;
+  background-color: var(--color-white);
   outline: none;
   transition: border var(--transition-100);
 
