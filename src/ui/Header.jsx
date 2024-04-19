@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Nav from './Nav';
 import UserHeader from './UserHeader';
 import { Link } from 'react-router-dom';
+import { useDarkMode } from '../contexts/DarkModeContext';
 
 const StyledHeader = styled.div`
   position: fixed;
@@ -46,10 +47,17 @@ const MobileLogo = styled.img`
 `;
 
 function Header() {
+  const { isDarkMode } = useDarkMode();
+
   return (
     <StyledHeader>
       <HomeLink to={'/home'}>
-        <Logo src="/images/tweeter.svg" alt="Tweeter logo" />
+        {isDarkMode ? (
+          <Logo src="/images/tweeter-light.svg" alt="Tweeter logo" />
+        ) : (
+          <Logo src="/images/tweeter.svg" alt="Tweeter logo" />
+        )}
+
         <MobileLogo src="/images/tweeter-small.svg" alt="Tweeter logo" />
       </HomeLink>
 
