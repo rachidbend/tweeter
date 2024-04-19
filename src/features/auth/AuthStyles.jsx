@@ -50,7 +50,7 @@ export const Container = styled.div`
 
   @media screen and (max-width: 450px) {
     justify-content: start;
-    margin-top: 6rem;
+    padding-top: 6rem;
   }
 `;
 export const Logo = styled.img`
