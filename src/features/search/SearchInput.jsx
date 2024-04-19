@@ -29,6 +29,7 @@ const StyledSearchInput = styled.input`
   line-height: 2.179rem;
   letter-spacing: -0.035em;
   color: var(--color-grey-100);
+  background-color: var(--color-white);
   outline: none;
   padding: 0.36rem 1.8rem;
   padding-left: 1.2rem;

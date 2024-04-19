@@ -35,6 +35,7 @@ const CommentInput = styled.input`
   &:hover,
   &:focus {
     border: 0.1rem solid var(--color-blue-100);
+    background-color: var(--color-grey-700);
   }
 `;
 const ImageInputContainer = styled.div``;
@@ -64,7 +65,6 @@ const UploadImage = styled.input`
   height: 0px;
   width: 0px;
   opacity: 0;
-  /* visibility: hidden; */
 `;
 
 const CommentContainer = styled.form`
@@ -106,7 +106,6 @@ function TweetReplyInput({ tweet }) {
 
   // Handler to add a reply
   const onSubmit = data => {
-    console.log(replyImage[0]);
     // if there is no content, the reply will not be posted
     if (!data.commentText) return;
 

@@ -56,6 +56,7 @@ const Username = styled.p`
   }
 `;
 const ArrowDown = styled(TiArrowSortedDown)`
+  color: var(--color-black);
   @media screen and (max-width: 450px) {
     display: none;
   }
