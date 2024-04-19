@@ -17,7 +17,12 @@ const StyledTweetViewHeaderSkeletal = styled.div`
 `;
 
 export const ShimmerEffect = styled.div`
-  background: linear-gradient(to right, #eee 8%, #ddd 18%, #eee 33%);
+  background: linear-gradient(
+    to right,
+    var(--color-shimmer-100) 8%,
+    var(--color-shimmer-200) 18%,
+    var(--color-shimmer-100) 33%
+  );
 
   background-size: 100rem 10.4rem;
   overflow: hidden;

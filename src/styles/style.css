@@ -1,3 +1,5 @@
 p {
   color: hsl(207, 38%, 6%);
+  --color-shimmer-100: hsl(205, 37%, 12%);
+  --color-shimmer-200: hsl(0, 0%, 87%);
 }

@@ -36,6 +36,10 @@ export const GlobalStyles = styled.createGlobalStyle`
 
       /* profile image input label background  */
       --color-black-transparent: rgba(0, 0, 0, 0.5);
+
+      /* skeletal ui shimmer colors */
+      --color-shimmer-100: #eee;
+      --color-shimmer-200: #ddd;
     }
     /* DARK theme */
     &.dark {
@@ -58,6 +62,10 @@ export const GlobalStyles = styled.createGlobalStyle`
 
       /* profile image input label background  */
       --color-black-transparent: rgba(0, 0, 0, 0.5);
+
+      /* skeletal ui shimmer colors */
+      --color-shimmer-100: hsl(207, 38%, 6%);
+      --color-shimmer-200: hsl(205, 37%, 12%);
     }
 
     --font-poppings: 'Poppins', sans-serif; /*  600, 500 */
