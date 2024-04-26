@@ -12,7 +12,7 @@ function GoogleButton() {
   if (error) toast.error(error.message);
 
   return (
-    <Google onClick={handleClick}>
+    <Google disabled={isPending} onClick={handleClick}>
       <GoogleIcon /> Login with Google
     </Google>
   );

@@ -36,8 +36,6 @@ function Login() {
     reset();
   }
 
-  // Function to toggle password visibility
-
   return (
     <StyledLogin>
       {/* Illustration */}
