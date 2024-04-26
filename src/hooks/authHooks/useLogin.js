@@ -15,7 +15,7 @@ export function useLogin() {
     mutationFn: ({ email, password }) => loginApi({ email, password }),
     onSuccess: () => {
       navigate('/home');
-      queryClient.invalidateQueries(['user']);
+      queryClient.invalidateQueries();
     },
     onError: error => {
       toast.error(error.message);
