@@ -1,18 +1,44 @@
 import { createContext, useContext, useEffect } from 'react';
 import useLocalStorageState from './../helpers/useLocalStorageState';
+import { useGetIsDarkMode } from '../hooks/darkMode/useGetIsDarkMode';
+import { useToggleDarkMode } from '../hooks/darkMode/useToggleDarkMode';
+import toast from 'react-hot-toast';
 
 const DarkModeContext = createContext();
 
+// 1- what ever is in the server should be in the local storage
+// 2- we rely on the local storage to get instant dark mode toggle
+// 3- we use the isDarkMode on the database to track the prefrance on everywhere
+
 export function DarkModeProvider({ children }) {
+  // state to track the dark mode in local storage, and to make changing the theme look fast
   const [isDarkMode, setIsDarkMode] = useLocalStorageState({
     initialState: false,
     key: 'isDarkMode',
   });
 
+  // custom hook to get the isDarkMode state from the database
+  const { isDarkMode: isServerDarkMode, error } = useGetIsDarkMode();
+  // custom hook to change the isDarkMode state in the database
+  const { toggleDarkMode: toggleServerDarkMode, error: toggleError } =
+    useToggleDarkMode();
+
+  // function to toggle the isDarkMode state both in the local storage and the database
   function toggleDarkMode() {
     setIsDarkMode(isDarkMode => !isDarkMode);
+    toggleServerDarkMode({ nextIsDarkMode: !isDarkMode });
   }
 
+  // effect to make sure the local storage and database are in sync
+  useEffect(
+    function () {
+      // make sure that the local storage is set to the users prefrance that is kept in the database
+      setIsDarkMode(isServerDarkMode);
+    },
+    [isServerDarkMode]
+  );
+
+  // effect to handle fast theme changing
   useEffect(
     function () {
       if (isDarkMode) {
@@ -27,8 +53,18 @@ export function DarkModeProvider({ children }) {
     [isDarkMode]
   );
 
+  // error notifications
+  if (error) toast.error(error.message);
+  if (toggleError) toast.error(toggleError.message);
+
+  // returning the provider and children
   return (
-    <DarkModeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
+    <DarkModeContext.Provider
+      value={{
+        isDarkMode,
+        toggleDarkMode,
+      }}
+    >
       {children}
     </DarkModeContext.Provider>
   );
