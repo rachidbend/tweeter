@@ -78,19 +78,17 @@ function UserHeader() {
 
   if (isLoadingCurrentUser || isLoadingUser) return <UserHeaderSkeletal />;
 
-  const { avatar_image, user_name } = currentUser;
-
   return (
     <StyledUserHeader ref={userHeaderRef}>
       <OutsideClick componentRef={userHeaderRef} onClose={handleClose} />
       <Container onClick={() => setIsOpen(isOpen => !isOpen)}>
-        {avatar_image ? (
-          <Avatar src={avatar_image} alt="user avatar" />
+        {currentUser?.avatar_image ? (
+          <Avatar src={currentUser?.avatar_image} alt="user avatar" />
         ) : (
           <AvatarPlaceHolder width={'3.2rem'} />
         )}
 
-        <Username>{user_name}</Username>
+        <Username>{currentUser?.user_name}</Username>
         <ArrowDown />
       </Container>
       <AnimatePresence>

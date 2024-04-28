@@ -12,9 +12,7 @@ export function useLogout() {
   } = useMutation({
     mutationFn: logoutApi,
     onSettled: () => {
-      queryClient.invalidatzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzqdqqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasddddddddddddddddddddddddddddssssssssssssssseQueries(
-        ['user']
-      );
+      queryClient.invalidateQueries();
     },
     onError: error => {
       toast.error(error.message);

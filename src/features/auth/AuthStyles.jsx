@@ -217,6 +217,10 @@ export const Google = styled.button`
   &:hover {
     background-color: var(--color-grey-600);
   }
+
+  &:disabled {
+    cursor: no-drop;
+  }
 `;
 
 export const GoogleIcon = styled(FcGoogle)`
