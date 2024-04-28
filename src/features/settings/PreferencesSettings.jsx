@@ -51,7 +51,6 @@ const Button = styled.button`
 
 function PreferencesSettings() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
-  console.log(isDarkMode);
 
   return (
     <StyledPreferencesSettings>
