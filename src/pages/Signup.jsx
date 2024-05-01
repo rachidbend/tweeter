@@ -3,7 +3,6 @@ import {
   Heading,
   Illustration,
   IllustrationContainer,
-  Input,
   SubmitButton,
   Logo,
   CtaText,
@@ -19,8 +18,6 @@ import GoogleButton from '../ui/GoogleButton';
 import EmailInput from '../ui/EmailInput';
 
 function Signup() {
-  // State to manage password visibility
-
   // Form handling using useForm hook from react-hook-form
   const { register, handleSubmit, reset } = useForm();
 

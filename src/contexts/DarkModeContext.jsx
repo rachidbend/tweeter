@@ -33,7 +33,8 @@ export function DarkModeProvider({ children }) {
   useEffect(
     function () {
       // make sure that the local storage is set to the users prefrance that is kept in the database
-      setIsDarkMode(isServerDarkMode);
+      if (isServerDarkMode === undefined) setIsDarkMode(false);
+      else setIsDarkMode(isServerDarkMode);
     },
     [isServerDarkMode]
   );
