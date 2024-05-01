@@ -21,6 +21,7 @@ import Settings from './pages/Settings';
 import AccountSettings from './features/settings/AccountSettings';
 import PreferencesSettings from './features/settings/PreferencesSettings';
 import { DarkModeProvider } from './contexts/DarkModeContext';
+import ConfirmEmail from './pages/ConfirmEmail';
 
 const queryClient = new QueryClient();
 
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <Signup />,
+  },
+  {
+    path: '/confirm-email',
+    element: <ConfirmEmail />,
   },
 ]);
 
