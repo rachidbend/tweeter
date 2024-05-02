@@ -16,8 +16,7 @@ export function useSignup() {
     mutationFn: ({ email, password }) => signupApi({ email, password }),
     onSuccess: () => {
       navigate('/confirm-email');
-      queryClient.invalidateQueries(['user']);
-      toast.success('Signup successful!');
+      queryClient.invalidateQueries();
     },
     onError: error => {
       toast.error(error.message);

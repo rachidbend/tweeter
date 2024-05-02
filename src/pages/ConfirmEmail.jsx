@@ -86,8 +86,8 @@ function ConfirmEmail() {
         <Logo src="/images/tweeter-small.svg" />
         <Title> Check your inbox, please!</Title>
         <Text>
-          Hey, to start using Tweeter, we need to verify your email, <Break />{' '}
-          We&apos;ve already sent out the verification link, Please check it and{' '}
+          Hey, to start using Tweeter, we need to verify your email, <Break />
+          We&apos;ve already sent out the verification link, Please check it and
           <Break />
           confirm it&apos;s really you. Thanks!
         </Text>
