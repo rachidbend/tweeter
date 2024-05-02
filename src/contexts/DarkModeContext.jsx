@@ -29,9 +29,8 @@ export function DarkModeProvider({ children }) {
     toggleServerDarkMode({ nextIsDarkMode: !isDarkMode });
   }
 
-  // effect to make sure the local storage and database are in sync
+  // effect to make sure the value of the isDarkMode is not undefined so that it does not give an error and stop the app from working, it only runs on mount
   useEffect(function () {
-    // make sure that the local storage is set to the users prefrance that is kept in the database
     if (isServerDarkMode === undefined) setIsDarkMode(false);
     if (isDarkMode === undefined || isDarkMode === 'undefined')
       setIsDarkMode(false);
@@ -40,7 +39,6 @@ export function DarkModeProvider({ children }) {
   // effect to make sure the local storage and database are in sync
   useEffect(
     function () {
-      console.log(isDarkMode);
       // make sure that the local storage is set to the users prefrance that is kept in the database
       if (isServerDarkMode === undefined) setIsDarkMode(false);
       if (isDarkMode === undefined || isDarkMode === 'undefined')
