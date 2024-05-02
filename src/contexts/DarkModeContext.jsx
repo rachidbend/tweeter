@@ -30,10 +30,21 @@ export function DarkModeProvider({ children }) {
   }
 
   // effect to make sure the local storage and database are in sync
+  useEffect(function () {
+    // make sure that the local storage is set to the users prefrance that is kept in the database
+    if (isServerDarkMode === undefined) setIsDarkMode(false);
+    if (isDarkMode === undefined || isDarkMode === 'undefined')
+      setIsDarkMode(false);
+  }, []);
+
+  // effect to make sure the local storage and database are in sync
   useEffect(
     function () {
+      console.log(isDarkMode);
       // make sure that the local storage is set to the users prefrance that is kept in the database
       if (isServerDarkMode === undefined) setIsDarkMode(false);
+      if (isDarkMode === undefined || isDarkMode === 'undefined')
+        setIsDarkMode(false);
       else setIsDarkMode(isServerDarkMode);
     },
     [isServerDarkMode]
