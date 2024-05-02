@@ -7,7 +7,7 @@ export async function getIsDarkMode({ userId }) {
     .eq('id', userId);
 
   if (error) throw new Error(error.message);
-  console.log(isDarkMode);
+
   if (isDarkMode === undefined) return false;
   return isDarkMode?.at(0).is_dark_mode;
 }

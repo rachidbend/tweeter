@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const StyledConfirmEmail = styled.div`
@@ -7,6 +8,10 @@ const StyledConfirmEmail = styled.div`
   align-items: center;
   min-height: 100vh;
   min-height: 100svh;
+
+  @media screen and (max-width: 450px) {
+    background-color: var(--color-grey-600);
+  }
 `;
 
 const Container = styled.div`
@@ -17,6 +22,11 @@ const Container = styled.div`
   text-align: center;
 
   box-shadow: var(--shadow-100);
+
+  @media screen and (max-width: 450px) {
+    width: 100%;
+    box-shadow: none;
+  }
 `;
 
 const Title = styled.h1`
@@ -36,7 +46,7 @@ const Text = styled.p`
   font-size: 1.4rem;
   letter-spacing: -0.035rem;
   line-height: 2.179rem;
-  margin-bottom: 3.6rem;
+  margin-bottom: 3rem;
 `;
 
 const Logo = styled.img`
@@ -45,13 +55,28 @@ const Logo = styled.img`
   margin-bottom: 1.2rem;
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled(Link)`
   border: none;
   background-color: none;
   cursor: pointer;
   font-family: var(--font-poppings);
   font-weight: 500;
+  font-size: 1.4rem;
   color: var(--color-blue-100);
+  padding: 0.6rem;
+  text-decoration: underline;
+  text-underline-offset: 0.6rem;
+
+  transition: color var(--transition-200);
+  &:hover {
+    color: var(--color-grey-300);
+  }
+`;
+
+const Break = styled.br`
+  @media screen and (max-width: 450px) {
+    display: none;
+  }
 `;
 
 function ConfirmEmail() {
@@ -61,13 +86,15 @@ function ConfirmEmail() {
         <Logo src="/images/tweeter-small.svg" />
         <Title> Check your inbox, please!</Title>
         <Text>
-          Hey, to start using Tweeter, we need to verify your email, <br />{' '}
+          Hey, to start using Tweeter, we need to verify your email, <Break />{' '}
           We&apos;ve already sent out the verification link, Please check it and{' '}
-          <br />
+          <Break />
           confirm it&apos;s really you. Thanks!
         </Text>
 
-        <LoginButton>Login</LoginButton>
+        <LoginButton to="/login" replace>
+          Login
+        </LoginButton>
       </Container>
     </StyledConfirmEmail>
   );
