@@ -1,6 +1,6 @@
 import {
   Container,
-  ForgotPassword,
+  ForgotPasswordButton,
   Heading,
   Illustration,
   IllustrationContainer,
@@ -16,14 +16,15 @@ import PasswordInput from '../ui/PasswordInput';
 import OrComponent from '../ui/OrComponent';
 import GoogleButton from '../ui/GoogleButton';
 import EmailInput from '../ui/EmailInput';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  // State to manage password visibility
-
   // Form handling using useForm hook from react-hook-form
   const { register, handleSubmit, reset } = useForm({
     defaultValues: { email: 'example@gmail.com', password: '123456789' },
   });
+
+  const navigate = useNavigate();
 
   // Login functionality using custom useLogin hook
   const { login, isLogingIn } = useLogin();
@@ -34,6 +35,12 @@ function Login() {
     login({ email: data.email, password: data.password });
     // Reset form after submission
     reset();
+  }
+
+  // handler for forgot password button
+  function handleForgotPassword(e) {
+    e.preventDefault();
+    navigate('/forgot-password');
   }
 
   return (
@@ -61,7 +68,9 @@ function Login() {
           {/* Password input */}
           <PasswordInput register={register} />
           {/* Forgot password link */}
-          <ForgotPassword>Forgot password?</ForgotPassword>
+          <ForgotPasswordButton onClick={handleForgotPassword}>
+            Forgot password?
+          </ForgotPasswordButton>
 
           {/* Submit or Login button */}
           <SubmitButton disabled={isLogingIn} type="submit" value="login" />

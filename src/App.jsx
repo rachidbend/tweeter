@@ -22,6 +22,8 @@ import AccountSettings from './features/settings/AccountSettings';
 import PreferencesSettings from './features/settings/PreferencesSettings';
 import { DarkModeProvider } from './contexts/DarkModeContext';
 import ConfirmEmail from './pages/ConfirmEmail';
+import ForgotPassword from './pages/ForgotPassword';
+import CheckEmailForPassword from './pages/CheckEmailForPassword';
 
 const queryClient = new QueryClient();
 
@@ -94,8 +96,15 @@ const router = createBrowserRouter([
     path: '/confirm-email',
     element: <ConfirmEmail />,
   },
+  {
+    path: '/forgot-password',
+    element: <ForgotPassword />,
+  },
+  {
+    path: '/check-email',
+    element: <CheckEmailForPassword />,
+  },
 ]);
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
