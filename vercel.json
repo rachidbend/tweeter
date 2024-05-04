@@ -12,6 +12,8 @@
     { "source": "/settings", "destination": "/" },
     { "source": "/settings/account", "destination": "/" },
     { "source": "/settings/preferences", "destination": "/" },
-    { "source": "/confirm-email", "destination": "/" }
+    { "source": "/confirm-email", "destination": "/" },
+    { "source": "/forgot-password", "destination": "/" },
+    { "source": "/check-email", "destination": "/" }
   ]
 }

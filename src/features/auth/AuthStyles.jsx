@@ -151,7 +151,7 @@ export const EyeOffIcon = styled(IoMdEyeOff)`
   }
 `;
 
-export const ForgotPassword = styled.button`
+export const ForgotPasswordButton = styled.button`
   font-family: var(--font-noto);
   color: var(--color-blue-200);
   font-size: 1.2rem;

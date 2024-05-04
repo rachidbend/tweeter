@@ -73,7 +73,15 @@ export async function loginWithGoogleAuth() {
     provider: 'google',
   });
 
-  console.log(data);
+  if (error) throw new Error(error.message);
+
+  return data;
+}
+
+export async function forgotPassword(email) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://tweeter-neon-iota.vercel.app/settings/account',
+  });
 
   if (error) throw new Error(error.message);
 
