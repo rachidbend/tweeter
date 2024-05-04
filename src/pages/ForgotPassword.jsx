@@ -11,7 +11,7 @@ import {
 import { useForm } from 'react-hook-form';
 
 import EmailInput from '../ui/EmailInput';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useForgotPassword from '../hooks/authHooks/useForgotPassword';
 import toast from 'react-hot-toast';
 
@@ -59,10 +59,19 @@ function ForgotPassword() {
 
   const { requestForgotPassword, isPending, error } = useForgotPassword();
 
+  const navigate = useNavigate();
+
   // Form submission handler
   function onSubmit(data) {
     // request a reset password email
-    requestForgotPassword({ email: data.email });
+    requestForgotPassword(
+      { email: data.email },
+      {
+        onSuccess: () => {
+          navigate('/check-email');
+        },
+      }
+    );
 
     // Reset form after submission
     reset();
