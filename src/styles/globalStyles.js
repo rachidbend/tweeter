@@ -66,6 +66,9 @@ export const GlobalStyles = styled.createGlobalStyle`
       /* skeletal ui shimmer colors */
       --color-shimmer-100: hsl(207, 38%, 6%);
       --color-shimmer-200: hsl(205, 37%, 12%);
+
+      /* Click the button below to confirm your email address.
+      If you didn't create an account with Tweeter. you can safely delete this email. */
     }
 
     --font-poppings: 'Poppins', sans-serif; /*  600, 500 */
